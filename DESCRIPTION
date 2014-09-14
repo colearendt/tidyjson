@@ -1,0 +1,13 @@
+Package: jplyr
+Title: Tools for using dplyr with JSON data
+Version: 0.1
+Authors: "Jeremy Stanley <jeremy.stanley@gmail.com>"
+Description: 
+Depends:
+    R (>= 3.1.0)
+Imports:
+    assertthat,
+    rjson,
+    dplyr
+License: http://www.apache.org/licenses/LICENSE-2.0
+LazyData: true
