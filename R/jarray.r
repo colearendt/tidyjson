@@ -35,13 +35,10 @@ jarray <- function(x, column.name = "array.index") {
   # Add sequence column
   y[column.name] <- sequence(lengths)
   
-  # Set row.names to null
-  row.names(y) <- NULL
+  # Unwind JSON one level
+  json <- unlist(json, recursive = FALSE)
   
-  # Reset JSON
-  attr(y, "JSON") <- unlist(json, recursive = FALSE)
-  
-  # Return
-  y
+  # Construct jdf
+  jdf(y, json)
   
 }
