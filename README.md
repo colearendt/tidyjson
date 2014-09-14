@@ -1,15 +1,13 @@
 # jplyr
 
 jplyr is a complementary set of tools to [dplyr](http://github.com/hadley/dplyr)
-for working with JSON data (hence the *j***plyr name**). It's primary objective is 
+for working with JSON data (hence the **j**plyr name). It's primary objective is 
 to turn JSON data into [tidy](http://vita.had.co.nz/papers/tidy-data.pdf) tables 
 for downstream use by dplyr or other relational, analytical or machine learning 
-frameworks in R.
+frameworks in R. Behind the scens, jplyr uses [rjson](http://cran.r-project.org/web/packages/rjson/index.html) 
+to quickly parse the json data.
 
-jplyr uses [rjson](http://cran.r-project.org/web/packages/rjson/index.html) to
-parse the json data into nested lists.
-
-You can install from github directly by running:
+You can install jplyr from github directly by running:
 
 ```R
 devtools::install_github("sailthru/jplyr")
