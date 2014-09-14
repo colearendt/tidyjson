@@ -1,8 +1,8 @@
 # jplyr
 
-jplyr is a complementary set of tools to (dplyr)[http://github.com/hadley/dplyr]
-for working with JSON data (hence the `j`-plyr name). It's primary objective is 
-to turn JSON data into (tidy)[http://vita.had.co.nz/papers/tidy-data.pdf] tables 
+jplyr is a complementary set of tools to [dplyr](http://github.com/hadley/dplyr)
+for working with JSON data (hence the *j***plyr name**). It's primary objective is 
+to turn JSON data into [tidy](http://vita.had.co.nz/papers/tidy-data.pdf) tables 
 for downstream use by dplyr or other relational, analytical or machine learning 
 frameworks in R.
 
