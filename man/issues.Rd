@@ -38,8 +38,8 @@ issues \%>\%   # single json document of github issues from dplyr
   jfilter("labels") \%>\%          # filter just those with labels
   jarray("label.index") \%>\%      # stack labels
   jvalue(
-    url = jstring("url"),
-    name = jstring("name"),
+    url   = jstring("url"),
+    name  = jstring("name"),
     color = jstring("color")
   )
 }
