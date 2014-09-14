@@ -41,8 +41,30 @@ test_that("filter removes records with missing path", {
       json %>% as.jdf %>% jvalue(name = jstring("name")) %>%
         jfilter("attributes"),
       jdf(
-        data.frame(document.id = 1L, name = 'bob', stringsAsFactors = FALSE),
+        data.frame(
+          document.id = 1L, 
+          name = 'bob', 
+          stringsAsFactors = FALSE),
         list(list(age = 32, gender = "male"))
+      )
+    )
+    
+  }
+)
+
+test_that("works if no paths exist", {
+    
+    json <- '{"name": "bob"}'
+    
+    expect_identical(
+      json %>% as.jdf %>% jvalue(name = jstring("name")) %>%
+        jfilter("attributes"),
+      jdf(
+        data.frame(
+          document.id = integer(0), 
+          name = character(0), 
+          stringsAsFactors = FALSE),
+        list()
       )
     )
     
