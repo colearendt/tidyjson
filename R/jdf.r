@@ -6,6 +6,24 @@
 #' attr(json, "JSON")
 NULL
 
+#' jdf constructor
+#' 
+#' @param df data.frame
+#' @param json.list list of json lists parsed with fromJSON
+#' @rdname jdf
+jdf <- function(df, json.list) {
+
+  assert_that(is.data.frame(df))
+  assert_that(is.list(json.list))
+  assert_that(nrow(df) == length(json.list))
+  
+  # Remove any row.names
+  row.names(df) <- NULL
+  
+  structure(df, JSON = json.list, class = c("jdf", "data.frame"))
+}
+
+
 #' @export
 #' @rdname jdf
 as.jdf <- function(x, ...) UseMethod("as.jdf")
@@ -30,7 +48,7 @@ as.jdf.character <- function(x, ...) {
   # Setup document ids
   ids <- data.frame(document.id = seq_along(json))
 
-  # Return a structure with JSON as an attribute
-  structure(ids, JSON = json, class = c("jdf", "data.frame"))
+  # Construct jdf
+  jdf(ids, json)
 
 }

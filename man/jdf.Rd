@@ -7,6 +7,8 @@
 \alias{jdf}
 \title{Combines structured JSON (as a data.frame) with remaining JSON}
 \usage{
+jdf(df, json.list)
+
 as.jdf(x, ...)
 
 \method{as.jdf}{jdf}(x, ...)
@@ -16,10 +18,16 @@ is.jdf(x)
 \method{as.jdf}{character}(x, ...)
 }
 \arguments{
+\item{df}{data.frame}
+
+\item{json.list}{list of json lists parsed with fromJSON}
+
 \item{x}{character vector of json}
 }
 \description{
 Combines structured JSON (as a data.frame) with remaining JSON
+
+jdf constructor
 
 Turns a character vector into a jdf object
 }
