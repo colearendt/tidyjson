@@ -16,7 +16,7 @@ library(dplyr)
 # Show first 2k characters of JSON
 commits \%>\% substr(1, 2000) \%>\% writeLines
 
-# Extract sha, author and date for every commit
+# Extract metadata for every commit
 commits \%>\%   # single json document of github commits from dplyr
   as.jdf \%>\%  # turn into a 'jdf'
   jarray \%>\%  # stack as an array
