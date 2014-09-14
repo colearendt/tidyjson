@@ -27,7 +27,8 @@ is.jdf(x)
 \description{
 Combines structured JSON (as a data.frame) with remaining JSON
 
-jdf constructor
+Note that json.list must have the same length as nrow(df), and if json.list
+has any NULL elements, the corresponding rows will be removed from df.
 
 Turns a character vector into a jdf object
 }
