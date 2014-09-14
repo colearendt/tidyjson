@@ -33,16 +33,16 @@ github_endpoint <- oauth_endpoints("github")
 github_token <- oauth2.0_token(github_endpoint, github_app)
 
 # Get commits in a repo
-dplyr_commits <- get_github_data(
+commits <- get_github_data(
   "https://api.github.com/repos/hadley/dplyr/commits",
   github_token)
-save(dplyr_commits, file = "../data/dplyr_commits.rda")
+save(commits, file = "../data/commits.rda")
 
 # Get dplyr issues
-dplyr_issues <- get_github_data(
+issues <- get_github_data(
   "https://api.github.com/repos/hadley/dplyr/issues",
   github_token)
-save(dplyr_commits, file = "../data/dplyr_issues.rda")
+save(issues, file = "../data/issues.rda")
 
   
 

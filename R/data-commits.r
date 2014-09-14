@@ -1,8 +1,8 @@
 #' Commit data for the dplyr repo from github API
 #' 
 #' @docType data
-#' @name dplyr_commits
-#' @usage dplyr_commits
+#' @name commits
+#' @usage commits
 #' @format JSON
 #' @examples
-#' writeLines(dplyr_commits)
+#' writeLines(commits)
