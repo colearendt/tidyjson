@@ -1,5 +1,10 @@
-#' Structures an array
+#' Expands a jdf to span the indices of a JSON array
 #' 
+#' @param x a jdf whose JSON attribute should always be an array
+#' @param column.name the name to give to the array index column created
+#' @return a jdf with a new column (column.name) that captures the array
+#'   index and JSON attribute extracted from the array
+#' @export
 jarray <- function(x, column.name = "array.index") {
 
   assert_that(is.jdf(x))
