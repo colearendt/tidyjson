@@ -29,5 +29,18 @@ issues \%>\%   # single json document of github issues from dplyr
     locked      = jlogical("locked"),
     comments    = jnumber("comments")
   )
+
+# Extract label content for issues with labels
+issues \%>\%   # single json document of github issues from dplyr
+  as.jdf \%>\%  # turn into a 'jdf'
+  jarray \%>\%  # stack as an array
+  jvalue(id = jnumber("id")) \%>\% # capture issue id for relational purposes
+  jfilter("labels") \%>\%          # filter just those with labels
+  jarray("label.index") \%>\%      # stack labels
+  jvalue(
+    url = jstring("url"),
+    name = jstring("name"),
+    color = jstring("color")
+  )
 }
 
