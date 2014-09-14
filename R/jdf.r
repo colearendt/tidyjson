@@ -8,9 +8,13 @@ NULL
 
 #' jdf constructor
 #' 
+#' Note that json.list must have the same length as nrow(df), and if json.list
+#' has any NULL elements, the corresponding rows will be removed from df.
+#' 
 #' @param df data.frame
 #' @param json.list list of json lists parsed with fromJSON
 #' @rdname jdf
+#' @export
 jdf <- function(df, json.list) {
 
   assert_that(is.data.frame(df))
@@ -19,6 +23,11 @@ jdf <- function(df, json.list) {
   
   # Remove any row.names
   row.names(df) <- NULL
+  
+  # Remove any rows of df where json.list is NULL
+  nulls <- vapply(json.list, is.null, logical(1))
+  df <- df[!nulls, , drop = FALSE]
+  json.list <- json.list[!nulls]
   
   structure(df, JSON = json.list, class = c("jdf", "data.frame"))
 }
