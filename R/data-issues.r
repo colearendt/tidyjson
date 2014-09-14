@@ -5,4 +5,9 @@
 #' @usage issues
 #' @format JSON
 #' @examples
-#' writeLines(issues)
+#' 
+#' library(dplyr)
+#' 
+#' # Show first 2k characters of JSON
+#' issues %>% substr(1, 2000) %>% writeLines
+NULL

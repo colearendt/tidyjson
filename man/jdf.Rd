@@ -24,7 +24,7 @@ Combines structured JSON (as a data.frame) with remaining JSON
 Turns a character vector into a jdf object
 }
 \examples{
-json <- as.jdf(dplyr_commits)
+json <- as.jdf(commits)
 attr(json, "JSON")
 }
 

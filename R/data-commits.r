@@ -5,4 +5,19 @@
 #' @usage commits
 #' @format JSON
 #' @examples
-#' writeLines(commits)
+#' 
+#' library(dplyr)
+#' 
+#' # Show first 2k characters of JSON
+#' commits %>% substr(1, 2000) %>% writeLines
+#' 
+#' # Extract sha, author and date for every commit
+#' commits %>%   # single json document of github commits from dplyr 
+#'   as.jdf %>%  # turn into a 'jdf'
+#'   jarray %>%  # stack as an array
+#'   jvalue(
+#'     sha         = jstring("sha"),
+#'     author      = jstring("commit", "author", "name"),
+#'     author.date = jstring("commit", "author", "date")
+#'   )
+NULL

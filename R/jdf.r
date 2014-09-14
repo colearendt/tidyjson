@@ -2,7 +2,7 @@
 #' 
 #' @name jdf
 #' @examples
-#' json <- as.jdf(dplyr_commits)
+#' json <- as.jdf(commits)
 #' attr(json, "JSON")
 NULL
 
