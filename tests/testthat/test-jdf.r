@@ -38,3 +38,14 @@ test_that("currectly parses length(json) == 0", {
     )
   )
 })
+
+test_that("currectly structures an array", {
+  expect_identical(
+    as.jdf('[{"name": "bob"}, {"name": "susan"}]'),
+    structure(
+      data.frame(document.id = 1L),
+      JSON = list(list(list(name = "bob"), list(name = "susan"))),
+      class = c("jdf", "data.frame")
+    )
+  )
+})

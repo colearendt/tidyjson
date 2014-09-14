@@ -4,8 +4,7 @@
 \alias{as.jdf.character}
 \alias{as.jdf.jdf}
 \alias{jdf}
-\title{jdf class combines structured JSON (as a data.frame) with remaining
-parsed JSON}
+\title{Combines structured JSON (as a data.frame) with remaining JSON}
 \usage{
 as.jdf(x, ...)
 
@@ -17,9 +16,12 @@ as.jdf(x, ...)
 \item{x}{character vector of json}
 }
 \description{
-jdf class combines structured JSON (as a data.frame) with remaining
-parsed JSON
+Combines structured JSON (as a data.frame) with remaining JSON
 
 Turns a character vector into a jdf object
+}
+\examples{
+json <- as.jdf(dplyr_commits)
+attr(json, "JSON")
 }
 

@@ -1,7 +1,9 @@
-#' jdf class combines structured JSON (as a data.frame) with remaining
-#' parsed JSON
+#' Combines structured JSON (as a data.frame) with remaining JSON
 #' 
 #' @name jdf
+#' @examples
+#' json <- as.jdf(dplyr_commits)
+#' attr(json, "JSON")
 NULL
 
 #' @export
