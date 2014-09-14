@@ -15,7 +15,7 @@ as.jdf <- function(x, ...) UseMethod("as.jdf")
 as.jdf.jdf <- function(x, ...) x
 
 #' @rdname jdf
-#' #' @export
+#' @export
 is.jdf <- function(x) inherits(x, "jdf")
 
 #' Turns a character vector into a jdf object

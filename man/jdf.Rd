@@ -3,12 +3,15 @@
 \alias{as.jdf}
 \alias{as.jdf.character}
 \alias{as.jdf.jdf}
+\alias{is.jdf}
 \alias{jdf}
 \title{Combines structured JSON (as a data.frame) with remaining JSON}
 \usage{
 as.jdf(x, ...)
 
 \method{as.jdf}{jdf}(x, ...)
+
+is.jdf(x)
 
 \method{as.jdf}{character}(x, ...)
 }
