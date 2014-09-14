@@ -1,3 +1,8 @@
+#' jdf class combines structured JSON (as a data.frame) with remaining
+#' parsed JSON
+#' 
+#' @name jdf
+NULL
 
 #' @export
 #' @rdname jdf
@@ -12,7 +17,7 @@ as.jdf.jdf <- function(x, ...) x
 is.jdf <- function(x) inherits(x, "jdf")
 
 #' Turns a character vector into a jdf object
-#' @param json character vector of json
+#' @param x character vector of json
 #' @rdname jdf
 #' @export
 as.jdf.character <- function(x, ...) {
