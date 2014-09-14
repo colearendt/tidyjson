@@ -11,12 +11,10 @@ jvalue <- function(x, ...) {
   # Get new values
   new_values <- lapply(list(...), function(f) f(json))
   
-  # Add onto existing x
-  structure(
-    data.frame(x, new_values, stringsAsFactors = FALSE),
-    JSON = json,
-    class = c("jdf", "data.frame")
-  )
+  # Add on new values
+  x <- data.frame(x, new_values, stringsAsFactors = FALSE)
+  
+  jdf(x, json)
   
 }
 
@@ -57,35 +55,4 @@ jlogical <- function(...) {
   function(json)
     as.logical(list_path(json, path))
   
-}
-
-#' Prepare a path from ...
-prep_path <- function(...) {
-  
-  # Conver to a list
-  path <- list(...)
-  
-  # Check type
-  path_is_char <- vapply(path, inherits, logical(1), "character")
-  path_len_1 <- vapply(path, length, integer(1)) == 1
-  if (!all(path_is_char & path_len_1))
-    stop("malformed path")
-  
-  # Unlist
-  path <- unlist(path)
-  
-  path
-}
-
-#' Recursively access a path
-list_path <- function(l, path) {
-  
-  # Unwind this step
-  l <- lapply(l, "[[", path[1])
-  
-  # Keep going if more remains in the path 
-  if (length(path) > 1)
-    l <- list_path(l, path[-1])
-  
-  l
 }

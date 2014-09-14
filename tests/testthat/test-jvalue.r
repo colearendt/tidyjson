@@ -26,7 +26,7 @@ test_that("exctract various values", {
           age = jnumber("age"),
           customer = jlogical("customer")
         ),
-      structure(
+      jdf(
         data.frame(
           document.id = 1L,
           name = "bob",
@@ -34,10 +34,9 @@ test_that("exctract various values", {
           customer = TRUE,
           stringsAsFactors = FALSE
         ),
-        JSON = list(
+        list(
           fromJSON(json)
-        ),
-        class = c("jdf", "data.frame")
+        )
       )
     )
     
@@ -51,16 +50,15 @@ test_that("exctract down a path", {
     expect_identical(
       json %>% as.jdf %>% 
         jvalue(first.name = jstring("name", "first")),
-      structure(
+      jdf(
         data.frame(
           document.id = 1L,
           first.name = "bob",
           stringsAsFactors = FALSE
         ),
-        JSON = list(
+        list(
           fromJSON(json)
-        ),
-        class = c("jdf", "data.frame")
+        )
       )
     )
     

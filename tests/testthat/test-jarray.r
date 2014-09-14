@@ -6,15 +6,14 @@ test_that("works with array of length 1", {
     
     expect_identical(
       arrays %>% as.jdf %>% jarray,
-      structure(
+      jdf(
         data.frame(
           document.id = 1L,
           array.index = 1L
         ),
-        JSON = list(
+        list(
           list(name = "bob")
-        ),
-        class = c("jdf", "data.frame")
+        )
       )
     )
     
@@ -27,15 +26,14 @@ test_that("works with single array", {
     
     expect_identical(
       arrays %>% as.jdf %>% jarray,
-      structure(
+      jdf(
         data.frame(
           document.id = c(1L, 1L),
           array.index = c(1L, 2L)
         ),
-        JSON = list(
+        list(
           list(name = "bob"), list(name = "susan")
-        ),
-        class = c("jdf", "data.frame")
+        )
       )
     )
     
@@ -51,15 +49,14 @@ test_that("works with multiple arrays", {
     
     expect_identical(
       arrays %>% as.jdf %>% jarray,
-      structure(
+      jdf(
         data.frame(
           document.id = c(1L, 1L, 2L),
           array.index = c(1L, 2L, 1L)
         ),
-        JSON = list(
+        list(
           list(name = "bob"), list(name = "susan"), list(name = "john")
-        ),
-        class = c("jdf", "data.frame")
+        )
       )
     )
     
@@ -72,15 +69,14 @@ test_that("empty arrays are dropped", {
     
     expect_identical(
       arrays %>% as.jdf %>% jarray,
-      structure(
+      jdf(
         data.frame(
           document.id = 1L,
           array.index = 1L
         ),
-        JSON = list(
+        list(
           list(name = "bob")
-        ),
-        class = c("jdf", "data.frame")
+        )
       )
     )
     
