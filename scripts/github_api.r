@@ -3,6 +3,9 @@
 # Notes:
 #  1) this script must be run interactively (e.g., source("file.r"))
 #  2) you must set JPLYR_* environment variables used below
+#
+# Modified from:
+#   https://github.com/hadley/httr/blob/master/demo/oauth2-github.r
 
 require(httr)
 
