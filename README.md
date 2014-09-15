@@ -1,38 +1,41 @@
-# jplyr
+# tidyjson
 
-jplyr is a complementary set of tools to [dplyr](http://github.com/hadley/dplyr)
-for working with JSON data (hence the **j**plyr name). It's primary objective is 
-to turn JSON data into [tidy](http://vita.had.co.nz/papers/tidy-data.pdf) tables 
-for downstream use by dplyr or other relational, analytical or machine learning 
-frameworks in R. Behind the scens, jplyr uses [rjson](http://cran.r-project.org/web/packages/rjson/index.html) 
-to quickly parse the json data.
+tidyjson is a complementary set of tools to [tidyr](https://github.com/hadley/tidyr)
+for working with JSON data. It's primary objective is to turn JSON data into 
+[tidy](http://vita.had.co.nz/papers/tidy-data.pdf) tables for downstream use by 
+[dplyr](http://github.com/hadley/dplyr) or other relational, analytical or 
+machine learning frameworks in R. Behind the scenes, tidyjson uses 
+[rjson](http://cran.r-project.org/web/packages/rjson/index.html) 
+to quickly parse the JSON data.
 
-You can install jplyr from github directly by running:
+You can install tidyjson from github directly by running:
 
 ```R
-devtools::install_github("sailthru/jplyr")
+devtools::install_github("sailthru/tidyjson")
 ```
 
-jplyr comes with several JSON examples pulled from APIs:
+tidyjson comes with several JSON examples pulled from APIs:
 
 * `commits`: commit data for the dplyr repo from github API
 * `issues`: issue data for the dplyr repo from github API
+* `worldbank`: world bank funded projects from 
+[jsonstudio](http://jsonstudio.com/resources/)
 
-Note that the jplyr package closely follows the definition and semantics of the
-[JSON standard](http://json.org/).
+Note that the tidyjson package closely follows the definition and semantics of 
+the [JSON standard](http://json.org/).
 
-An example of how jplyr works is as follows:
+An example of how tidyjson works is as follows:
 
 ```R
-library(jplyr) # for functions
-library(dplyr) # for %>% and other dplyr functions
+library(tidyjson) # for functions
+library(dplyr)    # for %>% and other dplyr functions
 
 json <- '[{"name": "bob", "age": 32}, {"name": "susan", "age": 54}]'
 
-json %>%         # Use the %>% pipe operator to pass json through a pipeline 
-  as.jdf %>%     # Parse the JSON and setup a 'jdf' object
-  jarray %>%     # 'stack' the array by index
-  jvalue(        # Extract (several) values
+json %>%          # Use the %>% pipe operator to pass json through a pipeline 
+  as.jdf %>%      # Parse the JSON and setup a 'jdf' object
+  jarray %>%      # 'stack' the array by index
+  jvalue(         # Extract (several) values
     user.name = jstring("name"),  # Extract the "name" object as a character column "user.name"
     user.age = jnumber("age")     # Extract the "age" object as a numeric column "user.age"
   )

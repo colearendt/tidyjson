@@ -1,6 +1,6 @@
-#' jplyr.
+#' tidyjson.
 #'
-#' @name jplyr
+#' @name tidyjson
 #' @docType package
 #' @import assertthat
 #' @import rjson
