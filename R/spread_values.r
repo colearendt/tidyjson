@@ -1,12 +1,12 @@
 #' Extracts values from JSON refereced by a sequence of keys
-#' @param x jdf object
+#' @param x tbl_json object
 #' @param ... column=value list where 'column' will be the column name created
 #'   and 'value' must be a call to jstring(), jnumber() or jlogical() specifying
 #'   the path to get the value (and the type implicit in the function name) 
 #' @export
 spread_values <- function(x, ...) {
   
-  assert_that(is.jdf(x))
+  assert_that(is.tbl_json(x))
   
   # Get JSON
   json <- attr(x, "JSON")
@@ -17,7 +17,7 @@ spread_values <- function(x, ...) {
   # Add on new values
   x <- data.frame(x, new_values, stringsAsFactors = FALSE)
   
-  jdf(x, json)
+  tbl_json(x, json)
   
 }
 

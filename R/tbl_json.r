@@ -1,18 +1,18 @@
 #' Combines structured JSON (as a data.frame) with remaining JSON
 #' 
-#' @name jdf
+#' @name tbl_json
 NULL
 
-#' jdf constructor
+#' tbl_json constructor
 #' 
 #' Note that json.list must have the same length as nrow(df), and if json.list
 #' has any NULL elements, the corresponding rows will be removed from df.
 #' 
 #' @param df data.frame
 #' @param json.list list of json lists parsed with fromJSON
-#' @rdname jdf
+#' @rdname tbl_json
 #' @export
-jdf <- function(df, json.list) {
+tbl_json <- function(df, json.list) {
 
   assert_that(is.data.frame(df))
   assert_that(is.list(json.list))
@@ -26,27 +26,27 @@ jdf <- function(df, json.list) {
   df <- df[!nulls, , drop = FALSE]
   json.list <- json.list[!nulls]
   
-  structure(df, JSON = json.list, class = c("jdf", "data.frame"))
+  structure(df, JSON = json.list, class = c("tbl_json", "tbl", "data.frame"))
 }
 
 
 #' @export
-#' @rdname jdf
-as.jdf <- function(x, ...) UseMethod("as.jdf")
+#' @rdname tbl_json
+as.tbl_json <- function(x, ...) UseMethod("as.tbl_json")
 
 #' @export
-#' @rdname jdf
-as.jdf.jdf <- function(x, ...) x
+#' @rdname tbl_json
+as.tbl_json.tbl_json <- function(x, ...) x
 
-#' @rdname jdf
+#' @rdname tbl_json
 #' @export
-is.jdf <- function(x) inherits(x, "jdf")
+is.tbl_json <- function(x) inherits(x, "tbl_json")
 
-#' Turns a character vector into a jdf object
+#' Turns a character vector into a tbl_json object
 #' @param x character vector of json
-#' @rdname jdf
+#' @rdname tbl_json
 #' @export
-as.jdf.character <- function(x, ...) {
+as.tbl_json.character <- function(x, ...) {
 
   # Parse the json
   json <- lapply(x, fromJSON)
@@ -54,7 +54,7 @@ as.jdf.character <- function(x, ...) {
   # Setup document ids
   ids <- data.frame(document.id = seq_along(json))
 
-  # Construct jdf
-  jdf(ids, json)
+  # Construct tbl_json
+  tbl_json(ids, json)
 
 }

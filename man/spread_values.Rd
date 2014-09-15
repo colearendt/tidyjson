@@ -6,7 +6,7 @@
 spread_values(x, ...)
 }
 \arguments{
-\item{x}{jdf object}
+\item{x}{tbl_json object}
 
 \item{...}{column=value list where 'column' will be the column name created
 and 'value' must be a call to jstring(), jnumber() or jlogical() specifying

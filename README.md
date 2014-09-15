@@ -35,7 +35,7 @@ library(dplyr)    # for %>% and other dplyr functions
 json <- '[{"name": "bob", "age": 32}, {"name": "susan", "age": 54}]'
 
 json %>%            # Use the %>% pipe operator to pass json through a pipeline 
-  as.jdf %>%        # Parse the JSON and setup a 'jdf' object
+  as.tbl_json %>%   # Parse the JSON and setup a 'tbl_json' object
   gather_array %>%  # 'stack' the array by index
   spread_values(    # Extract (several) values to widen the data.frame
     user.name = jstring("name"),  # Extract the "name" object as a character column "user.name"

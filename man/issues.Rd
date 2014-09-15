@@ -18,7 +18,7 @@ issues \%>\% substr(1, 2000) \%>\% writeLines
 
 # Extract metadata for every issue
 issues \%>\%          # single json document of github issues from dplyr
-  as.jdf \%>\%        # turn into a 'jdf'
+  as.tbl_json \%>\%        # turn into a 'tbl_json'
   gather_array \%>\%  # stack as an array
   spread_values(
     id          = jnumber("id"),
@@ -32,7 +32,7 @@ issues \%>\%          # single json document of github issues from dplyr
 
 # Extract label content for issues with labels
 issues \%>\%          # single json document of github issues from dplyr
-  as.jdf \%>\%        # turn into a 'jdf'
+  as.tbl_json \%>\%        # turn into a 'tbl_json'
   gather_array \%>\%  # stack as an array
   spread_values(id = jnumber("id")) \%>\% # capture issue id for relational purposes
   enter_object("labels") \%>\%            # filter just those with labels

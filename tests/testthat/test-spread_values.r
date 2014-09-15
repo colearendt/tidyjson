@@ -20,13 +20,13 @@ test_that("exctract various values", {
     json <- '{"name": "bob", "age": 32, "customer": true}'
     
     expect_identical(
-      json %>% as.jdf %>% 
+      json %>% as.tbl_json %>% 
         spread_values(
           name = jstring("name"),
           age = jnumber("age"),
           customer = jlogical("customer")
         ),
-      jdf(
+      tbl_json(
         data.frame(
           document.id = 1L,
           name = "bob",
@@ -48,9 +48,9 @@ test_that("exctract down a path", {
     json <- '{"name": {"first": "bob", "last": "smith"}}'
     
     expect_identical(
-      json %>% as.jdf %>% 
+      json %>% as.tbl_json %>% 
         spread_values(first.name = jstring("name", "first")),
-      jdf(
+      tbl_json(
         data.frame(
           document.id = 1L,
           first.name = "bob",

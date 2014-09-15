@@ -15,7 +15,7 @@
 #' 
 #' # Get the top 10 sectors by funded project in Africa
 #' worldbank %>%   # 500 Projects funded by the world bank
-#'   as.jdf %>%    # turn into a jdf object
+#'   as.tbl_json %>%    # turn into a tbl_json object
 #'   spread_values(
 #'     name = jstring("project_name"), # Gather name 
 #'     region = jstring("regionname")  # Gather region

@@ -4,7 +4,7 @@
 #' @export
 enter_object <- function(x, ...) {
   
-  assert_that(is.jdf(x))
+  assert_that(is.tbl_json(x))
   
   # Prepare path
   path <- prep_path(...)
@@ -15,6 +15,6 @@ enter_object <- function(x, ...) {
   # Access path
   json <- list_path(json, path)
   
-  jdf(x, json)
+  tbl_json(x, json)
   
 }
