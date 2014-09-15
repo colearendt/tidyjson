@@ -1,11 +1,11 @@
-context("jarray")
+context("gather_array")
 
 test_that("works with array of length 1", {
     
     arrays <- '[{"name": "bob"}]'
     
     expect_identical(
-      arrays %>% as.jdf %>% jarray,
+      arrays %>% as.jdf %>% gather_array,
       jdf(
         data.frame(
           document.id = 1L,
@@ -25,7 +25,7 @@ test_that("works with single array", {
     arrays <- '[{"name": "bob"}, {"name": "susan"}]'
     
     expect_identical(
-      arrays %>% as.jdf %>% jarray,
+      arrays %>% as.jdf %>% gather_array,
       jdf(
         data.frame(
           document.id = c(1L, 1L),
@@ -48,7 +48,7 @@ test_that("works with multiple arrays", {
     )
     
     expect_identical(
-      arrays %>% as.jdf %>% jarray,
+      arrays %>% as.jdf %>% gather_array,
       jdf(
         data.frame(
           document.id = c(1L, 1L, 2L),
@@ -68,7 +68,7 @@ test_that("empty arrays are dropped", {
     arrays <- c('[{"name": "bob"}]', '[]')
     
     expect_identical(
-      arrays %>% as.jdf %>% jarray,
+      arrays %>% as.jdf %>% gather_array,
       jdf(
         data.frame(
           document.id = 1L,
@@ -87,7 +87,7 @@ test_that("objects throws error", {
     
     arrays <- c('[{"name": "bob"}]', '{"name": "susan"}')
     
-    expect_error(arrays %>% as.jdf %>% jarray)
+    expect_error(arrays %>% as.jdf %>% gather_array)
     
   }
 )
@@ -96,7 +96,7 @@ test_that("values throws error", {
     
     arrays <- c('[{"name": "bob"}]', '"bob"')
     
-    expect_error(arrays %>% as.jdf %>% jarray)
+    expect_error(arrays %>% as.jdf %>% gather_array)
     
   }
 )

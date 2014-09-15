@@ -12,10 +12,10 @@
 #' issues %>% substr(1, 2000) %>% writeLines
 #' 
 #' # Extract metadata for every issue
-#' issues %>%   # single json document of github issues from dplyr 
-#'   as.jdf %>%  # turn into a 'jdf'
-#'   jarray %>%  # stack as an array
-#'   jvalue(
+#' issues %>%          # single json document of github issues from dplyr 
+#'   as.jdf %>%        # turn into a 'jdf'
+#'   gather_array %>%  # stack as an array
+#'   spread_values(
 #'     id          = jnumber("id"),
 #'     number      = jnumber("number"),
 #'     title       = jstring("title"),
@@ -26,13 +26,13 @@
 #'   )
 #' 
 #' # Extract label content for issues with labels
-#' issues %>%   # single json document of github issues from dplyr 
-#'   as.jdf %>%  # turn into a 'jdf'
-#'   jarray %>%  # stack as an array
-#'   jvalue(id = jnumber("id")) %>% # capture issue id for relational purposes
-#'   jfilter("labels") %>%          # filter just those with labels
-#'   jarray("label.index") %>%      # stack labels
-#'   jvalue(
+#' issues %>%          # single json document of github issues from dplyr 
+#'   as.jdf %>%        # turn into a 'jdf'
+#'   gather_array %>%  # stack as an array
+#'   spread_values(id = jnumber("id")) %>% # capture issue id for relational purposes
+#'   enter_object("labels") %>%            # filter just those with labels
+#'   gather_array("label.index") %>%       # stack labels
+#'   spread_values(
 #'     url   = jstring("url"),
 #'     name  = jstring("name"),
 #'     color = jstring("color")

@@ -5,7 +5,7 @@
 #' @return a jdf with a new column (column.name) that captures the array
 #'   index and JSON attribute extracted from the array
 #' @export
-jarray <- function(x, column.name = "array.index") {
+gather_array <- function(x, column.name = "array.index") {
 
   assert_that(is.jdf(x))
   

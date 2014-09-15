@@ -14,8 +14,8 @@
 #' # Extract metadata for every commit
 #' commits %>%   # single json document of github commits from dplyr 
 #'   as.jdf %>%  # turn into a 'jdf'
-#'   jarray %>%  # stack as an array
-#'   jvalue(
+#'   gather_array %>%  # stack as an array
+#'   spread_values(
 #'     sha         = jstring("sha"),
 #'     author      = jstring("commit", "author", "name"),
 #'     author.date = jstring("commit", "author", "date")

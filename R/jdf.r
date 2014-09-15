@@ -1,9 +1,6 @@
 #' Combines structured JSON (as a data.frame) with remaining JSON
 #' 
 #' @name jdf
-#' @examples
-#' json <- as.jdf(commits)
-#' attr(json, "JSON")
 NULL
 
 #' jdf constructor

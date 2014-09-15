@@ -32,8 +32,4 @@ has any NULL elements, the corresponding rows will be removed from df.
 
 Turns a character vector into a jdf object
 }
-\examples{
-json <- as.jdf(commits)
-attr(json, "JSON")
-}
 

@@ -1,7 +1,10 @@
-
-#' Extracts values from x
+#' Extracts values from JSON refereced by a sequence of keys
+#' @param x jdf object
+#' @param ... column=value list where 'column' will be the column name created
+#'   and 'value' must be a call to jstring(), jnumber() or jlogical() specifying
+#'   the path to get the value (and the type implicit in the function name) 
 #' @export
-jvalue <- function(x, ...) {
+spread_values <- function(x, ...) {
   
   assert_that(is.jdf(x))
   

@@ -1,11 +1,11 @@
-context("jfilter")
+context("enter_object")
 
 test_that("filter works with one path", {
     
     json <- '{"name": "bob", "attributes": {"age": 32, "gender": "male"}}'
 
     expect_identical(
-      json %>% as.jdf %>% jfilter("attributes"),
+      json %>% as.jdf %>% enter_object("attributes"),
       jdf(
         data.frame(document.id = 1L),
         list(list(age = 32, gender = "male"))
@@ -20,7 +20,7 @@ test_that("filter works with multiple depth paths", {
     json <- '{"name": "bob", "attributes": { "demographics": {"age": 32, "gender": "male"}}}'
 
     expect_identical(
-      json %>% as.jdf %>% jfilter("attributes", "demographics"),
+      json %>% as.jdf %>% enter_object("attributes", "demographics"),
       jdf(
         data.frame(document.id = 1L),
         list(list(age = 32, gender = "male"))
@@ -38,8 +38,8 @@ test_that("filter removes records with missing path", {
     )
     
     expect_identical(
-      json %>% as.jdf %>% jvalue(name = jstring("name")) %>%
-        jfilter("attributes"),
+      json %>% as.jdf %>% spread_values(name = jstring("name")) %>%
+        enter_object("attributes"),
       jdf(
         data.frame(
           document.id = 1L, 
@@ -57,8 +57,8 @@ test_that("works if no paths exist", {
     json <- '{"name": "bob"}'
     
     expect_identical(
-      json %>% as.jdf %>% jvalue(name = jstring("name")) %>%
-        jfilter("attributes"),
+      json %>% as.jdf %>% spread_values(name = jstring("name")) %>%
+        enter_object("attributes"),
       jdf(
         data.frame(
           document.id = integer(0), 

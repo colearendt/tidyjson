@@ -2,7 +2,7 @@
 #' 
 #' @param ... path to filter
 #' @export
-jfilter <- function(x, ...) {
+enter_object <- function(x, ...) {
   
   assert_that(is.jdf(x))
   

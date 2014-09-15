@@ -13,7 +13,7 @@ test_that("works with simple input", {
   }
 )
 
-context("jvalue")
+context("spread_values")
 
 test_that("exctract various values", {
     
@@ -21,7 +21,7 @@ test_that("exctract various values", {
     
     expect_identical(
       json %>% as.jdf %>% 
-        jvalue(
+        spread_values(
           name = jstring("name"),
           age = jnumber("age"),
           customer = jlogical("customer")
@@ -49,7 +49,7 @@ test_that("exctract down a path", {
     
     expect_identical(
       json %>% as.jdf %>% 
-        jvalue(first.name = jstring("name", "first")),
+        spread_values(first.name = jstring("name", "first")),
       jdf(
         data.frame(
           document.id = 1L,
