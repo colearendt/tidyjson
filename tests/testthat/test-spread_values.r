@@ -13,6 +13,60 @@ test_that("works with simple input", {
   }
 )
 
+test_that("handles missing input properly", {
+    
+    json <- list(
+      fromJSON('{"name": "bob"}'),
+      fromJSON('{"name": ""}'),
+      fromJSON('{"name": null}'),
+      fromJSON('{"NAME": "bob"}'),
+      fromJSON('{}')
+    )
+    
+    expect_identical(jstring("name")(json),
+      c("bob", "", NA_character_, NA_character_, NA_character_)
+    )
+    
+  }
+)
+
+context("jnumber")
+
+test_that("handles missing input properly", {
+    
+    json <- list(
+      fromJSON('{"age": 32}'),
+      fromJSON('{"age": null}'),
+      fromJSON('{"AGE": 32}'),
+      fromJSON('{}')
+    )
+    
+    expect_identical(jnumber("age")(json),
+      c(32, NA_real_, NA_real_, NA_real_)
+    )
+    
+  }
+)
+
+context("jlogical")
+
+test_that("handles missing input properly", {
+    
+    json <- list(
+      fromJSON('{"is.past": true}'),
+      fromJSON('{"is.past": false}'),
+      fromJSON('{"is.past": null}'),
+      fromJSON('{"IS.PAST": true}'),
+      fromJSON('{}')
+    )
+    
+    expect_identical(jlogical("is.past")(json),
+      c(TRUE, FALSE, NA, NA, NA) 
+    )
+  
+  }
+)
+
 context("spread_values")
 
 test_that("exctract various values", {

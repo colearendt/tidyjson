@@ -29,8 +29,11 @@ jstring <- function(...) {
   path <- prep_path(...)
 
   # Return a closure to deal with JSON lists
-  function(json)
-    as.character(list_path(json, path))
+  function(json) {
+    data <- list_path(json, path)
+    data <- replace_nulls(data, NA_character_)
+    as.character(data)
+  }
   
 }
 
@@ -42,8 +45,11 @@ jnumber <- function(...) {
   path <- prep_path(...)
 
   # Return a closure to deal with JSON lists
-  function(json)
-    as.numeric(list_path(json, path))
+  function(json) {
+    data <- list_path(json, path)
+    data <- replace_nulls(data, NA_real_)
+    as.numeric(data)
+  }
   
 }
 
@@ -55,7 +61,10 @@ jlogical <- function(...) {
   path <- prep_path(...)
 
   # Return a closure to deal with JSON lists
-  function(json)
-    as.logical(list_path(json, path))
+  function(json) {
+    data <- list_path(json, path)
+    data <- replace_nulls(data, NA)
+    as.logical(data)
+  }
   
 }

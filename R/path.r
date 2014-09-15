@@ -28,3 +28,16 @@ list_path <- function(l, path) {
   
   l
 }
+
+#' Replace nulls with something else
+replace_nulls <- function(l, replace) {
+  
+  # Find the nulls
+  nulls <- vapply(l, is.null, logical(1))
+  
+  if (any(nulls))
+    l[nulls] <- replace
+
+  l
+  
+}
