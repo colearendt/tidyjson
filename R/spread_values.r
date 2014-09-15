@@ -44,24 +44,21 @@ jfactory <- function(na.value, conversion.function) {
 }
 
 #' Navigates nested objects to get at keys of a specific type, to be used as
-#' arguments to spread_values 
+#' arguments to spread_values
 #' 
 #' @name jfunctions
 #' @param ... the path to follow
 #' @return a function that can operate on parsed JSON data
 NULL
 
-#' Specifies a path to extract for strings
 #' @rdname jfunctions
 #' @export
 jstring <- jfactory(NA_character_, as.character)
 
-#' Specifies a path to extract for numbers
 #' @rdname jfunctions 
 #' @export
 jnumber <- jfactory(NA_real_, as.numeric)
 
-#' Specifies a path to extract for logicals
 #' @rdname jfunctions  
 #' @export
 jlogical <- jfactory(NA, as.logical)

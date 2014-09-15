@@ -22,11 +22,5 @@ a function that can operate on parsed JSON data
 \description{
 Navigates nested objects to get at keys of a specific type, to be used as
 arguments to spread_values
-
-Specifies a path to extract for strings
-
-Specifies a path to extract for numbers
-
-Specifies a path to extract for logicals
 }
 
