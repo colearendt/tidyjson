@@ -6,7 +6,9 @@ for working with JSON data. It's primary objective is to turn JSON data into
 [dplyr](http://github.com/hadley/dplyr) or other relational, analytical or 
 machine learning frameworks in R. Behind the scenes, tidyjson uses 
 [rjson](http://cran.r-project.org/web/packages/rjson/index.html) 
-to quickly parse the JSON data.
+to quickly parse the JSON data. Tidyjson is also designed to be used with the 
+%>% operator imported into dplyr from the 
+[magrittr](https://github.com/smbache/magrittr) package. 
 
 You can install tidyjson from github directly by running:
 
@@ -32,10 +34,10 @@ library(dplyr)    # for %>% and other dplyr functions
 
 json <- '[{"name": "bob", "age": 32}, {"name": "susan", "age": 54}]'
 
-json %>%          # Use the %>% pipe operator to pass json through a pipeline 
-  as.jdf %>%      # Parse the JSON and setup a 'jdf' object
-  jarray %>%      # 'stack' the array by index
-  jvalue(         # Extract (several) values
+json %>%            # Use the %>% pipe operator to pass json through a pipeline 
+  as.jdf %>%        # Parse the JSON and setup a 'jdf' object
+  gather_array %>%  # 'stack' the array by index
+  spread_values(    # Extract (several) values to widen the data.frame
     user.name = jstring("name"),  # Extract the "name" object as a character column "user.name"
     user.age = jnumber("age")     # Extract the "age" object as a numeric column "user.age"
   )
