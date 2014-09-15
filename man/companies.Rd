@@ -25,14 +25,14 @@ key_employees <- companies \%>\%
   enter_object("relationships") \%>\%
   gather_array("relationship.index") \%>\%
   spread_values(
-    is.past = jstring("is_past"),
+    is.past = jlogical("is_past"),
     name = jstring("person", "permalink"),
     title = jstring("title")
   )
 
 # Show the top 10 titles
 key_employees \%>\%
-  filter(is.past == "FALSE") \%>\%
+  filter(!is.past) \%>\%
   group_by(title) \%>\%
   tally() \%>\%
   arrange(desc(n)) \%>\%
