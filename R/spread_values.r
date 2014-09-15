@@ -21,50 +21,49 @@ spread_values <- function(x, ...) {
   
 }
 
-#' Specifies a path to extract for strings
-#' @export
-jstring <- function(...) {
+#' Factory that creates the j* functions below
+#' 
+#' @param na.value value to replace NULL with
+#' @param conversion.function function to convert vector to appropriate type
+jfactory <- function(na.value, conversion.function) {
   
-  # Prepare path
-  path <- prep_path(...)
-
-  # Return a closure to deal with JSON lists
-  function(json) {
-    data <- list_path(json, path)
-    data <- replace_nulls(data, NA_character_)
-    as.character(data)
+  function(...) {
+  
+    # Prepare path
+    path <- prep_path(...)
+  
+    # Return a closure to deal with JSON lists
+    function(json) {
+      data <- list_path(json, path)
+      data <- replace_nulls(data, na.value)
+      conversion.function(data)
+    }
+    
   }
   
 }
+
+#' Navigates nested objects to get at keys of a specific type, to be used as
+#' arguments to spread_values 
+#' 
+#' @name jfunctions
+#' @param ... the path to follow
+#' @return a function that can operate on parsed JSON data
+NULL
+
+#' Specifies a path to extract for strings
+#' @rdname jfunctions
+#' @export
+jstring <- jfactory(NA_character_, as.character)
 
 #' Specifies a path to extract for numbers
+#' @rdname jfunctions 
 #' @export
-jnumber <- function(...) {
-  
-  # Prepare path
-  path <- prep_path(...)
-
-  # Return a closure to deal with JSON lists
-  function(json) {
-    data <- list_path(json, path)
-    data <- replace_nulls(data, NA_real_)
-    as.numeric(data)
-  }
-  
-}
+jnumber <- jfactory(NA_real_, as.numeric)
 
 #' Specifies a path to extract for logicals
+#' @rdname jfunctions  
 #' @export
-jlogical <- function(...) {
-  
-  # Prepare path
-  path <- prep_path(...)
+jlogical <- jfactory(NA, as.logical)
 
-  # Return a closure to deal with JSON lists
-  function(json) {
-    data <- list_path(json, path)
-    data <- replace_nulls(data, NA)
-    as.logical(data)
-  }
-  
-}
+

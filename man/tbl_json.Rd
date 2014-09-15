@@ -13,9 +13,9 @@ as.tbl_json(x, ...)
 
 \method{as.tbl_json}{tbl_json}(x, ...)
 
-is.tbl_json(x)
-
 \method{as.tbl_json}{character}(x, ...)
+
+is.tbl_json(x)
 }
 \arguments{
 \item{df}{data.frame}

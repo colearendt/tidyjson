@@ -38,10 +38,6 @@ as.tbl_json <- function(x, ...) UseMethod("as.tbl_json")
 #' @rdname tbl_json
 as.tbl_json.tbl_json <- function(x, ...) x
 
-#' @rdname tbl_json
-#' @export
-is.tbl_json <- function(x) inherits(x, "tbl_json")
-
 #' Turns a character vector into a tbl_json object
 #' @param x character vector of json
 #' @rdname tbl_json
@@ -58,3 +54,7 @@ as.tbl_json.character <- function(x, ...) {
   tbl_json(ids, json)
 
 }
+
+#' @rdname tbl_json
+#' @export
+is.tbl_json <- function(x) inherits(x, "tbl_json")
