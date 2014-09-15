@@ -22,6 +22,8 @@ tidyjson comes with several JSON examples pulled from APIs:
 * `issues`: issue data for the dplyr repo from github API
 * `worldbank`: world bank funded projects from 
 [jsonstudio](http://jsonstudio.com/resources/)
+* `companies`: startup company data from 
+[jsonstudio](http://jsonstudio.com/resources/)
 
 Note that the tidyjson package closely follows the definition and semantics of 
 the [JSON standard](http://json.org/).
