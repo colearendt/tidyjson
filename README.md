@@ -41,6 +41,7 @@ json %>%         # Use the %>% pipe operator to pass json through a pipeline
 #2           1           2     susan       54
 ```
 
-For more complex uses, see the examples in `help(commits)` and `help(issues)`.
+For more complex uses, see the examples in `help(commits)`, `help(issues)`,
+and `help(worldbank)`.
 
 
