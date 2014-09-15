@@ -36,8 +36,8 @@ json <- '[{"name": "bob", "age": 32}, {"name": "susan", "age": 54}]'
 
 json %>%            # Use the %>% pipe operator to pass json through a pipeline 
   as.tbl_json %>%   # Parse the JSON and setup a 'tbl_json' object
-  gather_array %>%  # 'stack' the array by index
-  spread_values(    # Extract (several) values to widen the data.frame
+  gather_array %>%  # Gather (stack) the array by index
+  spread_values(    # Spread (widen) values to widen the data.frame
     user.name = jstring("name"),  # Extract the "name" object as a character column "user.name"
     user.age = jnumber("age")     # Extract the "age" object as a numeric column "user.age"
   )
@@ -47,6 +47,6 @@ json %>%            # Use the %>% pipe operator to pass json through a pipeline
 ```
 
 For more complex uses, see the examples in `help(commits)`, `help(issues)`,
-and `help(worldbank)`.
+`help(worldbank)` and `help(companies)`.
 
 
