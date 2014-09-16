@@ -7,7 +7,7 @@
 \alias{tbl_json}
 \title{Combines structured JSON (as a data.frame) with remaining JSON}
 \usage{
-tbl_json(df, json.list)
+tbl_json(df, json.list, drop.null.json = FALSE)
 
 as.tbl_json(x, ...)
 
@@ -21,6 +21,8 @@ is.tbl_json(x)
 \item{df}{data.frame}
 
 \item{json.list}{list of json lists parsed with fromJSON}
+
+\item{drop.null.json}{drop NULL json entries from data.frame and json}
 
 \item{x}{character vector of json}
 }
