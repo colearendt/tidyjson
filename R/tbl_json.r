@@ -16,7 +16,7 @@ NULL
 tbl_json <- function(df, json.list, drop.null.json = FALSE) {
 
   assert_that(is.data.frame(df))
-  assert_that(is.list(json.list))
+  assert_that(is.list(json.list) || is.vector(json.list))
   assert_that(nrow(df) == length(json.list))
   
   # Remove any row.names
