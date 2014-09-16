@@ -37,6 +37,12 @@
 #'     name  = jstring("name"),
 #'     color = jstring("color")
 #'   )
+#' 
+#' # Get all URLs at the top level of the JSON
+#' issues %>% as.tbl_json %>% gather_array %>%
+#'   gather_keys %>%
+#'   append_values_string() %>%
+#'   filter(grepl("url", key))
 NULL
 
 
