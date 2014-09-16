@@ -6,11 +6,11 @@
 \alias{append_values_string}
 \title{Append keys to a new column}
 \usage{
-append_values_string(x, column.name = "string")
+append_values_string(x, column.name = type)
 
-append_values_number(x, column.name = "number")
+append_values_number(x, column.name = type)
 
-append_values_logical(x, column.name = "logical")
+append_values_logical(x, column.name = type)
 }
 \description{
 Append keys to a new column
