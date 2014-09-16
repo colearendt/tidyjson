@@ -12,15 +12,13 @@ gather_array <- function(x, column.name = "array.index") {
   # Get JSON
   json <- attr(x, "JSON")
   
-  # Ensure not values
-  not_list <- vapply(json, is.list, logical(1))
-  if (any(!not_list))
-    stop(sprintf("%s records are values not arrays", sum(!not_list)))
+  # Determine types
+  types <- determine_types(json)
   
-  # Ensure not objects
-  null_names <- vapply(json, function(l) is.null(names(l)), logical(1))
-  if (any(!null_names))
-    stop(sprintf("%s records are objects not arrays", sum(!null_names)))
+  # Check if not arrays
+  not_arrays <- types != "array"
+  if (any(not_arrays))
+    stop(sprintf("%s records are values not arrays", sum(not_arrays)))
   
   # Get array lengths
   lengths <- vapply(json, length, integer(1))
