@@ -15,6 +15,6 @@ enter_object <- function(x, ...) {
   # Access path
   json <- list_path(json, path)
   
-  tbl_json(x, json)
+  tbl_json(x, json, drop.null.json = TRUE)
   
 }

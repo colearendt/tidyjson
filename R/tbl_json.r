@@ -10,9 +10,10 @@ NULL
 #' 
 #' @param df data.frame
 #' @param json.list list of json lists parsed with fromJSON
+#' @param drop.null.json drop NULL json entries from data.frame and json
 #' @rdname tbl_json
 #' @export
-tbl_json <- function(df, json.list) {
+tbl_json <- function(df, json.list, drop.null.json = FALSE) {
 
   assert_that(is.data.frame(df))
   assert_that(is.list(json.list))
@@ -22,10 +23,11 @@ tbl_json <- function(df, json.list) {
   row.names(df) <- NULL
   
   # Remove any rows of df where json.list is NULL
-  # this results in enter_object dropping rows where data does not exist
-  nulls <- vapply(json.list, is.null, logical(1))
-  df <- df[!nulls, , drop = FALSE]
-  json.list <- json.list[!nulls]
+  if (drop.null.json) {
+    nulls <- vapply(json.list, is.null, logical(1))
+    df <- df[!nulls, , drop = FALSE]
+    json.list <- json.list[!nulls]
+  }
   
   structure(df, JSON = json.list, class = c("tbl_json", "tbl", "data.frame"))
 }

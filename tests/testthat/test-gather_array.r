@@ -83,6 +83,24 @@ test_that("empty arrays are dropped", {
   }
 )
 
+test_that("null values are kept", {
+    
+    json <- '["string", null]'
+    
+    expect_identical(
+      json %>% as.tbl_json %>% gather_array,
+      tbl_json(
+        data.frame(
+          document.id = c(1L, 1L),
+          array.index = c(1L, 2L)
+        ),
+        list("string", NULL)
+      )
+    )
+    
+  }
+)
+
 test_that("objects throws error", {
     
     arrays <- c('[{"name": "bob"}]', '{"name": "susan"}')

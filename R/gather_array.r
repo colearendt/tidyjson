@@ -6,7 +6,7 @@
 #'   index and JSON attribute extracted from the array
 #' @export
 gather_array <- function(x, column.name = "array.index") {
-
+  
   assert_that(is.tbl_json(x))
   
   # Get JSON
