@@ -20,3 +20,35 @@ test_that("works with simple input", {
     
   }
 )
+
+test_that("works with value array", {
+    
+    json <- '["a", "b"]'
+
+    expect_identical(
+      json %>% as.tbl_json %>% gather_array %>% append_string,
+      tbl_json(
+        data.frame(
+          document.id = c(1L, 1L),
+          array.index = 1L:2L,
+          string = c("a", "b"),
+          stringsAsFactors = FALSE
+        ),
+        c("a", "b")
+      )
+    )
+    
+  }
+)
+
+test_that("handles nulls", {
+    
+    json <- '["a", "b", null]'
+
+    expect_identical(
+      (json %>% as.tbl_json %>% gather_array %>% append_string)$string,
+      c("a", "b", NA_character_)
+    )
+    
+  }
+)
