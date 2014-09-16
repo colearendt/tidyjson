@@ -1,11 +1,12 @@
-context("append_string")
+context("append_values_string")
 
 test_that("works with simple input", {
     
     json <- '[{"name": "anne"}, {"name": "bob"}, {"name": "george"}]'
 
     expect_identical(
-      json %>% as.tbl_json %>% gather_array %>% gather_keys %>% append_string,
+      json %>% as.tbl_json %>% gather_array %>% gather_keys %>% 
+        append_values_string,
       tbl_json(
         data.frame(
           document.id = c(1L, 1L, 1L),
@@ -26,7 +27,7 @@ test_that("works with value array", {
     json <- '["a", "b"]'
 
     expect_identical(
-      json %>% as.tbl_json %>% gather_array %>% append_string,
+      json %>% as.tbl_json %>% gather_array %>% append_values_string,
       tbl_json(
         data.frame(
           document.id = c(1L, 1L),
@@ -46,7 +47,7 @@ test_that("handles nulls", {
     json <- '["a", "b", null]'
 
     expect_identical(
-      (json %>% as.tbl_json %>% gather_array %>% append_string)$string,
+      (json %>% as.tbl_json %>% gather_array %>% append_values_string)$string,
       c("a", "b", NA_character_)
     )
     

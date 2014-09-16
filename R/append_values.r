@@ -1,11 +1,11 @@
 #' Append keys to a new column
 #' 
-#' @name append
+#' @name append_values
 NULL
 
 #' @export
-#' @rdname append
-append_string <- function(x, column.name = "string") {
+#' @rdname append_values
+append_values_string <- function(x, column.name = "string") {
   
   assert_that(is.tbl_json(x))
   
@@ -32,13 +32,13 @@ append_string <- function(x, column.name = "string") {
 }
 
 #' @export
-#' @rdname append
-append_number <- function(x, column.name = "number") {
+#' @rdname append_values
+append_values_number <- function(x, column.name = "number") {
   
 }
 
 #' @export
-#' @rdname append
-append_logical <- function(x, column.name = "logical") {
+#' @rdname append_values
+append_values_logical <- function(x, column.name = "logical") {
   
 }
