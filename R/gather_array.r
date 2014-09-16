@@ -17,8 +17,7 @@ gather_array <- function(x, column.name = "array.index") {
   if (any(!not_list))
     stop(sprintf("%s records are values not arrays", sum(!not_list)))
   
-  
-  # Ensure not arrays
+  # Ensure not objects
   null_names <- vapply(json, function(l) is.null(names(l)), logical(1))
   if (any(!null_names))
     stop(sprintf("%s records are objects not arrays", sum(!null_names)))

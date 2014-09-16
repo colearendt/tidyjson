@@ -22,13 +22,13 @@ tbl_json <- function(df, json.list) {
   row.names(df) <- NULL
   
   # Remove any rows of df where json.list is NULL
+  # this results in enter_object dropping rows where data does not exist
   nulls <- vapply(json.list, is.null, logical(1))
   df <- df[!nulls, , drop = FALSE]
   json.list <- json.list[!nulls]
   
   structure(df, JSON = json.list, class = c("tbl_json", "tbl", "data.frame"))
 }
-
 
 #' @export
 #' @rdname tbl_json
@@ -52,7 +52,6 @@ as.tbl_json.character <- function(x, ...) {
 
   # Construct tbl_json
   tbl_json(ids, json)
-
 }
 
 #' @rdname tbl_json
