@@ -1,11 +1,11 @@
-context("append_types")
+context("json_types")
 
 test_that("works with simple input", {
     
     json <- '[{"key":"value"}, [1, 2], "string", 1, true, false, null]'
 
     expect_identical(
-      json %>% as.tbl_json %>% gather_array %>% append_types,
+      json %>% as.tbl_json %>% gather_array %>% json_types,
       tbl_json(
         data.frame(
           document.id = rep(1L, 7),
@@ -13,7 +13,7 @@ test_that("works with simple input", {
           type = factor(
             c("object", "array", "string", "number", "logical", "logical", 
               "null"),
-            levels = json_types)
+            levels = allowed_json_types)
         ),
         list(list(key = "value"), c(1, 2), "string", 1, TRUE, FALSE, NULL)
       )
@@ -27,8 +27,8 @@ test_that("works with varying array types", {
     json <- '[[1, 2], [1, null], [{"key":"value"}], [null]]'
 
     expect_identical(
-      (json %>% as.tbl_json %>% gather_array %>% append_types)$type,
-      factor(rep("array", 4), levels = json_types)
+      (json %>% as.tbl_json %>% gather_array %>% json_types)$type,
+      factor(rep("array", 4), levels = allowed_json_types)
     )
     
   }
@@ -39,8 +39,8 @@ test_that("works with varying empty data", {
     json <- '[[], null]'
 
     expect_identical(
-      (json %>% as.tbl_json %>% gather_array %>% append_types)$type,
-      factor(c("array", "null"), levels = json_types)
+      (json %>% as.tbl_json %>% gather_array %>% json_types)$type,
+      factor(c("array", "null"), levels = allowed_json_types)
     )
     
   }
@@ -52,8 +52,8 @@ test_that("cannot determine between {} and [] because of fromJSON", {
 
     # Should be "object", "array", but is "array", "array" instead
     expect_identical(
-      (json %>% as.tbl_json %>% gather_array %>% append_types)$type,
-      factor(c("array", "array"), levels = json_types)
+      (json %>% as.tbl_json %>% gather_array %>% json_types)$type,
+      factor(c("array", "array"), levels = allowed_json_types)
     )
   }
 )

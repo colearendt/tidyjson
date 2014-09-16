@@ -1,11 +1,10 @@
-
-#' Append a column that tells the 'type' of the data in the root of the JSON
+#' Add a column that tells the 'type' of the data in the root of the JSON
 #' 
 #' @param x a tbl_json object
 #' @param column.name the name to specify for the type column
 #' @return a tbl_json object with column.name column that tells the type
 #' @export
-append_types <- function(x, column.name = "type") {
+json_types <- function(x, column.name = "type") {
   
   assert_that(is.tbl_json(x))
   
@@ -24,7 +23,8 @@ append_types <- function(x, column.name = "type") {
 
 #' Fundamental JSON types from http://json.org/, where I collapse 'true' and
 #' 'false' into 'logical'
-json_types <- c("object", "array", "string", "number", "logical", "null")
+allowed_json_types <- 
+  c("object", "array", "string", "number", "logical", "null")
 
 #' Determines the types of a list of parsed JSON
 #' @param json_list a list of parsed JSON
@@ -49,6 +49,6 @@ determine_types <- function(json_list) {
   classes[classes == "NULL"] <- "null"
 
   # Turn into a factor
-  factor(classes, levels = json_types)
+  factor(classes, levels = allowed_json_types)
   
 }
