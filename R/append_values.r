@@ -32,7 +32,6 @@ append_values_factory <- function(type, na_value) {
     
   }
 }
-  
 
 #' @export
 #' @rdname append_values

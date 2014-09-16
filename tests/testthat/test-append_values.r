@@ -11,7 +11,7 @@ test_that("has correct complete structure with simple input", {
         data.frame(
           document.id = c(1L, 1L, 1L),
           array.index = 1L:3L,
-          keys = rep("name", 3),
+          key = rep("name", 3),
           string = c("anne", "bob", "george"),
           stringsAsFactors = FALSE
         ),

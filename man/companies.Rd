@@ -37,5 +37,17 @@ key_employees \%>\%
   tally() \%>\%
   arrange(desc(n)) \%>\%
   top_n(10)
+
+# Extract the top level keys and their types
+comp_types <- companies \%>\% as.tbl_json \%>\% gather_keys \%>\% json_types
+
+# Aggregate across keys
+comp_type_counts <- comp_types \%>\% group_by(key, type) \%>\% tally()
+
+# Visualize the top-level keys and their types
+library(ggplot2)
+ggplot(comp_type_counts, aes(key, n, fill = type)) +
+  geom_bar(position = "stack", stat = "identity") +
+  coord_flip()
 }
 

@@ -9,7 +9,7 @@ test_that("works in a simple case", {
       tbl_json(
         data.frame(
           document.id = c(1L, 1L),
-          keys = c("key1", "key2"),
+          key = c("key1", "key2"),
           stringsAsFactors = FALSE
         ),
         list(1, 2)
@@ -33,7 +33,7 @@ test_that("works with compound values", {
       tbl_json(
         data.frame(
           document.id = c(1L, 1L, 1L, 1L),
-          keys = c("key1", "key2", "key3", "key4"),
+          key = c("key1", "key2", "key3", "key4"),
           stringsAsFactors = FALSE
         ),
         list(1, list(sub = "a"), c(TRUE, FALSE), NULL)

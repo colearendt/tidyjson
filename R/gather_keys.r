@@ -5,7 +5,7 @@
 #' @return a tbl_json with a new column (column.name) that captures the keys
 #'   and JSON attribute of the associated value data
 #' @export
-gather_keys <- function(x, column.name = "keys") {
+gather_keys <- function(x, column.name = "key") {
 
   assert_that(is.tbl_json(x))
   

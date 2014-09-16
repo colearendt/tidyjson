@@ -3,7 +3,7 @@
 \alias{gather_keys}
 \title{Gathers every key from the top level of the json and stacks them}
 \usage{
-gather_keys(x, column.name = "keys")
+gather_keys(x, column.name = "key")
 }
 \arguments{
 \item{x}{a tbl_json whose JSON attribute should always be an object}
