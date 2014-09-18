@@ -102,7 +102,7 @@ adds a new column (`type` by default) that identifies the type according to the
 [JSON standard](http://json.org/).
 
 ```R
-types <- c('{"a":1}', '[1, 2]', '"a"', '1', 'true', 'null') %>% as.tbl_json %>%
+types <- c('{"a": 1}', '[1, 2]', '"a"', '1', 'true', 'null') %>% as.tbl_json %>%
    json_types
 types$type
 #[1] object  array   string  number  logical null
@@ -122,7 +122,7 @@ data.frame, and lets you continue to manipulate the remaining JSON in the
 elements of the array.
 
 ```R
-'[1, "a", {"k":"v"}]' %>% as.tbl_json %>% gather_array %>% json_types
+'[1, "a", {"k": "v"}]' %>% as.tbl_json %>% gather_array %>% json_types
 #  document.id array.index   type
 #1           1           1 number
 #2           1           2 string
@@ -139,6 +139,16 @@ Similar to `gather_array`, `gather_keys` takes JSON objects and duplicates the
 rows in the data.frame to correspond to the keys of the object, and puts the 
 values of the object into the JSON attribute.
 
+```R
+'{"name": "bob", "age": 32}' %>% as.tbl_json %>% gather_keys %>% json_types
+#  document.id  key   type
+#1           1 name string
+#2           1  age number
+```
+
+This allows you to *enter into* the keys of the objects just like `gather_array`
+let you enter elements of the array.
+
 ### `spread_values`
 
 `spread_values` lets you dive into (potentially nested) JSON objects and
@@ -154,16 +164,6 @@ These values can be of varying types at varying depths, e.g.,
 #  document.id first.name age
 #1           1        bob  32
 ```
-
-### `enter_object`
-
-`enter_object` lets you dive into a specific object key in the JSON attribute,
-so that all further tidyjson calls happen inside that object (all other JSON 
-data outside the object is discarded). If the object doesn't exist for a given
-row / index, then that data.frame row will be discarded.
-
-This is useful when you want to limit your data to just information found in
-a specific key. 
 
 ### `append_values_X`
 
@@ -183,3 +183,104 @@ Any values that do not conform to the type specified will be NA in the resulting
 column. This includes other scalar types (e.g., numbers or logicals if you are
 using append_values_string) and *also* any rows where the JSON is still an
 object or an array.
+
+### `enter_object`
+
+`enter_object` lets you dive into a specific object key in the JSON attribute,
+so that all further tidyjson calls happen inside that object (all other JSON 
+data outside the object is discarded). If the object doesn't exist for a given
+row / index, then that data.frame row will be discarded.
+
+```R
+c('{"name": "bob", "children": ["sally", "george"]}', '{"name": "anne"}') %>% 
+  as.tbl_json %>% spread_values(parent.name = jstring("name")) %>%
+  enter_object("children") %>% 
+  gather_array %>% append_values_string("children")
+#  document.id parent.name array.index children
+#1           1         bob           1    sally
+#2           1         bob           2   george
+```
+
+This is useful when you want to limit your data to just information found in
+a specific key.
+
+## Strategies
+
+When beginning to work with JSON data, you often don't have easy access to a
+schema describing what is in the JSON. One of the benefits of document oriented
+data structures is that they let developers create data without having to worry
+about defining the schema explicitly.
+
+Thus, the first step is to usually understand the structure of the JSON. A first
+step can be to look at individual records with command line tools that make the
+JSON pretty (in linux or OSX):
+
+```
+head -n 1 file.json | python -m json.tool
+```
+
+Examining various random records can begin to give you a sense of what the JSON
+contains and how it it structured. However, keep in mind that in many cases
+documents that are missing data (either unknown or unrelevant) may omit the
+entire JSON structure.
+
+Next, you can begin working with the data in R.
+
+```R
+# assuming documents are carriage-return delimited, otherwise use readChar
+json <- readLines(file.json)
+
+# Inspect the types of objects
+json %>% json_types %>% table
+```
+
+Then, if you want to work with a single row of data for each JSON object, use
+`spread_values` to get at (potentially nested) key-value pairs.
+
+If all you care about is data from a certain sub-object, then use `enter_object`
+to dive into that object directly. Make sure you first use `spread_values` to
+capture any top level identifiers you might need for analytics, summarization or
+relational uses downstream.
+
+If you want to access arrays, use gather_arrays to stack their elements, and
+then proceed as though you had separate documents. (Again, first spread any
+top-level keys you need.)
+
+Finally, if you have data where information is encoded in both keys and values,
+then consider using `gather_keys` and `append_values_X` where `X` is the type
+of JSON scalar data you expect in the values.
+
+It's important to remember that any of the above can be combined together
+iteratively to do some fairly complex data extraction. For example:
+
+```R
+json <- '{
+  "name": "bob",
+  "shopping cart": 
+    [
+      {
+        "date": "2014-04-02",
+        "basket": {"books": 2, "shirts": 0}
+      },
+      {
+        "date": "2014-08-23",
+        "basket": {"books": 1}
+      }
+    ]
+}'
+json %>% as.tbl_json %>% spread_values(customer = jstring("name")) %>%
+  enter_object("shopping cart") %>%
+  gather_array %>% spread_values(date = jstring("date")) %>%
+  enter_object("basket") %>%
+  gather_keys %>% append_values_number
+```
+
+Note that there are often situations where there are multiple arrays or objects
+of differing types that exist at the same level of the JSON hierarchy. In this
+case, you need to use `enter_object` to enter each of them in *separate*
+pipelines to create *separate* `data.frames` that can then be joined 
+relationally.
+
+Finally, don't forget that once you are done with your JSON tidying, you can
+use [dplyr](http://github.com/hadley/dplyr) to continue manipulating the
+resulting data at your leisure!
