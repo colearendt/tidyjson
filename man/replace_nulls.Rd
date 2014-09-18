@@ -5,6 +5,11 @@
 \usage{
 replace_nulls(l, replace)
 }
+\arguments{
+\item{l}{a list}
+
+\item{replace}{what to replace NULLs in the list with}
+}
 \description{
 Replace nulls with something else
 }

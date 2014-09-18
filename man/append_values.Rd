@@ -12,6 +12,12 @@ append_values_number(x, column.name = type)
 
 append_values_logical(x, column.name = type)
 }
+\arguments{
+\item{x}{a tbl_json object}
+
+\item{column.name}{the column.name to append the values into the data.frame
+under}
+}
 \description{
 Append keys to a new column
 }

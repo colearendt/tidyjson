@@ -24,6 +24,8 @@ is.tbl_json(x)
 
 \item{drop.null.json}{drop NULL json entries from data.frame and json}
 
+\item{...}{other arguments}
+
 \item{x}{character vector of json}
 }
 \description{

@@ -1,5 +1,6 @@
 #' Selects an object by key and filters rows to just those with matching keys
 #' 
+#' @param x a tbl_json object
 #' @param ... path to filter
 #' @export
 enter_object <- function(x, ...) {

@@ -11,6 +11,7 @@ NULL
 #' @param df data.frame
 #' @param json.list list of json lists parsed with fromJSON
 #' @param drop.null.json drop NULL json entries from data.frame and json
+#' @param ... other arguments
 #' @rdname tbl_json
 #' @export
 tbl_json <- function(df, json.list, drop.null.json = FALSE) {

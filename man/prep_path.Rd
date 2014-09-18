@@ -5,6 +5,9 @@
 \usage{
 prep_path(...)
 }
+\arguments{
+\item{...}{character strings to construct into a path}
+}
 \description{
 Prepare a path from ...
 }

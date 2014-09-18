@@ -6,6 +6,8 @@
 enter_object(x, ...)
 }
 \arguments{
+\item{x}{a tbl_json object}
+
 \item{...}{path to filter}
 }
 \description{

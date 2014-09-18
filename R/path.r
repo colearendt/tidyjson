@@ -1,4 +1,5 @@
 #' Prepare a path from ...
+#' @param ... character strings to construct into a path
 prep_path <- function(...) {
   
   # Conver to a list
@@ -17,6 +18,8 @@ prep_path <- function(...) {
 }
 
 #' Recursively access a path
+#' @param l a list
+#' @param path a path of keys to follow
 list_path <- function(l, path) {
   
   # Unwind this step
@@ -30,6 +33,8 @@ list_path <- function(l, path) {
 }
 
 #' Replace nulls with something else
+#' @param l a list
+#' @param replace what to replace NULLs in the list with
 replace_nulls <- function(l, replace) {
   
   # Find the nulls

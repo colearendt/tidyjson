@@ -5,6 +5,11 @@
 \usage{
 append_values_factory(type, na_value)
 }
+\arguments{
+\item{type}{the JSON type that will be appended}
+
+\item{na_value}{the NA value that will be used if the type is incorrect}
+}
 \description{
 Creates the append_values_* functions
 }

@@ -1,9 +1,14 @@
 #' Append keys to a new column
 #' 
 #' @name append_values
+#' @param x a tbl_json object
+#' @param column.name the column.name to append the values into the data.frame
+#'   under
 NULL
 
 #' Creates the append_values_* functions
+#' @param type the JSON type that will be appended
+#' @param na_value the NA value that will be used if the type is incorrect
 append_values_factory <- function(type, na_value) {
   
   function(x, column.name = type) {

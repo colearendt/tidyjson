@@ -5,6 +5,11 @@
 \usage{
 list_path(l, path)
 }
+\arguments{
+\item{l}{a list}
+
+\item{path}{a path of keys to follow}
+}
 \description{
 Recursively access a path
 }
