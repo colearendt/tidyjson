@@ -98,18 +98,20 @@ synch.
 ### `json_types`
 
 `json_types` inspects the JSON associated with each row of the data.frame, and
-adds a new column (`type` by default) that identifies the type according to the 
-[JSON standard](http://json.org/). This is particularly useful for inspecting
-your JSON data types, and can added after `gather_array` (or `gather_keys`)
-to inspect the types of the elements (or values) in arrays (or objects).
+adds a new column (`type` by default) that identifies the type according to the
+[JSON standard](http://json.org/).
 
 ```R
-types <- c('{"a":1}', '[1, 2]', '"a"', '1', 'true', 'null') %>%
-   as.tbl_json %>% json_types
+types <- c('{"a":1}', '[1, 2]', '"a"', '1', 'true', 'null') %>% as.tbl_json %>%
+   json_types
 types$type
 #[1] object  array   string  number  logical null
 #Levels: object array string number logical null
 ```
+
+This is particularly useful for inspecting your JSON data types, and can added
+after `gather_array` (or `gather_keys`) to inspect the types of the elements
+(or values) in arrays (or objects).
 
 ### `gather_array`
 
@@ -118,6 +120,18 @@ correspond to the indices of the array, and puts the elements of the array into
 the JSON attribute. This is equivalent to "stacking" the array in the
 data.frame, and lets you continue to manipulate the remaining JSON in the
 elements of the array.
+
+```R
+'[1, "a", {"k":"v"}]' %>% as.tbl_json %>% gather_array %>% json_types
+#  document.id array.index   type
+#1           1           1 number
+#2           1           2 string
+#3           1           3 object
+```
+
+This allows you to *enter into* an array and begin processing it's elements
+with other tidyjson functions. It retains the array.index in case the relative
+position of elements in the array is useful information.
 
 ### `gather_keys`
 
