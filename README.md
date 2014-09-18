@@ -6,8 +6,8 @@ for working with JSON data. It's primary objective is to turn JSON data into
 [dplyr](http://github.com/hadley/dplyr) or other relational, analytical or 
 machine learning frameworks in R. Behind the scenes, tidyjson uses 
 [rjson](http://cran.r-project.org/web/packages/rjson/index.html) 
-to quickly parse the JSON data. Tidyjson is also designed to be used with the 
-%>% operator imported into dplyr from the 
+to quickly parse the JSON data. tidyjson is also designed to be used with the 
+`%>%` operator imported into dplyr from the 
 [magrittr](https://github.com/smbache/magrittr) package. 
 
 You can install tidyjson from github directly by running:
@@ -16,7 +16,7 @@ You can install tidyjson from github directly by running:
 devtools::install_github("sailthru/tidyjson")
 ```
 
-tidyjson comes with several JSON examples pulled from APIs:
+tidyjson comes with several JSON examples:
 
 * `commits`: commit data for the dplyr repo from github API
 * `issues`: issue data for the dplyr repo from github API
@@ -31,8 +31,8 @@ the [JSON standard](http://json.org/).
 An example of how tidyjson works is as follows:
 
 ```R
-library(tidyjson) # for functions
-library(dplyr)    # for %>% and other dplyr functions
+library(tidyjson)   # this package
+library(dplyr)      # for %>% and other dplyr functions
 
 json <- '[{"name": "bob", "age": 32}, {"name": "susan", "age": 54}]'
 
@@ -53,15 +53,15 @@ For more complex uses, see the examples in `help(commits)`, `help(issues)`,
 
 ## `tbl_json`
 
-The first step in using tidyjson is to convert your JSON into a tbl_json object.
+The first step in using tidyjson is to convert your JSON into a `tbl_json` object.
 Almost every function in tidyjson accepts a `tbl_json` object as it's first 
 parameter, and returns a `tbl_json` object for downstream use. `tbl_json` 
 inherits from `dplyr::tbl`.
 
 A `tbl_json` object is comprised of a `data.frame` with an additional attribute,
 `JSON`, that contains a list of JSON data of the same length as the number of
-rows in the data.frame. Each row of data in the data.frame corresponds to the
-JSON found in the same index of the JSON attribute.
+rows in the `data.frame`. Each row of data in the `data.frame` corresponds to the
+JSON found in the same index of the `JSON` attribute.
 
 The easiest way to construct a `tbl_json` object is directly from a character
 string or vector.
@@ -79,9 +79,9 @@ string or vector.
 c('{"key1": "value1"}', '{"key2": "value2"}' %>% as.tbl_json
 ```
 
-Behind the scenes, as.tbl_json is parsing the JSON strings and creating a
-data.frame with 1 column, document.id, which keeps track of the character vector
-position (index) where the JSON data came from.
+Behind the scenes, `as.tbl_json` is parsing the JSON strings and creating a
+data.frame with 1 column, `document.id`, which keeps track of the character 
+vector position (index) where the JSON data came from.
 
 ## Verbs
 
@@ -91,16 +91,25 @@ with the `%>%` operator.
 
 Note that these verbs all operate on *both* the underlying data.frame and the
 JSON, iteratively moving data from the JSON into the data.frame. Any
-modifications of the data.frame may produce unintended consequences where the
-data.frame and JSON become out of synch.
+modifications of the underlying data.frame outside of these operations
+may produce unintended consequences where the data.frame and JSON become out of
+synch.
 
 ### `json_types`
 
 `json_types` inspects the JSON associated with each row of the data.frame, and
-adds a new column that identifies the type according to the 
+adds a new column (`type` by default) that identifies the type according to the 
 [JSON standard](http://json.org/). This is particularly useful for inspecting
 your JSON data types, and can added after `gather_array` (or `gather_keys`)
 to inspect the types of the elements (or values) in arrays (or objects).
+
+```R
+types <- c('{"a":1}', '[1, 2]', '"a"', '1', 'true', 'null') %>%
+   as.tbl_json %>% json_types
+types$type
+#[1] object  array   string  number  logical null
+#Levels: object array string number logical null
+```
 
 ### `gather_array`
 
