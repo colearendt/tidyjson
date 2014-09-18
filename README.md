@@ -268,11 +268,18 @@ json <- '{
       }
     ]
 }'
-json %>% as.tbl_json %>% spread_values(customer = jstring("name")) %>%
-  enter_object("shopping cart") %>%
-  gather_array %>% spread_values(date = jstring("date")) %>%
-  enter_object("basket") %>%
-  gather_keys %>% append_values_number
+json %>% as.tbl_json %>% 
+  spread_values(customer = jstring("name")) %>% # Keep the customer name
+  enter_object("shopping cart") %>%             # Look at their cart
+  gather_array %>%                              # Expand the data.frame and dive into each array element
+  spread_values(date = jstring("date")) %>%     # Keep the date of the cart
+  enter_object("basket") %>%                    # Look at their basket
+  gather_keys("product") %>%                    # Expand the data.frame for each product and capture it's name
+  append_values_number("quantity")              # Capture the values as the quantity
+#  document.id customer array.index       date product quantity
+#1           1      bob           1 2014-04-02   books        2
+#2           1      bob           1 2014-04-02  shirts        0
+#3           1      bob           2 2014-08-23   books        1
 ```
 
 Note that there are often situations where there are multiple arrays or objects
