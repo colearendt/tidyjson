@@ -137,3 +137,25 @@ test_that("values throws error", {
   }
 )
 
+test_that("correctly handles character(0), {}, []", {
+    
+    empty <- tbl_json(
+      data.frame(
+        document.id = integer(0),
+        array.index = integer(0),
+        stringsAsFactors = FALSE),
+      list())
+    
+    expect_identical(
+      character(0) %>% as.tbl_json %>% gather_array,
+      empty)
+    
+    expect_error('{}' %>% as.tbl_json %>% gather_array)
+    
+    expect_identical(
+      '[]' %>% as.tbl_json %>% gather_array,
+      empty)
+
+  }
+)
+

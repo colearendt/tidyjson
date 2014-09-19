@@ -12,6 +12,15 @@ gather_array <- function(x, column.name = "array.index") {
   # Get JSON
   json <- attr(x, "JSON")
   
+  # Handle the case where json is just an empty list
+  if (identical(json, list())) {
+    # Drop any rows
+    y <- x[integer(0), , drop = FALSE]
+    # Setup 
+    y[column.name] <- integer(0) 
+    return(tbl_json(y, list()))
+  }
+  
   # Determine types
   types <- determine_types(json)
   
@@ -28,7 +37,7 @@ gather_array <- function(x, column.name = "array.index") {
   
   # Expand x
   y <- x[indices, , drop = FALSE]
-
+  
   # Add sequence column
   y[column.name] <- sequence(lengths)
   
