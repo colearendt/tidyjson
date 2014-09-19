@@ -98,4 +98,53 @@ test_that("handles mixed input as appropriate NA", {
   }
 )
 
-  
+test_that("correctly handles character(0)", {
+    
+    empty <- tbl_json(
+      data.frame(
+        document.id = integer(0), 
+        string = character(0),
+        stringsAsFactors = FALSE),
+      list())
+    
+    expect_identical(
+      character(0) %>% as.tbl_json %>% append_values_string,
+      empty)
+
+  }
+)
+
+test_that("correctly handles {}", {
+    
+    nl <- list()
+    names(nl) <- character(0)
+    
+    empty <- tbl_json(
+      data.frame(
+        document.id = 1L, 
+        string = NA_character_,
+        stringsAsFactors = FALSE),
+      list(nl))
+
+    expect_identical(
+      '{}' %>% as.tbl_json %>% append_values_string,
+      empty)
+    
+  }
+)
+
+test_that("correctly handles []", {
+    
+    empty <- tbl_json(
+      data.frame(
+        document.id = 1L, 
+        string = NA_character_,
+        stringsAsFactors = FALSE),
+      list(list()))
+
+    expect_identical(
+      '[]' %>% as.tbl_json %>% append_values_string,
+      empty)
+    
+  }
+)

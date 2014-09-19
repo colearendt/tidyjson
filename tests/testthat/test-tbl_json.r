@@ -26,7 +26,7 @@ test_that("correctly parses length(json) > 1", {
   )
 })
 
-test_that("currectly parses length(json) == 0", {
+test_that("currectly parses character(0)", {
   expect_identical(
     as.tbl_json(character(0)),
     tbl_json(
@@ -34,6 +34,21 @@ test_that("currectly parses length(json) == 0", {
       list()
     )
   )
+})
+
+test_that("correctly parses empty objects", {
+
+  nl <- list()
+  names(nl) <- character(0)
+
+  expect_identical(
+    as.tbl_json(c('[]', '{}')),
+    tbl_json(
+      data.frame(document.id = 1L:2L),
+      list(list(), nl)
+    )
+  )
+  
 })
 
 test_that("currectly structures an array", {
