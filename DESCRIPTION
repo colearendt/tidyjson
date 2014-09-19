@@ -1,7 +1,8 @@
 Package: tidyjson
 Title: Easily tidy complex JSON data.
 Version: 0.1
-Authors: "Jeremy Stanley <jeremy.stanley@gmail.com>"
+Author: Jeremy Stanley <jeremy.stanley@gmail.com>
+Maintainer: Jeremy Stanley <jeremy.stanley@gmail.com>
 Description: A complementary set of tools to tidyr for working with JSON data
     that turns JSON into tidy tables for downstream use by dplyr.
 Depends:
@@ -15,5 +16,6 @@ License: http://www.apache.org/licenses/LICENSE-2.0
 LazyData: true
 Suggests:
     knitr,
-    testthat
+    testthat,
+    ggplot2
 VignetteBuilder: knitr
