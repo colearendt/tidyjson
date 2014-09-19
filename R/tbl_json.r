@@ -47,6 +47,12 @@ as.tbl_json.tbl_json <- function(x, ...) x
 #' @export
 as.tbl_json.character <- function(x, ...) {
 
+  # Check for valid
+  is_valid <- vapply(x, validate, logical(1))
+  
+  if (any(!is_valid))
+    stop(sprintf("%s records have invalid json data", sum(!is_valid)))
+  
   # Parse the json
   json <- lapply(x, fromJSON, simplifyVector = FALSE)
 

@@ -60,3 +60,10 @@ test_that("currectly structures an array", {
     )
   )
 })
+
+test_that("throws error on invalid json", {
+    
+    expect_error(as.tbl_json(''))
+    
+  }
+)
