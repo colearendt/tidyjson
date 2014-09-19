@@ -12,15 +12,22 @@ gather_keys <- function(x, column.name = "key") {
   # Get JSON
   json <- attr(x, "JSON")
   
-  # Ensure not values
-  not_list <- vapply(json, is.list, logical(1))
-  if (any(!not_list))
-    stop(sprintf("%s records are values not arrays", sum(!not_list)))
+  # Handle the case where json is just an empty list
+  if (identical(json, list())) {
+    # Drop any rows
+    y <- x[integer(0), , drop = FALSE]
+    # Setup 
+    y[column.name] <- character(0) 
+    return(tbl_json(y, list()))
+  }
+
+  # Determine types
+  types <- determine_types(json)
   
-  # Ensure not array
-  null_names <- vapply(json, function(l) is.null(names(l)), logical(1))
-  if (any(null_names))
-    stop(sprintf("%s records are arrays not objects", sum(null_names)))
+  # Check if not arrays
+  not_objects <- types != "object"
+  if (any(not_objects))
+    stop(sprintf("%s records are values not objects", sum(not_objects)))
   
   # Get array lengths
   lengths <- vapply(json, length, integer(1))

@@ -37,13 +37,9 @@ determine_types <- function(json_list) {
   # Check existence of names
   names <- vapply(json_list, function(x) !is.null(attr(x, "names")), logical(1))
   
-  # Check for length
-  lengths <- vapply(json_list, length, integer(1))
-  
   # Fix class names
   classes[classes == "list" & names] <- "object"
   classes[classes == "list" & !names] <- "array"
-  classes[lengths > 1] <- "array"
   classes[classes == "character"] <- "string"
   classes[classes == "numeric"] <- "number"
   classes[classes == "NULL"] <- "null"
