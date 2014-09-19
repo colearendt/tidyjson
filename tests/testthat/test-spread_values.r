@@ -118,3 +118,57 @@ test_that("exctract down a path", {
     
   }
 )
+
+test_that("correctly handles character(0)", {
+    
+    empty <- tbl_json(
+      data.frame(
+        document.id = integer(0),
+        value = character(0),
+        stringsAsFactors = FALSE),
+      list())
+    
+    expect_identical(
+      character(0) %>% as.tbl_json %>% spread_values(value = jstring("key")),
+      empty)
+    
+  }
+)
+
+test_that("correctly handles {}", {
+    
+    nl <- list()
+    names(nl) <- character(0)
+    empty <- tbl_json(
+      data.frame(
+        document.id = 1L,
+        value = NA_character_,
+        stringsAsFactors = FALSE),
+      list(nl))
+    
+    expect_identical(
+      '{}' %>% as.tbl_json %>% spread_values(value = jstring("key")),
+      empty
+    )
+
+
+  }
+)
+
+
+test_that("correctly handles []", {
+    
+    empty <- tbl_json(
+      data.frame(
+        document.id = 1L,
+        value = NA_character_,
+        stringsAsFactors = FALSE),
+      list(list()))
+    
+    expect_identical(
+      '[]' %>% as.tbl_json %>% spread_values(value = jstring("key")),
+      empty
+    )
+    
+  }
+)

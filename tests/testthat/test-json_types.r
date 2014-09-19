@@ -45,3 +45,13 @@ test_that("works with varying empty data", {
     
   }
 )
+
+test_that("works with character(0)", {
+    
+    expect_identical(
+      (character(0) %>% as.tbl_json %>% json_types)$type,
+      factor(character(0), levels = allowed_json_types)
+    )
+    
+  }
+)
