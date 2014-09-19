@@ -3,6 +3,6 @@
 #' @name tidyjson
 #' @docType package
 #' @import assertthat
-#' @import rjson
+#' @import jsonlite
 #' @import dplyr
 NULL

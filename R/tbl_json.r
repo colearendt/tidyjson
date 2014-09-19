@@ -48,7 +48,7 @@ as.tbl_json.tbl_json <- function(x, ...) x
 as.tbl_json.character <- function(x, ...) {
 
   # Parse the json
-  json <- lapply(x, fromJSON)
+  json <- lapply(x, fromJSON, simplifyVector = FALSE)
 
   # Setup document ids
   ids <- data.frame(document.id = seq_along(json))

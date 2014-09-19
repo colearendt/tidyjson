@@ -5,10 +5,17 @@ for working with JSON data. It's primary objective is to turn JSON data into
 [tidy](http://vita.had.co.nz/papers/tidy-data.pdf) tables for downstream use by 
 [dplyr](http://github.com/hadley/dplyr) or other relational, analytical or 
 machine learning frameworks in R. Behind the scenes, tidyjson uses 
-[rjson](http://cran.r-project.org/web/packages/rjson/index.html) 
-to quickly parse the JSON data. tidyjson is also designed to be used with the 
-`%>%` operator imported into dplyr from the 
-[magrittr](https://github.com/smbache/magrittr) package. 
+[jsonlite](https://github.com/jeroenooms/jsonlite) to parse the JSON data. 
+tidyjson is also designed to be used with the `%>%` operator imported into dplyr
+from the [magrittr](https://github.com/smbache/magrittr) package.
+
+tidyjson operates on the following principles:
+
+* Allow for structuring in tidy form arbitrarily nested (arrays or objects) JSON
+* Naturally handle 'ragged' arrays and / or objects (varying lengths by document)
+* Allow for extraction of data in values *or* key names
+* Integrate with pipelines built on `dplyr` and the `%>%` operator
+* Ensure edge cases are handled correctly (especially empty data)
 
 You can install tidyjson from github directly by running:
 

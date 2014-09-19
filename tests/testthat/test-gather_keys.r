@@ -36,7 +36,7 @@ test_that("works with compound values", {
           key = c("key1", "key2", "key3", "key4"),
           stringsAsFactors = FALSE
         ),
-        list(1, list(sub = "a"), c(TRUE, FALSE), NULL)
+        list(1, list(sub = "a"), list(TRUE, FALSE), NULL)
       )
     )
     

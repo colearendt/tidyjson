@@ -15,10 +15,10 @@ test_that("works with simple input", {
               "null"),
             levels = allowed_json_types)
         ),
-        list(list(key = "value"), c(1, 2), "string", 1, TRUE, FALSE, NULL)
+        list(list(key = "value"), list(1, 2), "string", 1, TRUE, FALSE, NULL)
       )
     )
-    
+
   }
 )
 
@@ -36,24 +36,12 @@ test_that("works with varying array types", {
 
 test_that("works with varying empty data", {
     
-    json <- '[[], null]'
+    json <- '[[], {}, null]'
 
     expect_identical(
       (json %>% as.tbl_json %>% gather_array %>% json_types)$type,
-      factor(c("array", "null"), levels = allowed_json_types)
+      factor(c("array", "object", "null"), levels = allowed_json_types)
     )
     
-  }
-)
-
-test_that("cannot determine between {} and [] because of fromJSON", {
-    
-    json <- '[{}, []]'
-
-    # Should be "object", "array", but is "array", "array" instead
-    expect_identical(
-      (json %>% as.tbl_json %>% gather_array %>% json_types)$type,
-      factor(c("array", "array"), levels = allowed_json_types)
-    )
   }
 )

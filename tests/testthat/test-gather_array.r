@@ -74,7 +74,7 @@ test_that("works with value array", {
           document.id = c(1L, 1L),
           array.index = c(1L, 2L)
         ),
-        c("a", "b")
+        list("a", "b")
       )
     )
     

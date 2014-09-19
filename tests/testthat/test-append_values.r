@@ -35,7 +35,7 @@ test_that("string works with value array", {
           string = c("a", "b"),
           stringsAsFactors = FALSE
         ),
-        c("a", "b")
+        list("a", "b")
       )
     )
     
