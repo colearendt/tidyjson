@@ -67,3 +67,37 @@ test_that("throws error on invalid json", {
     
   }
 )
+
+context("tbl_json: [ operator")
+
+test_that("row filtering works with a simple example", {
+    
+    expect_identical(
+      as.tbl_json(c('{"name": "bob"}', '{"name": "susan"}'))[1, ],
+      tbl_json(
+        data.frame(document.id = 1L),
+        list(list(name = "bob"))
+      )
+    )
+    
+  }
+)
+
+test_that("column filtering doesn't change the JSON", {
+    
+    x <- c(
+      '{"name": "bob", "children": [{"name": "george"}]}', 
+      '{"name": "susan", "children": [{"name": "sally"}, {"name": "bobby"}]}'
+        ) %>% as.tbl_json %>%
+      spread_values("parent" = jstring("name")) %>%
+      enter_object("children") %>%
+      gather_array %>%
+      spread_values("child" = jstring("name"))
+    
+    expect_identical(
+      attr(x, "JSON"),
+      attr(x[, c("parent", "child")], "JSON")
+    )
+    
+  }
+)

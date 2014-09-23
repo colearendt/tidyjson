@@ -66,3 +66,37 @@ as.tbl_json.character <- function(x, ...) {
 #' @rdname tbl_json
 #' @export
 is.tbl_json <- function(x) inherits(x, "tbl_json")
+
+#' Extract subsets of a tbl_json object (not replace)
+#' 
+#' Extends `[.data.frame` to work with tbl_json objects, so that row filtering
+#' of the underlying data.frame also filters the associated JSON.
+#'
+#' @param x a tbl_json object
+#' @param i row elements to extract
+#' @param j column elements to extract
+#' @param drop whether or not to simplify results
+#' @export
+`[.tbl_json` <- function(x, i, j, 
+  drop = if (missing(i)) TRUE else length(cols) == 1) {
+  
+  # Same functionality as in `[.data.frame`
+  y <- NextMethod("[")
+  cols <- names(y)
+  
+  # Extract JSON to subset later
+  json <- attr(x, "JSON")
+  
+  # Convert x back into a data.frame
+  x <- as.data.frame(x)
+  
+  # Subset x
+  x <- `[.data.frame`(x, i, j, drop)
+  
+  # If i is not missing, subset json as well
+  if (!missing(i)) {
+    json <- json[i]
+  }
+  
+  tbl_json(x, json)
+}
