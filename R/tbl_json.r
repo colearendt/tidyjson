@@ -6,7 +6,9 @@ NULL
 #' tbl_json constructor
 #' 
 #' Note that json.list must have the same length as nrow(df), and if json.list
-#' has any NULL elements, the corresponding rows will be removed from df.
+#' has any NULL elements, the corresponding rows will be removed from df. Also
+#' note that "..JSON" is a reserved column name used internally for filtering
+#' tbl_json objects, and so is not allowed in the data.frame names.
 #' 
 #' @param df data.frame
 #' @param json.list list of json lists parsed with fromJSON
@@ -19,6 +21,7 @@ tbl_json <- function(df, json.list, drop.null.json = FALSE) {
   assert_that(is.data.frame(df))
   assert_that(is.list(json.list) || is.vector(json.list))
   assert_that(nrow(df) == length(json.list))
+  assert_that(!("..JSON" %in% names(df)))
   
   # Remove any row.names
   row.names(df) <- NULL

@@ -68,9 +68,23 @@ test_that("throws error on invalid json", {
   }
 )
 
-context("tbl_json: [ operator")
+context("tbl_json")
 
-test_that("row filtering works with a simple example", {
+test_that("tbl_json constructor works with no data", {
+    
+    expect_identical(tbl_json(data.frame(), list()) %>% nrow, 0L)
+    
+  }
+)
+
+test_that("tbl_json fails if ..JSON is in the names of the data.frame", {
+    
+    expect_error(tbl_json(data.frame(..JSON = character(0)), list()))
+    
+  }
+)
+
+test_that("[ row filtering works with a simple example", {
     
     expect_identical(
       as.tbl_json(c('{"name": "bob"}', '{"name": "susan"}'))[1, ],
@@ -83,7 +97,7 @@ test_that("row filtering works with a simple example", {
   }
 )
 
-test_that("column filtering doesn't change the JSON", {
+test_that("[ column filtering doesn't change the JSON", {
     
     x <- c(
       '{"name": "bob", "children": [{"name": "george"}]}', 
@@ -102,9 +116,7 @@ test_that("column filtering doesn't change the JSON", {
   }
 )
 
-context("tbl_json: filter")
-
-test_that("filter works with a simple example", {
+test_that("dplyr::filter works with a simple example", {
     
     x <- as.tbl_json(c('{"name": "bob"}', '{"name": "susan"}'))
     
@@ -119,7 +131,7 @@ test_that("filter works with a simple example", {
   }
 )
 
-test_that("filter works in a more complex pipeline", {
+test_that("dplyr::filter works in a more complex pipeline", {
     
     json <- c(
       '{"name": "bob", "children": [{"name": "george"}]}', 
@@ -137,9 +149,7 @@ test_that("filter works in a more complex pipeline", {
   }
 )
 
-context("tbl_json: arrange")
-
-test_that("arrange works with a simple example", {
+test_that("dplyr::arrange works with a simple example", {
     
     x <- as.tbl_json(c('{"name": "bob"}', '{"name": "susan"}'))
     

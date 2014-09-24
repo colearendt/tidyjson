@@ -32,7 +32,9 @@ is.tbl_json(x)
 Combines structured JSON (as a data.frame) with remaining JSON
 
 Note that json.list must have the same length as nrow(df), and if json.list
-has any NULL elements, the corresponding rows will be removed from df.
+has any NULL elements, the corresponding rows will be removed from df. Also
+note that "..JSON" is a reserved column name used internally for filtering
+tbl_json objects, and so is not allowed in the data.frame names.
 
 Turns a character vector into a tbl_json object
 }
