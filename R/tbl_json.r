@@ -100,3 +100,17 @@ is.tbl_json <- function(x) inherits(x, "tbl_json")
   
   tbl_json(x, json)
 }
+
+#' @export
+filter.tbl_json <- function(.data, ...) {
+  
+  if ("..JSON" %in% names(.data))
+    stop("'..JSON' in the column names of tbl_json object being filtered")
+  
+  .data$..JSON <- attr(.data, "JSON")
+  
+  y <- dplyr::filter(tbl_df(.data), ...)
+  
+  tbl_json(select(y, -..JSON), y$..JSON)
+  
+}

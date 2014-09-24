@@ -101,3 +101,38 @@ test_that("column filtering doesn't change the JSON", {
     
   }
 )
+
+context("tbl_json: filter")
+
+test_that("filter works with a simple example", {
+    
+    x <- as.tbl_json(c('{"name": "bob"}', '{"name": "susan"}'))
+    
+    expect_identical(
+      filter(x, document.id == 1),
+      tbl_json(
+        data.frame(document.id = 1L),
+        list(list(name = "bob"))
+      )
+    )
+    
+  }
+)
+
+test_that("filter works in a more complex pipeline", {
+    
+    json <- c(
+      '{"name": "bob", "children": [{"name": "george"}]}', 
+      '{"name": "susan", "children": [{"name": "sally"}, {"name": "bobby"}]}'
+        )
+    susan.children <- json %>% as.tbl_json %>%
+      spread_values(name = jstring("name")) %>%
+      filter(name == "susan") %>% 
+      enter_object("children") %>%
+      gather_array %>%
+      spread_values(child = jstring("name"))
+    
+    expect_identical(susan.children$child, c("sally", "bobby"))
+    
+  }
+)
