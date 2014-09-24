@@ -136,3 +136,20 @@ test_that("filter works in a more complex pipeline", {
     
   }
 )
+
+context("tbl_json: arrange")
+
+test_that("arrange works with a simple example", {
+    
+    x <- as.tbl_json(c('{"name": "bob"}', '{"name": "susan"}'))
+    
+    expect_identical(
+      x %>% arrange(desc(document.id)),
+      tbl_json(
+        data.frame(document.id = c(2L, 1L)),
+        list(list(name = "susan"), list(name = "bob"))
+      )
+    )
+    
+  }
+)
