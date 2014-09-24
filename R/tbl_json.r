@@ -101,16 +101,27 @@ is.tbl_json <- function(x) inherits(x, "tbl_json")
   tbl_json(x, json)
 }
 
-#' @export
-filter.tbl_json <- function(.data, ...) {
+#' Wrapper for extending dplyr verbs to tbl_json objects
+#' @param dplyr.verb a dplyr::verb such as filter, arrange
+wrap_dplyr_verb <- function(dplyr.verb) {
   
-  if ("..JSON" %in% names(.data))
-    stop("'..JSON' in the column names of tbl_json object being filtered")
+  function(.data, ...) {
   
-  .data$..JSON <- attr(.data, "JSON")
+    # Check if reserved ..JSON name already in data.frame
+    if ("..JSON" %in% names(.data))
+      stop("'..JSON' in the column names of tbl_json object being filtered")
   
-  y <- dplyr::filter(tbl_df(.data), ...)
+    # Assign JSON to the data.frame so it is treated as any other column
+    .data$..JSON <- attr(.data, "JSON")
   
-  tbl_json(select(y, -..JSON), y$..JSON)
+    # Apply the transformation
+    y <- dplyr.verb(tbl_df(.data), ...)
   
+    # Reconstruct tbl_json without ..JSON column
+    tbl_json(select(y, -..JSON), y$..JSON)
+    
+  }
 }
+
+#' @export
+filter.tbl_json <- wrap_dplyr_verb(dplyr::filter)
