@@ -1,6 +1,6 @@
 Package: tidyjson
 Title: Easily tidy complex JSON data.
-Version: 0.1
+Version: 0.2.0
 Author: Jeremy Stanley <jeremy.stanley@gmail.com>
 Maintainer: Jeremy Stanley <jeremy.stanley@gmail.com>
 Description: A complementary set of tools to tidyr for working with JSON data

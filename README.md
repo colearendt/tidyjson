@@ -221,11 +221,11 @@ data structures is that they let developers create data without having to worry
 about defining the schema explicitly.
 
 Thus, the first step is to usually understand the structure of the JSON. A first
-step can be to look at individual records with command line tools that make the
-JSON pretty (in linux or OSX):
+step can be to look at individual records with `jsonlite::prettify`:
 
 ```
-head -n 1 file.json | python -m json.tool
+library(jsonlite)
+prettify(json)
 ```
 
 Examining various random records can begin to give you a sense of what the JSON
