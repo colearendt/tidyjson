@@ -15,7 +15,7 @@ test_that("works with simple input", {
               "null"),
             levels = allowed_json_types)
         ),
-        list(list(key = "value"), list(1, 2), "string", 1, TRUE, FALSE, NULL)
+        list(list(key = "value"), list(1L, 2L), "string", 1L, TRUE, FALSE, NULL)
       )
     )
 

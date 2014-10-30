@@ -41,6 +41,7 @@ determine_types <- function(json_list) {
   classes[classes == "list" & names] <- "object"
   classes[classes == "list" & !names] <- "array"
   classes[classes == "character"] <- "string"
+  classes[classes == "integer"] <- "number"
   classes[classes == "numeric"] <- "number"
   classes[classes == "NULL"] <- "null"
 
