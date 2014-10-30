@@ -12,7 +12,7 @@ test_that("works in a simple case", {
           key = c("key1", "key2"),
           stringsAsFactors = FALSE
         ),
-        list(1, 2)
+        list(1L, 2L)
       )
     )
     
@@ -36,7 +36,7 @@ test_that("works with compound values", {
           key = c("key1", "key2", "key3", "key4"),
           stringsAsFactors = FALSE
         ),
-        list(1, list(sub = "a"), list(TRUE, FALSE), NULL)
+        list(1L, list(sub = "a"), list(TRUE, FALSE), NULL)
       )
     )
     

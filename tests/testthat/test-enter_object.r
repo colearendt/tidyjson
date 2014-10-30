@@ -8,7 +8,7 @@ test_that("filter works with one path", {
       json %>% as.tbl_json %>% enter_object("attributes"),
       tbl_json(
         data.frame(document.id = 1L),
-        list(list(age = 32, gender = "male"))
+        list(list(age = 32L, gender = "male"))
       )
     )
     
@@ -23,7 +23,7 @@ test_that("filter works with multiple depth paths", {
       json %>% as.tbl_json %>% enter_object("attributes", "demographics"),
       tbl_json(
         data.frame(document.id = 1L),
-        list(list(age = 32, gender = "male"))
+        list(list(age = 32L, gender = "male"))
       )
     )
     
@@ -45,7 +45,7 @@ test_that("filter removes records with missing path", {
           document.id = 1L, 
           name = 'bob', 
           stringsAsFactors = FALSE),
-        list(list(age = 32, gender = "male"))
+        list(list(age = 32L, gender = "male"))
       )
     )
     
