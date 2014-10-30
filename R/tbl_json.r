@@ -127,7 +127,7 @@ wrap_dplyr_verb <- function(dplyr.verb) {
 }
 
 #' @export
-filter.tbl_json <- wrap_dplyr_verb(dplyr::filter)
+filter_.tbl_json <- wrap_dplyr_verb(dplyr::filter_)
 
 #' @export
-arrange.tbl_json <- wrap_dplyr_verb(dplyr::arrange)
+arrange_.tbl_json <- wrap_dplyr_verb(dplyr::arrange_)
