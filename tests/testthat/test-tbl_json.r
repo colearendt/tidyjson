@@ -5,7 +5,7 @@ test_that("correctly parses length(json) == 1", {
     as.tbl_json('{"name": "bob", "age": 32}'),
     tbl_json(
       data.frame(document.id = 1L),
-      list(list(name = "bob", age = 32))
+      list(list(name = "bob", age = 32L))
     )
   )
 })
@@ -19,8 +19,8 @@ test_that("correctly parses length(json) > 1", {
     tbl_json(
       data.frame(document.id = 1L:2L),
       list(
-        list(name = "bob", age = 32),
-        list(name = "susan", age = 25)
+        list(name = "bob", age = 32L),
+        list(name = "susan", age = 25L)
       )
     )
   )
