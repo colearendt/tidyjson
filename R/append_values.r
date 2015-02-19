@@ -26,14 +26,20 @@ append_values_factory <- function(type, na_value, blank_value, force=TRUE) {
     if (length(json) == 0) {
        x[column.name] <- blank_value
        return(tbl_json(x, json))
-    }
+     }
    
     if (!force) { 
        x[column.name] <- append_values_type(json, type, na_value)
     } else {
-       x[column.name] <- unlist(lapply(json, 
-                                       function(a) 
-                                         ifelse(length(a) == 0, na_value, a)))
+       unlist_json <- unlist(json)
+       # need this because of the way unlist handles NULL
+       if (length(unlist_json) == nrow(x)) {
+           x[column.name] <- unlist_json
+       } else { 
+           x[column.name] <- unlist(lapply(json, 
+                                           function(a) 
+                                             ifelse(length(a) == 0, na_value, a)))
+       }
     }
      
     tbl_json(x, json)
