@@ -49,7 +49,7 @@ append_values_factory <- function(type, na_value, blank_value, force=TRUE) {
 
 #' get list of values from json
 #' @param json extracted using attributes
-#' @type input type (numeric, string, etc)
+#' @param type input type (numeric, string, etc)
 #' @param na_value default null value
 append_values_type <- function(json, type, na_value) {
 
