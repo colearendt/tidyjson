@@ -27,7 +27,9 @@ append_values_factory <- function(type, na_value, blank_value, force=TRUE) {
        x[column.name] <- blank_value
        return(tbl_json(x, json))
      }
-   
+  
+    # if force is FALSE, then check type of the elements 
+    # else do not check type
     if (!force) { 
        x[column.name] <- append_values_type(json, type, na_value)
     } else {
