@@ -8,10 +8,10 @@ NULL
 
 #' Creates the append_values_* functions
 #' @param type the JSON type that will be appended
-#' @param na_value the NA value that will be used if the type is incorrect
+#' @param as.value function to force coercion to numeric, string, or logical
 #' @param force parameter that determines if the type should be determined or not
 #'        if force is FALSE, then the function takes more memory
-append_values_factory <- function(type, na_value, blank_value, force=TRUE) {
+append_values_factory <- function(type, as.value, force=TRUE) {
   
   function(x, column.name = type, force=TRUE) {
     
@@ -24,42 +24,40 @@ append_values_factory <- function(type, na_value, blank_value, force=TRUE) {
     
     # if json is empty, return empty
     if (length(json) == 0) {
-       x[column.name] <- blank_value
+       x[column.name] <- as.value(NULL)
        return(tbl_json(x, json))
      }
   
     # if force is FALSE, then check type of the elements 
-    # else do not check type
     if (!force) { 
-       x[column.name] <- append_values_type(json, type, na_value)
+       x[column.name] <- append_values_type(json, type) %>% as.value
     } else {
-       unlist_json <- unlist(json)
-       # need this because of the way unlist handles NULL
-       if (length(unlist_json) == nrow(x)) {
-           x[column.name] <- unlist_json
-       } else { 
-           x[column.name] <- unlist(lapply(json, 
-                                           function(a) 
-                                             ifelse(length(a) == 0, na_value, a)))
-       }
+       x[column.name] <- safe_unlist(json) %>% as.value
     }
-     
+  
+    # return as appropriate class type 
     tbl_json(x, json)
     
   }
 }
 
+# unlists while preserving NULLs as NAs
+safe_unlist <- function(l, recursive = FALSE) {
+  nulls <- vapply(l, is.null, TRUE)
+  l[nulls] <- NA
+  unlist(l, recursive = recursive)
+}
+
 #' get list of values from json
 #' @param json extracted using attributes
 #' @param type input type (numeric, string, etc)
-#' @param na_value default null value
-append_values_type <- function(json, type, na_value) {
+append_values_type <- function(json, type) {
 
    # Determine type
    types <- determine_types(json)
     
    # Initialize column to NAs
-   column <- rep(na_value, length(json))
+   column <- rep(NA, length(json))
     
    # Identify correct types
    correct <- types == type
@@ -73,15 +71,12 @@ append_values_type <- function(json, type, na_value) {
 
 #' @export
 #' @rdname append_values
-append_values_string <- append_values_factory("string", NA_character_, 
-                                              character(0), force=TRUE)
+append_values_string <- append_values_factory("string", function(x) as.character(x) , force=TRUE)
 
 #' @export
 #' @rdname append_values
-append_values_number <- append_values_factory("number", NA_real_, 
-                                              numeric(0), force=TRUE)
+append_values_number <- append_values_factory("number", function(x) as.numeric(x), force=TRUE)
 
 #' @export
 #' @rdname append_values
-append_values_logical <- append_values_factory("logical", NA, 
-                                               logical(0), force=TRUE)
+append_values_logical <- append_values_factory("logical", function(x) as.logical(x), force=TRUE)

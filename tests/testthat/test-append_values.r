@@ -81,18 +81,17 @@ test_that("logical works with simple input", {
 test_that("handles mixed input as appropriate NA", {
     
     data <- '["a", 1, true, null]' %>% as.tbl_json %>% gather_array 
-
     expect_identical(
       (data %>% append_values_string)$string,
       c("a", "1", "TRUE", NA_character_)
     )
     expect_identical(
       (data %>% append_values_number)$number,
-      c("a", "1", "TRUE", NA_real_)
+      c(NA_real_, 1, NA_real_, NA_real_)
     )
     expect_identical(
       (data %>% append_values_logical)$logical,
-      c("a", "1", "TRUE", NA)
+      c(NA, NA, TRUE, NA)
     )
     
   }
@@ -105,7 +104,8 @@ test_that("correctly handles character(0)", {
         document.id = integer(0), 
         string = character(0),
         stringsAsFactors = FALSE),
-      list())
+
+    list())
 
     expect_identical(
       character(0) %>% as.tbl_json %>% append_values_string,
