@@ -4,14 +4,12 @@
 \alias{append_values_type}
 \title{get list of values from json}
 \usage{
-append_values_type(json, type, na_value)
+append_values_type(json, type)
 }
 \arguments{
 \item{json}{extracted using attributes}
 
 \item{type}{input type (numeric, string, etc)}
-
-\item{na_value}{default null value}
 }
 \description{
 get list of values from json

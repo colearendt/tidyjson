@@ -4,15 +4,12 @@
 \alias{append_values_factory}
 \title{Creates the append_values_* functions}
 \usage{
-append_values_factory(type, na_value, blank_value, force = TRUE)
+append_values_factory(type, as.value)
 }
 \arguments{
 \item{type}{the JSON type that will be appended}
 
-\item{na_value}{the NA value that will be used if the type is incorrect}
-
-\item{force}{parameter that determines if the type should be determined or not
-if force is FALSE, then the function takes more memory}
+\item{as.value}{function to force coercion to numeric, string, or logical}
 }
 \description{
 Creates the append_values_* functions

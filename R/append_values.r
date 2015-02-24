@@ -4,14 +4,14 @@
 #' @param x a tbl_json object
 #' @param column.name the column.name to append the values into the data.frame
 #'   under
+#' @param force parameter that determines if the variable type should be computed or not
+#'        if force is FALSE, then the function may take more memory
 NULL
 
 #' Creates the append_values_* functions
 #' @param type the JSON type that will be appended
 #' @param as.value function to force coercion to numeric, string, or logical
-#' @param force parameter that determines if the type should be determined or not
-#'        if force is FALSE, then the function takes more memory
-append_values_factory <- function(type, as.value, force=TRUE) {
+append_values_factory <- function(type, as.value) {
   
   function(x, column.name = type, force=TRUE) {
     
@@ -32,7 +32,9 @@ append_values_factory <- function(type, as.value, force=TRUE) {
     if (!force) { 
        x[column.name] <- append_values_type(json, type) %>% as.value
     } else {
-       x[column.name] <- safe_unlist(json) %>% as.value
+       new_val <- my_unlist(json) %>% as.value
+       assert_that(length(new_val) == nrow(x))
+       x[column.name] <- new_val
     }
   
     # return as appropriate class type 
@@ -41,11 +43,12 @@ append_values_factory <- function(type, as.value, force=TRUE) {
   }
 }
 
-# unlists while preserving NULLs as NAs
-safe_unlist <- function(l, recursive = FALSE) {
-  nulls <- vapply(l, is.null, TRUE)
+#' Unlists while preserving NULLs and only unlisting lists with one value
+#' @param l a list that we want to unlist
+my_unlist <- function(l) {
+  nulls <- vapply(l, function(x) is.null(x) | is.list(x), TRUE)
   l[nulls] <- NA
-  unlist(l, recursive = recursive)
+  unlist(l, recursive = FALSE)
 }
 
 #' get list of values from json
@@ -71,12 +74,12 @@ append_values_type <- function(json, type) {
 
 #' @export
 #' @rdname append_values
-append_values_string <- append_values_factory("string", function(x) as.character(x) , force=TRUE)
+append_values_string <- append_values_factory("string", function(x) as.character(x))
 
 #' @export
 #' @rdname append_values
-append_values_number <- append_values_factory("number", function(x) as.numeric(x), force=TRUE)
+append_values_number <- append_values_factory("number", function(x) as.numeric(x))
 
 #' @export
 #' @rdname append_values
-append_values_logical <- append_values_factory("logical", function(x) as.logical(x), force=TRUE)
+append_values_logical <- append_values_factory("logical", function(x) as.logical(x))

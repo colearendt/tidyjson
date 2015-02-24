@@ -18,6 +18,9 @@ append_values_logical(x, column.name = type, force = TRUE)
 
 \item{column.name}{the column.name to append the values into the data.frame
 under}
+
+\item{force}{parameter that determines if the variable type should be computed or not
+if force is FALSE, then the function may take more memory}
 }
 \description{
 Append keys to a new column

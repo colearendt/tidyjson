@@ -85,8 +85,11 @@ test_that("handles mixed input as appropriate NA", {
       (data %>% append_values_string)$string,
       c("a", "1", "TRUE", NA_character_)
     )
+
+    expect_warning(tmp_data <- data %>% append_values_number)
+
     expect_identical(
-      (data %>% append_values_number)$number,
+      tmp_data$number,
       c(NA_real_, 1, NA_real_, NA_real_)
     )
     expect_identical(
@@ -165,5 +168,16 @@ test_that("correctly handles mixed types when force=FALSE", {
       (data %>% append_values_logical(force=FALSE))$logical,
       c(NA, NA, TRUE, NA)
     )
+  }
+)
+
+test_that("correctly handles append when trying to append an array", {
+
+   data <- '[["a", "b", "c"], "d", "e", "f"]' %>% as.tbl_json %>% gather_array
+   
+   expect_identical(
+     (data %>% append_values_string())$string,
+     c(NA_character_, "d", "e", "f")
+   ) 
   }
 )
