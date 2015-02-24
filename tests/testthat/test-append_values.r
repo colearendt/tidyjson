@@ -81,18 +81,20 @@ test_that("logical works with simple input", {
 test_that("handles mixed input as appropriate NA", {
     
     data <- '["a", 1, true, null]' %>% as.tbl_json %>% gather_array 
-
     expect_identical(
       (data %>% append_values_string)$string,
-      c("a", rep(NA_character_, 3))
+      c("a", "1", "TRUE", NA_character_)
     )
+
+    expect_warning(tmp_data <- data %>% append_values_number)
+
     expect_identical(
-      (data %>% append_values_number)$number,
-      c(NA_real_, 1, rep(NA_real_, 2))
+      tmp_data$number,
+      c(NA_real_, 1, NA_real_, NA_real_)
     )
     expect_identical(
       (data %>% append_values_logical)$logical,
-      c(rep(NA, 2), TRUE, NA)
+      c(NA, NA, TRUE, NA)
     )
     
   }
@@ -105,8 +107,9 @@ test_that("correctly handles character(0)", {
         document.id = integer(0), 
         string = character(0),
         stringsAsFactors = FALSE),
-      list())
-    
+
+    list())
+
     expect_identical(
       character(0) %>% as.tbl_json %>% append_values_string,
       empty)
@@ -146,5 +149,35 @@ test_that("correctly handles []", {
       '[]' %>% as.tbl_json %>% append_values_string,
       empty)
     
+  }
+)
+
+test_that("correctly handles mixed types when force=FALSE", {
+
+    data <- '["a", 1, true, null]' %>% as.tbl_json %>% gather_array 
+
+    expect_identical(
+      (data %>% append_values_string(force=FALSE))$string,
+      c("a", rep(NA_character_,3))
+    )
+    expect_identical(
+      (data %>% append_values_number(force=FALSE))$number,
+      c(NA_real_, 1, NA_real_, NA_real_)
+    )
+    expect_identical(
+      (data %>% append_values_logical(force=FALSE))$logical,
+      c(NA, NA, TRUE, NA)
+    )
+  }
+)
+
+test_that("correctly handles append when trying to append an array", {
+
+   data <- '[["a", "b", "c"], "d", "e", "f"]' %>% as.tbl_json %>% gather_array
+   
+   expect_identical(
+     (data %>% append_values_string())$string,
+     c(NA_character_, "d", "e", "f")
+   ) 
   }
 )
