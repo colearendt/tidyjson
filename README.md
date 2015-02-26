@@ -251,7 +251,7 @@ to dive into that object directly. Make sure you first use `spread_values` to
 capture any top level identifiers you might need for analytics, summarization or
 relational uses downstream.
 
-If you want to access arrays, use gather_arrays to stack their elements, and
+If you want to access arrays, use `gather_array` to stack their elements, and
 then proceed as though you had separate documents. (Again, first spread any
 top-level keys you need.)
 
