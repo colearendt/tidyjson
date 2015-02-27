@@ -19,6 +19,9 @@
 #'   spread_values(
 #'     name = jstring("name")
 #'   ) %>% 
+#'   mutate(
+#'     company.sort_order = rank(name)
+#'   ) %>%
 #'   enter_object("relationships") %>%
 #'   gather_array("relationship.index") %>%
 #'   spread_values(
