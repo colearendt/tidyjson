@@ -163,3 +163,44 @@ test_that("dplyr::arrange works with a simple example", {
     
   }
 )
+
+
+test_that("dplyr::mutate works with a simple example", {
+    
+    x <- as.tbl_json(c('{"name": "bob"}', '{"name": "susan"}'))
+
+    expect_identical(
+      x %>%
+        spread_values(name = jstring("name")) %>%
+        mutate(fullname = paste(name, "green")),
+      tbl_json(
+        data_frame(
+          document.id = c(1L, 2L),
+          name = c("bob", "susan"),
+          fullname = c("bob green", "susan green")),
+        list(list(name = "bob"), list(name = "susan"))
+      )
+    )
+    
+  }
+)
+
+
+test_that("dplyr::mutate works in a more complex pipeline", {
+    
+    json <- c(
+      '{"name": "bob", "children": [{"name": "george"}]}',
+      '{"name": "susan", "children": [{"name": "sally"}, {"name": "bobby"}]}')
+
+    children <- json %>% as.tbl_json %>%
+      spread_values(name = jstring("name")) %>%
+      mutate(parent.rank = rank(name)) %>%
+      enter_object("children") %>%
+      gather_array %>%
+      spread_values(child = jstring("name"))
+
+    expect_identical(children$parent.rank, c(1, 2, 2))
+    expect_identical(children$child, c("george", "sally", "bobby"))
+    
+  }
+)
