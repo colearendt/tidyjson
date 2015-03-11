@@ -5,10 +5,13 @@
 \alias{as.tbl_json.data.frame}
 \alias{as.tbl_json.tbl_json}
 \alias{is.tbl_json}
+\alias{read.tbl_json}
 \alias{tbl_json}
 \title{Combines structured JSON (as a data.frame) with remaining JSON}
 \usage{
 tbl_json(df, json.list, drop.null.json = FALSE)
+
+read.tbl_json(filepath)
 
 as.tbl_json(x, ...)
 

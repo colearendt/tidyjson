@@ -237,7 +237,7 @@ Next, you can begin working with the data in R.
 
 ```R
 # assuming documents are carriage-return delimited, otherwise use readChar
-json <- readLines(file.json)
+json <- read.tbl_json("myfile.json")
 
 # Inspect the types of objects
 json %>% json_types %>% table

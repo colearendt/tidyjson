@@ -38,6 +38,12 @@ tbl_json <- function(df, json.list, drop.null.json = FALSE) {
 
 #' @export
 #' @rdname tbl_json
+read.tbl_json <- function(filepath) {
+  readChar(filepath, file.info(filepath)$size) %>% as.tbl_json
+}
+
+#' @export
+#' @rdname tbl_json
 as.tbl_json <- function(x, ...) UseMethod("as.tbl_json")
 
 #' @export

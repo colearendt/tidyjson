@@ -137,6 +137,13 @@ test_that("tbl_json fails if ..JSON is in the names of the data.frame", {
   }
 )
 
+test_that("read.tbl_json reads a file", {
+    expect_true(
+      read.tbl_json("../../data/sample.json") %>% is.tbl_json
+    )
+  }
+)
+
 test_that("[ row filtering works with a simple example", {
     
     expect_identical(
