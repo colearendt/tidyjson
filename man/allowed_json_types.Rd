@@ -4,7 +4,7 @@
 \alias{allowed_json_types}
 \title{Fundamental JSON types from http://json.org/, where I collapse 'true' and
 'false' into 'logical'}
-\format{\preformatted{ chr [1:6] "object" "array" "string" "number" "logical" "null"
+\format{\preformatted{ chr [1:6] "object" "array" "string" "number" "logical" ...
 }}
 \usage{
 allowed_json_types
