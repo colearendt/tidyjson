@@ -236,11 +236,8 @@ entire JSON structure.
 Next, you can begin working with the data in R.
 
 ```R
-# assuming documents are carriage-return delimited, otherwise use readChar
-json <- read.tbl_json("myfile.json")
-
 # Inspect the types of objects
-json %>% json_types %>% table
+read_json("myfile.json") %>% json_types %>% table
 ```
 
 Then, if you want to work with a single row of data for each JSON object, use
