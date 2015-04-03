@@ -60,6 +60,27 @@ as.tbl_json.character <- function(x, ...) {
   tbl_json(ids, json)
 }
 
+#' Turns a data.frame into a tbl_json object
+#' @param x data.frame that has a column of JSON data
+#' @param json.column the name of the JSON column of data in x, if x is a data.frame
+#' @rdname tbl_json
+#' @export
+as.tbl_json.data.frame <- function(x, json.column, ...) {
+  
+  assert_that(is.character(json.column))
+  assert_that(json.column %in% names(x))
+
+  # Parse the json
+  json <- lapply(x[[json.column]], fromJSON, simplifyVector = FALSE)
+
+  # Remove json column
+  x <- x[, setdiff(names(x), json.column), drop = FALSE]
+
+  # Construct tbl_json
+  tbl_json(x, json)
+  
+}
+
 #' @rdname tbl_json
 #' @export
 is.tbl_json <- function(x) inherits(x, "tbl_json")

@@ -104,7 +104,7 @@ test_that("works in a pipeline", {
       df %>% as.tbl_json(json.column = "json") %>% 
         spread_values(name = jstring("name")) %>%
         filter(age == 32) %>%
-        extract2("name"),
+        `[[`("name"),
       "bob"
     )
     
