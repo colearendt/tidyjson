@@ -68,6 +68,59 @@ test_that("throws error on invalid json", {
   }
 )
 
+context("tbl_json: as.tbl_json.data.frame")
+
+test_that("works for a data.frame and data_frame created objects", {
+    
+    df <- data.frame(
+      document.id = 1:2,
+      json = c('{"name": "bob"}', '{"name": "susan"}'),
+      stringsAsFactors = FALSE)
+    # data.frame
+    expect_identical(
+      as.tbl_json(df, json.column = "json"),
+      as.tbl_json(df$json)
+    )
+    # data_frame
+    df <- data_frame(
+      document.id = 1:2,
+      json = c('{"name": "bob"}', '{"name": "susan"}'))
+    expect_identical(
+      as.tbl_json(df, json.column = "json"),
+      as.tbl_json(df$json)
+    )
+    
+  }
+)
+
+test_that("works in a pipeline", {
+    
+    df <- data_frame(
+      age = c(32, 45),
+      json = c('{"name": "bob"}', '{"name": "susan"}')
+    )
+    
+    expect_identical(
+      df %>% as.tbl_json(json.column = "json") %>% 
+        spread_values(name = jstring("name")) %>%
+        filter(age == 32) %>%
+        `[[`("name"),
+      "bob"
+    )
+    
+  }
+)
+
+test_that("throws an error without json.column specified", {
+    expect_error(as.tbl_json(iris))
+  }
+)
+
+test_that("throws an error if json column doesn't exist", {
+    expect_error(as.tbl_json(iris, json.column = "json"))
+  }
+)
+
 context("tbl_json")
 
 test_that("tbl_json constructor works with no data", {
@@ -164,7 +217,6 @@ test_that("dplyr::arrange works with a simple example", {
   }
 )
 
-
 test_that("dplyr::mutate works with a simple example", {
     
     x <- as.tbl_json(c('{"name": "bob"}', '{"name": "susan"}'))
@@ -184,7 +236,6 @@ test_that("dplyr::mutate works with a simple example", {
     
   }
 )
-
 
 test_that("dplyr::mutate works in a more complex pipeline", {
     
