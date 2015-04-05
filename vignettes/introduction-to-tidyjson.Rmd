@@ -59,7 +59,17 @@ A simple example of how tidyjson works is as follows:
 library(dplyr)      # for %>% and other dplyr functions
 
 # Define a simple JSON array of people
-people <- '[{"name": "bob", "age": 32}, {"name": "susan", "age": 54}]'
+people <- '
+[
+  {
+    "name": "bob",
+    "age": 32
+  }, 
+  {
+    "name": "susan", 
+    "age": 54
+  }
+]'
 
 # Structure the data
 people %>%          # Use the %>% pipe operator to pass json through a pipeline 
@@ -183,6 +193,8 @@ purch_items %>% group_by(person) %>% summarize(spend = sum(item.price))
 
 ## Data
 
+### JSON included in the package
+
 The tidyjson package comes with several JSON example datasets:
 
 * `commits`: commit data for the dplyr repo from github API
@@ -195,11 +207,7 @@ The tidyjson package comes with several JSON example datasets:
 Each dataset has some example tidyjson queries in `help(commits)`, 
 `help(issues)`, `help(worldbank)` and `help(companies)`.
 
-## JSON
-
-(TODO: Need to describe JSON more here).
-
-### Create a `tbl_json` object
+### Creating a `tbl_json` object
 
 The first step in using tidyjson is to convert your JSON into a `tbl_json` object.
 Almost every function in tidyjson accepts a `tbl_json` object as it's first 
@@ -231,8 +239,10 @@ Behind the scenes, `as.tbl_json()` is parsing the JSON strings and creating a
 data.frame with 1 column, `document.id`, which keeps track of the character 
 vector position (index) where the JSON data came from.
 
-TODO: Need to show how to create one from a data.frame
-TODO: Also need to talk about JSON lines format
+TODO
+
+- Need to show how to create one from a data.frame
+- Also need to talk about JSON lines format
 
 ## Verbs
 
@@ -257,7 +267,7 @@ JSON.
 | `gather_array()`    | array  | column.name     | Duplicates rows   | index column     | array values   |
 | `gather_keys()`     | object | column.name     | Duplicates rows   | key column       | object values  |
 | `spread_values()`   | object | ... = columns   | none              | N value columns  | none           |
-| `append_values_X()` | scalar | colum.name      | none              | column of type X | none           |
+| `append_values_X()` | scalar | column.name     | none              | column of type X | none           |
 
 ### Identify JSON structure with `json_types()`
 
@@ -360,6 +370,88 @@ c('{"name": "bob", "children": ["sally", "george"]}', '{"name": "anne"}') %>%
 
 This is useful when you want to limit your data to just information found in
 a specific key.
+
+## A real example
+
+Included in the tidyjson package is a `r length(worldbank)` record sample, 
+`worldbank`, which contains world bank funded projects from 
+[jsonstudio](http://jsonstudio.com/resources/).
+
+First, let's take a look at a single record. We can use `jsonlite::prettify` to
+make the JSON easy to read. But because some of the text is very
+lengthy (e.g., the abstract and many URLs), we are going to jump through some
+hoops to truncate the result to 80 characters so it will fit in the vignette:
+
+```{r}
+library(jsonlite)
+library(stringr)
+worldbank[1] %>% prettify %>% 
+  str_split("\n") %>% unlist %>% 
+  lapply(str_sub, 1, 80) %>% paste(collapse = "\n") %>% 
+  writeLines
+```
+
+An interesting objects is "majorsector_percent", which appears to capture the
+distribution of each project by sector. We also have several funding amounts,
+such as "totalamt", which indicate how much money went into each project.
+
+Let's grab the "totalamt", and then gather the array of sectors and their
+percent allocations.
+
+```{r}
+amts <- worldbank %>% as.tbl_json %>%
+  spread_values(
+    total = jnumber("totalamt")
+  ) %>% 
+  enter_object("majorsector_percent") %>% gather_array %>%
+  spread_values(
+    sector = jstring("Name"),
+    pct = jnumber("Percent")
+  ) %>%
+  select(document.id, sector, total, pct) %>%
+  tbl_df 
+amts
+```
+
+Let's check that the "pct" column really adds up to 100:
+
+```{r}
+amts %>% 
+  group_by(document.id) %>%
+  summarize(pct.total = sum(pct)) %>%
+  group_by(pct.total) %>%
+  tally
+```
+
+It appears to always add up to 100. Let's also check the distribution of
+the total amounts.
+
+```{r}
+summary(amts$total)
+```
+
+Many are 0, the mean is $80m and the max is over $1bn.
+
+Let's now aggregate by the sector and compute, on a dollar weighted basis,
+where the money is going by sector
+
+```{r}
+amts %>%
+  mutate(
+    pct = pct / 100,
+    spend.k = total / 1000 * pct
+  ) %>%
+  group_by(sector) %>%
+  summarize(
+    spend.k = sum(spend.k)
+  ) %>%
+  ungroup %>%
+  mutate(pct = spend.k / sum(spend.k)) %>%
+  arrange(desc(spend.k))
+```
+
+It looks like in this sample of projects, "Information and Communication" is
+really low on the worldbank priority list!
 
 ## Strategies
 
