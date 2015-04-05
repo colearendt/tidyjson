@@ -56,6 +56,7 @@ and the [magrittr](http://cran.r-project.org/web/packages/magrittr/index.html) `
 A simple example of how tidyjson works is as follows:
 
 ```{r, message = FALSE}
+library(tidyjson)   # this library
 library(dplyr)      # for %>% and other dplyr functions
 
 # Define a simple JSON array of people
