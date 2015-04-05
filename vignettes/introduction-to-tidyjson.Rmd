@@ -9,16 +9,19 @@ vignette: >
   %\usepackage[utf8]{inputenc}
 ---
 
-[JSON](http://json.org/) (JavaScript Object Notation) is a lightweight data
-format that is easy for humans to read and for machines to parse. It is also 
-incredibly flexible. JSON has become a common format used in:
+[JSON](http://json.org/) (JavaScript Object Notation) is a lightweight and 
+flexible data format that is easy for humans to read and for machines to parse. 
+JSON has become a common format used in:
 
 - Public APIs (e.g., [Twitter](https://dev.twitter.com/rest/public))
-- Document oriented NoSQL databases (e.g., [MongoDB](https://www.mongodb.org/))
-- Flexible JSON columns in relational databases (e.g., [PostgreSQL](http://www.postgresql.org/docs/9.4/static/datatype-json.html))
+- NoSQL databases as a document format (e.g., [MongoDB](https://www.mongodb.org/))
+- Relational databases as a new column type (e.g., [PostgreSQL](http://www.postgresql.org/docs/9.4/static/datatype-json.html))
 
-As such, R users are increasingly faced with JSON data sets, and need easy and
-reliable ways to turn those data sets into data.frames for analysis or modeling.
+The tidyjson package provides a grammar for turning JSON data into tidy
+data.frames that are easy to work with in dplyr, ggplot2 and other modeling and 
+analytics packages.
+
+## Why use tidyjson?
 
 There are already several libraries for working with JSON data in R, such as
 [rjson](http://cran.r-project.org/web/packages/rjson/index.html),
@@ -48,7 +51,7 @@ and the [magrittr](http://cran.r-project.org/web/packages/magrittr/index.html) `
 - Allow for extraction of data in values *or* key names
 - Ensure edge cases are handled correctly (especially empty data)
 
-## A Simple Example
+## A simple example
 
 A simple example of how tidyjson works is as follows:
 
@@ -80,7 +83,7 @@ However, if the structure of the data changed, so would the output from `fromJSO
 So even in this simple example there is value in the explicit structure defined
 in the tidyjson pipeline above.
 
-## A Complex Example
+## A more complex example
 
 The tidyjson package really shines in a more complex example. Consider the 
 following JSON, which describes three purchases of five items made by two 
@@ -370,7 +373,7 @@ step can be to look at individual records with `jsonlite::prettify()`:
 
 ```{r, message = FALSE}
 library(jsonlite)
-prettify(json)
+prettify('[{"name": "bob", "children": ["sally", "george"]}, {"name": "anne"}]')
 ```
 
 Examining various random records can begin to give you a sense of what the JSON
