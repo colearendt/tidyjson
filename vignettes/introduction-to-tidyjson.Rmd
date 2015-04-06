@@ -142,7 +142,7 @@ can parse the JSON:
 ```{r}
 library(jsonlite)
 # Parse the JSON into a data.frame
-purch_df <- jsonlite::fromJSON(purch_json)
+purch_df <- jsonlite::fromJSON(purch_json, simplifyDataFrame = TRUE)
 # Examine results
 purch_df
 ```
@@ -166,18 +166,14 @@ Reasoning about code like this is nearly impossible, and further, the relational
 structure of the data is lost (we no longer have the name of the user).
 
 We can instead try to use dplyr and the `do{}` operator to get at the
-data in the nested data.frames, but this is equally challenging:
+data in the nested data.frames, but this is equally challenging and confusing:
 
 ```{r}
-purch_df %>% group_by(name) %>% 
-  do(
-    data.frame(
-      name = .$name, 
-      items = .$purchases[[1]] %>% rowwise %>% do({.$items}),
-      stringsAsFactors = FALSE
-    )
-  ) %>% 
-  summarize(price = sum(items.price))
+purch_df %>% group_by(name) %>% do({
+  .$purchases[[1]] %>% rowwise %>% do({
+    .$items[, "price", drop = FALSE]
+    })
+  }) %>% summarize(price = sum(price))
 ```
 
 Using tidyjson, we can build a pipeline to turn this JSON into a tidy data.frame
