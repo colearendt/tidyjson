@@ -73,26 +73,26 @@ people <- '
 ]'
 
 # Structure the data
-people %>%          # Use the %>% pipe operator to pass json through a pipeline 
-  as.tbl_json %>%   # Parse the JSON and setup a 'tbl_json' object
-  gather_array %>%  # Gather (stack) the array by index
-  spread_values(    # Spread (widen) values to widen the data.frame
-    user.name = jstring("name"),  # Extract the "name" object as a character column "user.name"
-    user.age = jnumber("age")     # Extract the "age" object as a numeric column "user.age"
+people %>%                  # %>% is the magrittr pipeline operator 
+  as.tbl_json %>%           # parse the JSON and setup a 'tbl_json' object
+  gather_array %>%          # gather (stack) the array by index
+  spread_values(            # spread (widen) values to widen the data.frame
+    name = jstring("name"), # value of "name" becomes a character column
+    age = jnumber("age")    # value of "age" becomes a numeric column
   )
 ```
 
 In such a simple example, we can use `fromJSON` in the jsonlite package to do
 this much faster:
 
-```{r}
+```{r, message = FALSE}
 library(jsonlite)
-jsonlite::fromJSON(people)
+jsonlite::fromJSON(people, simplifyDataFrame = TRUE)
 ```
 
-However, if the structure of the data changed, so would the output from `fromJSON`.
-So even in this simple example there is value in the explicit structure defined
-in the tidyjson pipeline above.
+However, if the structure of the JSON data changed, so would the columns output 
+by `fromJSON`. So even in this simple example there is value in the explicit 
+structure defined in the tidyjson pipeline above.
 
 ## A more complex example
 
@@ -136,9 +136,8 @@ purch_json <- '
 ]'
 ```
 
-Suppose we want to find out how much each person has spent.
-
-Using jsonlite, we can parse the JSON:
+Suppose we want to find out how much each person has spent. Using jsonlite, we 
+can parse the JSON:
 
 ```{r}
 library(jsonlite)
@@ -148,7 +147,8 @@ purch_df <- jsonlite::fromJSON(purch_json)
 purch_df
 ```
 
-However, the resulting data structure is a complex nested data.frame:
+This looks deceptively simple, the resulting data structure is actually a
+complex nested data.frame:
 
 ```{r}
 str(purch_df)
@@ -157,27 +157,44 @@ str(purch_df)
 This is difficult to work with, and we end up writing code like this:
 
 ```{r}
-lapply(lapply(purch_df$purchases, `[[`, "items"), lapply, `[[`, "price")
+items <- lapply(purch_df$purchases, `[[`, "items")
+prices <- lapply(items, lapply, `[[`, "price")
+vapply(lapply(prices, unlist), sum, integer(1))
 ```
 
 Reasoning about code like this is nearly impossible, and further, the relational
 structure of the data is lost (we no longer have the name of the user).
 
+We can instead try to use dplyr and the `do{}` operator to get at the
+data in the nested data.frames, but this is equally challenging:
+
+```{r}
+purch_df %>% group_by(name) %>% 
+  do(
+    data.frame(
+      name = .$name, 
+      items = .$purchases[[1]] %>% rowwise %>% do({.$items}),
+      stringsAsFactors = FALSE
+    )
+  ) %>% 
+  summarize(price = sum(items.price))
+```
+
 Using tidyjson, we can build a pipeline to turn this JSON into a tidy data.frame
 where each row corresponds to a purchased item:
 
 ```{r}
-purch_items <- purch_json %>% 
-  as.tbl_json %>% gather_array %>%
-  spread_values(person = jstring("name")) %>% 
-  enter_object("purchases") %>% gather_array %>%
-  spread_values(purchase.date = jstring("date")) %>%
-  enter_object("items") %>% gather_array %>%
-  spread_values(
+purch_items <- purch_json %>% as.tbl_json %>%
+  gather_array %>%                                     # stack the users 
+  spread_values(person = jstring("name")) %>%          # extract the user name
+  enter_object("purchases") %>% gather_array %>%       # stack the purchases
+  spread_values(purchase.date = jstring("date")) %>%   # extract the purchase date
+  enter_object("items") %>% gather_array %>%           # stack the items
+  spread_values(                                       # extract item name and price
     item.name = jstring("name"),
     item.price = jnumber("price")
   ) %>%
-  select(person, purchase.date, item.name, item.price)
+  select(person, purchase.date, item.name, item.price) # select only what is needed
 ```
 
 The resulting data.frame is exactly what we want
