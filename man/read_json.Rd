@@ -4,14 +4,14 @@
 \alias{read_json}
 \title{Reads JSON from an input uri (file, url, ...) and returns a tbl_json}
 \usage{
-read_json(path, json.lines = "infer")
+read_json(path, format = c("json", "jsonl", "infer"))
 }
 \arguments{
 \item{path}{to some json data}
 
-\item{json.lines}{If True, process the data one JSON record per line.
-If False, process the data like one large JSON record.
-If infer, evaluate True only if the suffix of the filepath ends in .jsonl}
+\item{format}{If "json", process the data like one large JSON record.
+If "jsonl", process the data one JSON record per line (json lines format)
+If "infer", the format is the suffix of the given filepath.}
 }
 \value{
 tbl_json instance
