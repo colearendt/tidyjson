@@ -1,27 +1,23 @@
 #' Reads JSON from an input uri (file, url, ...) and returns a tbl_json
 #'
 #' @param path to some json data
-#' @param json.lines
-#'   If True, process the data one JSON record per line.
-#'   If False, process the data like one large JSON record.
-#'   If infer, evaluate True only if the suffix of the filepath ends in .jsonl
+#' @param format
+#'   If "json", process the data like one large JSON record.
+#'   If "jsonl", process the data one JSON record per line (json lines format)
+#'   If "infer", the format is the suffix of the given filepath.
 #' @return tbl_json instance
 #' @export
-read_json <- function(path, json.lines="infer") {
+read_json <- function(path, format = c("json", "jsonl", "infer")) {
 
-  if (json.lines == "infer") {
-    if (any(grep(".[jJ][sS][oO][nN][lL]$", path))) {
-      json.lines <- T
-    } else {
-      json.lines <- F
-    }
+  if (format == "infer" || length(format) > 1) {
+    format <- tail(strsplit(path, "[.]")[[1]], 1)
   }
-
-  return (
-    if (!json.lines) {
-      readChar(path, nchars = file.info(path)$size)
-    } else {
-      readLines(path)
-    }
-  ) %>% as.tbl_json
+  if (format == "json") {
+    data <- readChar(path, nchars = file.info(path)$size)
+  } else if (format == "jsonl") {
+    data <- readLines(path)
+  } else {
+    stop(sprintf("Unrecognized json format: %s", format))
+  }
+  data %>% as.tbl_json
 }
