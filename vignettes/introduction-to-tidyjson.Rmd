@@ -167,7 +167,6 @@ structure of the data is lost (we no longer have the name of the user).
 
 We can instead try to use dplyr and the `do{}` operator to get at the
 data in the nested data.frames, but this is equally challenging and confusing:
-
 ```{r}
 purch_df %>% group_by(name) %>% do({
   .$purchases[[1]] %>% rowwise %>% do({
@@ -207,6 +206,38 @@ purch_items %>% group_by(person) %>% summarize(spend = sum(item.price))
 
 ## Data
 
+### Creating a `tbl_json` object
+
+The first step in using tidyjson is to convert your JSON into a `tbl_json` object.
+Almost every function in tidyjson accepts a `tbl_json` object as it's first 
+parameter, and returns a `tbl_json` object for downstream use. `tbl_json` 
+inherits from `dplyr::tbl`.
+
+The easiest way to construct a `tbl_json` object is directly from a character
+string:
+
+```{r}
+# Using a single character string
+x <- '{"key": "value"}' %>% as.tbl_json
+x
+attr(x, "JSON")
+```
+
+Behind the scenes, `as.tbl_json` is parsing the JSON string and creating a
+data.frame with 1 column, `document.id`, which keeps track of the character 
+vector position (index) where the JSON data came from. In addition, each
+`tbl_json` object has an additional attribute, `JSON`, that contains a list of 
+JSON data of the same length as the number of rows in the `data.frame`.
+
+Often times you will have many lines of JSON data that you want to work with, 
+in which case you can directly convert a character vector to obtain a `tbl_json`
+object with the same number of rows:
+
+```{r}
+# Using a vector of JSON strings
+c('{"key1": "value1"}', '{"key2": "value2"}') %>% as.tbl_json
+```
+
 ### JSON included in the package
 
 The tidyjson package comes with several JSON example datasets:
@@ -220,43 +251,6 @@ The tidyjson package comes with several JSON example datasets:
 
 Each dataset has some example tidyjson queries in `help(commits)`, 
 `help(issues)`, `help(worldbank)` and `help(companies)`.
-
-### Creating a `tbl_json` object
-
-The first step in using tidyjson is to convert your JSON into a `tbl_json` object.
-Almost every function in tidyjson accepts a `tbl_json` object as it's first 
-parameter, and returns a `tbl_json` object for downstream use. `tbl_json` 
-inherits from `dplyr::tbl`.
-
-A `tbl_json` object is comprised of a `data.frame` with an additional attribute,
-`JSON`, that contains a list of JSON data of the same length as the number of
-rows in the `data.frame`. Each row of data in the `data.frame` corresponds to the
-JSON found in the same index of the `JSON` attribute.
-
-The easiest way to construct a `tbl_json` object is directly from a character
-string or vector.
-
-```{r}
-# Will return a 1 row data.frame with a length 1 JSON attribute
-'{"key": "value"}' %>% as.tbl_json
-
-# Will still return a 1 row data.frame with a length 1 JSON attribute as
-# the character string is of length 1 (even though it contains a JSON array of
-# length 2)
-'[{"key1": "value1"}, {"key2": "value2"}]' %>% as.tbl_json
-
-# Will return a 2 row data.frame with a length 2 JSON attribute
-c('{"key1": "value1"}', '{"key2": "value2"}') %>% as.tbl_json
-```
-
-Behind the scenes, `as.tbl_json()` is parsing the JSON strings and creating a
-data.frame with 1 column, `document.id`, which keeps track of the character 
-vector position (index) where the JSON data came from.
-
-TODO
-
-- Need to show how to create one from a data.frame
-- Also need to talk about JSON lines format
 
 ## Verbs
 
@@ -282,6 +276,10 @@ JSON.
 | `gather_keys()`     | object | column.name     | Duplicates rows   | key column       | object values  |
 | `spread_values()`   | object | ... = columns   | none              | N value columns  | none           |
 | `append_values_X()` | scalar | column.name     | none              | column of type X | none           |
+
+TODO: Add `json_lengths()` here and below
+TODO: Length descriptions above
+TODO: Re-order below and above to be consistent
 
 ### Identify JSON structure with `json_types()`
 
