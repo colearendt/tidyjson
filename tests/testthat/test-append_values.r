@@ -181,3 +181,14 @@ test_that("correctly handles append when trying to append an array", {
    ) 
   }
 )
+
+context("my_unlist")
+test_that("my_unlist safely handles edge cases", {
+    
+    expect_identical(my_unlist(list(1, NA)), c(1, NA_integer_))
+    expect_identical(my_unlist(list("a", NA_character_)), c("a", NA_character_))
+    expect_identical(my_unlist(list(1, NULL)), c(1, NA_integer_))
+    expect_identical(my_unlist(list(1, list(1, 1))) %>% length, 2L)
+    
+  }
+)

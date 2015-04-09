@@ -46,7 +46,7 @@ append_values_factory <- function(type, as.value) {
 #' Unlists while preserving NULLs and only unlisting lists with one value
 #' @param l a list that we want to unlist
 my_unlist <- function(l) {
-  nulls <- vapply(l, function(x) is.null(x) | is.list(x), TRUE)
+  nulls <- vapply(l, length, 1L) != 1
   l[nulls] <- NA
   unlist(l, recursive = FALSE)
 }
