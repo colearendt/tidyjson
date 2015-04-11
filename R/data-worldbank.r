@@ -19,7 +19,7 @@
 #'     name = jstring("project_name"), # Spread name 
 #'     region = jstring("regionname")  # Spread region
 #'   ) %>% 
-#'   enter_object("sector") %>%              # Enter the 'sector' object
+#'   enter_object("majorsector_percent") %>%              # Enter the 'sector' object
 #'   gather_array("sector.index") %>%        # Gather the array
 #'   spread_values(sector = jstring("Name")) # Spread the sector name
 #' 

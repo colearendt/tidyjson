@@ -9,6 +9,10 @@ vignette: >
   %\usepackage[utf8]{inputenc}
 ---
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
 [JSON](http://json.org/) (JavaScript Object Notation) is a lightweight and 
 flexible data format that is easy for humans to read and for machines to parse. 
 JSON has become a common format used in:
@@ -386,21 +390,15 @@ a specific key.
 ## A real example
 
 Included in the tidyjson package is a `r length(worldbank)` record sample, 
-`worldbank`, which contains world bank funded projects from 
-[jsonstudio](http://jsonstudio.com/resources/).
+`worldbank`, which contains a subset of the JSON data describing world bank 
+funded projects from [jsonstudio](http://jsonstudio.com/resources/).
 
 First, let's take a look at a single record. We can use `jsonlite::prettify` to
-make the JSON easy to read. But because some of the text is very
-lengthy (e.g., the abstract and many URLs), we are going to jump through some
-hoops to truncate the result to 80 characters so it will fit in the vignette:
+make the JSON easy to read:
 
 ```{r}
 library(jsonlite)
-library(stringr)
-worldbank[1] %>% prettify %>% 
-  str_split("\n") %>% unlist %>% 
-  lapply(str_sub, 1, 80) %>% paste(collapse = "\n") %>% 
-  writeLines
+worldbank[1] %>% prettify
 ```
 
 An interesting objects is "majorsector_percent", which appears to capture the
