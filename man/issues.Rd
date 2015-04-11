@@ -19,7 +19,6 @@ issues \%>\% substr(1, 2000) \%>\% writeLines
 
 # Extract metadata for every issue
 issues \%>\%          # single json document of github issues from dplyr
-  as.tbl_json \%>\%        # turn into a 'tbl_json'
   gather_array \%>\%  # stack as an array
   spread_values(
     id          = jnumber("id"),
@@ -33,7 +32,6 @@ issues \%>\%          # single json document of github issues from dplyr
 
 # Extract label content for issues with labels
 issues \%>\%          # single json document of github issues from dplyr
-  as.tbl_json \%>\%        # turn into a 'tbl_json'
   gather_array \%>\%  # stack as an array
   spread_values(id = jnumber("id")) \%>\% # capture issue id for relational purposes
   enter_object("labels") \%>\%            # filter just those with labels
@@ -45,7 +43,8 @@ issues \%>\%          # single json document of github issues from dplyr
   )
 
 # Get all URLs at the top level of the JSON
-issues \%>\% as.tbl_json \%>\% gather_array \%>\%
+issues \%>\%
+  gather_array \%>\%
   gather_keys \%>\%
   append_values_string() \%>\%
   filter(grepl("url", key))

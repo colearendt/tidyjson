@@ -5,7 +5,7 @@ test_that("filter works with one path", {
     json <- '{"name": "bob", "attributes": {"age": 32, "gender": "male"}}'
 
     expect_identical(
-      json %>% as.tbl_json %>% enter_object("attributes"),
+      json %>% enter_object("attributes"),
       tbl_json(
         data.frame(document.id = 1L),
         list(list(age = 32L, gender = "male"))
@@ -20,7 +20,7 @@ test_that("filter works with multiple depth paths", {
     json <- '{"name": "bob", "attributes": { "demographics": {"age": 32, "gender": "male"}}}'
 
     expect_identical(
-      json %>% as.tbl_json %>% enter_object("attributes", "demographics"),
+      json %>% enter_object("attributes", "demographics"),
       tbl_json(
         data.frame(document.id = 1L),
         list(list(age = 32L, gender = "male"))
@@ -38,7 +38,7 @@ test_that("filter removes records with missing path", {
     )
     
     expect_identical(
-      json %>% as.tbl_json %>% spread_values(name = jstring("name")) %>%
+      json %>% spread_values(name = jstring("name")) %>%
         enter_object("attributes"),
       tbl_json(
         data.frame(
@@ -57,7 +57,7 @@ test_that("works if no paths exist", {
     json <- '{"name": "bob"}'
     
     expect_identical(
-      json %>% as.tbl_json %>% spread_values(name = jstring("name")) %>%
+      json %>% spread_values(name = jstring("name")) %>%
         enter_object("attributes"),
       tbl_json(
         data.frame(
@@ -80,15 +80,15 @@ test_that("correctly handles character(0), {}, []", {
       list())
     
     expect_identical(
-      character(0) %>% as.tbl_json %>% enter_object("key"),
+      character(0) %>% enter_object("key"),
       empty)
     
     expect_identical(
-      '{}' %>% as.tbl_json %>% enter_object("key"),
+      '{}' %>% enter_object("key"),
       empty)
     
     expect_identical(
-      '[]' %>% as.tbl_json %>% enter_object("key"),
+      '[]' %>% enter_object("key"),
       empty)
 
   }

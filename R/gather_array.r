@@ -7,7 +7,7 @@
 #' @export
 gather_array <- function(x, column.name = "array.index") {
   
-  assert_that(is.tbl_json(x))
+  if (!is.tbl_json(x)) x <- as.tbl_json(x)
   
   # Get JSON
   json <- attr(x, "JSON")

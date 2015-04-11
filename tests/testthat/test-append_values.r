@@ -5,7 +5,7 @@ test_that("has correct complete structure with simple input", {
     json <- '[{"name": "anne"}, {"name": "bob"}, {"name": "george"}]'
 
     expect_identical(
-      json %>% as.tbl_json %>% gather_array %>% gather_keys %>% 
+      json %>% gather_array %>% gather_keys %>% 
         append_values_string,
       tbl_json(
         data.frame(
@@ -27,7 +27,7 @@ test_that("string works with value array", {
     json <- '["a", "b"]'
 
     expect_identical(
-      json %>% as.tbl_json %>% gather_array %>% append_values_string,
+      json %>% gather_array %>% append_values_string,
       tbl_json(
         data.frame(
           document.id = c(1L, 1L),
@@ -47,7 +47,7 @@ test_that("string works with simple input", {
     json <- '["a", "b", null]'
 
     expect_identical(
-      (json %>% as.tbl_json %>% gather_array %>% append_values_string)$string,
+      (json %>% gather_array %>% append_values_string)$string,
       c("a", "b", NA_character_)
     )
     
@@ -59,7 +59,7 @@ test_that("number works with simple input", {
     json <- '[1, 2, null]'
 
     expect_identical(
-      (json %>% as.tbl_json %>% gather_array %>% append_values_number)$number,
+      (json %>% gather_array %>% append_values_number)$number,
       c(1, 2, NA_real_)
     )
     
@@ -71,7 +71,7 @@ test_that("logical works with simple input", {
     json <- '[true, false, null]'
 
     expect_identical(
-      (json %>% as.tbl_json %>% gather_array %>% append_values_logical)$logical,
+      (json %>% gather_array %>% append_values_logical)$logical,
       c(TRUE, FALSE, NA)
     )
     
@@ -80,7 +80,7 @@ test_that("logical works with simple input", {
 
 test_that("handles mixed input as appropriate NA", {
     
-    data <- '["a", 1, true, null]' %>% as.tbl_json %>% gather_array 
+    data <- '["a", 1, true, null]' %>% gather_array 
     expect_identical(
       (data %>% append_values_string)$string,
       c("a", "1", "TRUE", NA_character_)
@@ -111,7 +111,7 @@ test_that("correctly handles character(0)", {
     list())
 
     expect_identical(
-      character(0) %>% as.tbl_json %>% append_values_string,
+      character(0) %>% append_values_string,
       empty)
 
   }
@@ -130,7 +130,7 @@ test_that("correctly handles {}", {
       list(nl))
 
     expect_identical(
-      '{}' %>% as.tbl_json %>% append_values_string,
+      '{}' %>% append_values_string,
       empty)
     
   }
@@ -146,7 +146,7 @@ test_that("correctly handles []", {
       list(list()))
 
     expect_identical(
-      '[]' %>% as.tbl_json %>% append_values_string,
+      '[]' %>% append_values_string,
       empty)
     
   }
@@ -154,7 +154,7 @@ test_that("correctly handles []", {
 
 test_that("correctly handles mixed types when force=FALSE", {
 
-    data <- '["a", 1, true, null]' %>% as.tbl_json %>% gather_array 
+    data <- '["a", 1, true, null]' %>% gather_array 
 
     expect_identical(
       (data %>% append_values_string(force=FALSE))$string,
@@ -173,7 +173,7 @@ test_that("correctly handles mixed types when force=FALSE", {
 
 test_that("correctly handles append when trying to append an array", {
 
-   data <- '[["a", "b", "c"], "d", "e", "f"]' %>% as.tbl_json %>% gather_array
+   data <- '[["a", "b", "c"], "d", "e", "f"]' %>% gather_array
    
    expect_identical(
      (data %>% append_values_string())$string,

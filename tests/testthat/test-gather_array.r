@@ -5,7 +5,7 @@ test_that("works with array of length 1", {
     json <- '[{"name": "bob"}]'
     
     expect_identical(
-      json %>% as.tbl_json %>% gather_array,
+      json %>% gather_array,
       tbl_json(
         data.frame(
           document.id = 1L,
@@ -25,7 +25,7 @@ test_that("works with single array", {
     json <- '[{"name": "bob"}, {"name": "susan"}]'
     
     expect_identical(
-      json %>% as.tbl_json %>% gather_array,
+      json %>% gather_array,
       tbl_json(
         data.frame(
           document.id = c(1L, 1L),
@@ -48,7 +48,7 @@ test_that("works with multiple json", {
     )
     
     expect_identical(
-      json %>% as.tbl_json %>% gather_array,
+      json %>% gather_array,
       tbl_json(
         data.frame(
           document.id = c(1L, 1L, 2L),
@@ -68,7 +68,7 @@ test_that("works with value array", {
     json <- c('["a", "b"]')
     
     expect_identical(
-      json %>% as.tbl_json %>% gather_array,
+      json %>% gather_array,
       tbl_json(
         data.frame(
           document.id = c(1L, 1L),
@@ -86,7 +86,7 @@ test_that("empty json are dropped", {
     json <- c('[{"name": "bob"}]', '[]')
     
     expect_identical(
-      json %>% as.tbl_json %>% gather_array,
+      json %>% gather_array,
       tbl_json(
         data.frame(
           document.id = 1L,
@@ -106,7 +106,7 @@ test_that("null values are kept", {
     json <- '["string", null]'
     
     expect_identical(
-      json %>% as.tbl_json %>% gather_array,
+      json %>% gather_array,
       tbl_json(
         data.frame(
           document.id = c(1L, 1L),
@@ -123,7 +123,7 @@ test_that("objects throws error", {
     
     json <- c('[{"name": "bob"}]', '{"name": "susan"}')
     
-    expect_error(json %>% as.tbl_json %>% gather_array)
+    expect_error(json %>% gather_array)
     
   }
 )
@@ -132,7 +132,7 @@ test_that("values throws error", {
     
     json <- c('[{"name": "bob"}]', '"bob"')
     
-    expect_error(json %>% as.tbl_json %>% gather_array)
+    expect_error(json %>% gather_array)
     
   }
 )
@@ -147,13 +147,13 @@ test_that("correctly handles character(0), {}, []", {
       list())
     
     expect_identical(
-      character(0) %>% as.tbl_json %>% gather_array,
+      character(0) %>% gather_array,
       empty)
     
-    expect_error('{}' %>% as.tbl_json %>% gather_array)
+    expect_error('{}' %>% gather_array)
     
     expect_identical(
-      '[]' %>% as.tbl_json %>% gather_array,
+      '[]' %>% gather_array,
       empty)
 
   }

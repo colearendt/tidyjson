@@ -6,7 +6,7 @@
 #' @export
 spread_values <- function(x, ...) {
   
-  assert_that(is.tbl_json(x))
+  if (!is.tbl_json(x)) x <- as.tbl_json(x)
   
   # Get JSON
   json <- attr(x, "JSON")

@@ -19,7 +19,6 @@ commits \%>\% substr(1, 2000) \%>\% writeLines
 
 # Extract metadata for every commit
 commits \%>\%   # single json document of github commits from dplyr
-  as.tbl_json \%>\%  # turn into a 'tbl_json'
   gather_array \%>\%  # stack as an array
   spread_values(
     sha         = jstring("sha"),
