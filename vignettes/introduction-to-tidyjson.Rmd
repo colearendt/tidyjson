@@ -78,7 +78,6 @@ people <- '
 
 # Structure the data
 people %>%                  # %>% is the magrittr pipeline operator 
-  as.tbl_json %>%           # parse the JSON and setup a 'tbl_json' object
   gather_array %>%          # gather (stack) the array by index
   spread_values(            # spread (widen) values to widen the data.frame
     name = jstring("name"), # value of "name" becomes a character column
@@ -183,7 +182,7 @@ Using tidyjson, we can build a pipeline to turn this JSON into a tidy data.frame
 where each row corresponds to a purchased item:
 
 ```{r}
-purch_items <- purch_json %>% as.tbl_json %>%
+purch_items <- purch_json %>%
   gather_array %>%                                     # stack the users 
   spread_values(person = jstring("name")) %>%          # extract the user name
   enter_object("purchases") %>% gather_array %>%       # stack the purchases
@@ -255,6 +254,7 @@ TODO:
 * Describe preservation of JSON under various operations ([, filter, etc.)
 * Add sections on files, data.frames
 * Show a table of methods for tbl_json
+* Explain that you don't have to call as.tbl_json with verbs
 
 ### JSON included in the package
 
@@ -309,7 +309,7 @@ each row of the data.frame, and adds a new column (`type` by default) that
 identifies the type according to the [JSON standard](http://json.org/).
 
 ```{r}
-types <- c('{"a": 1}', '[1, 2]', '"a"', '1', 'true', 'null') %>% as.tbl_json %>%
+types <- c('{"a": 1}', '[1, 2]', '"a"', '1', 'true', 'null') %>%
    json_types
 types$type
 ```
@@ -329,7 +329,7 @@ This is equivalent to "stacking" the array in the data.frame, and lets you
 continue to manipulate the remaining JSON in the elements of the array.
 
 ```{r}
-'[1, "a", {"k": "v"}]' %>% as.tbl_json %>% gather_array %>% json_types
+'[1, "a", {"k": "v"}]' %>% gather_array %>% json_types
 ```
 
 This allows you to *enter into* an array and begin processing it's elements
@@ -343,7 +343,7 @@ the rows in the data.frame to correspond to the keys of the object, and puts the
 values of the object into the JSON attribute.
 
 ```{r}
-'{"name": "bob", "age": 32}' %>% as.tbl_json %>% gather_keys %>% json_types
+'{"name": "bob", "age": 32}' %>% gather_keys %>% json_types
 ```
 
 This allows you to *enter into* the keys of the objects just like `gather_array`
@@ -360,8 +360,7 @@ be captured at each desired key location
 These values can be of varying types at varying depths, e.g.,
 
 ```{r}
-'{"name": {"first": "bob", "last": "jones"}, "age": 32}' %>% 
-  as.tbl_json %>% 
+'{"name": {"first": "bob", "last": "jones"}, "age": 32}' %>%
   spread_values(
     first.name = jstring("name", "first"), 
     age = jnumber("age")
@@ -375,8 +374,9 @@ a column X (for X in "string", "number", "logical") insofar as it is of the
 JSON type specified. For example:
 
 ```{r}
-'{"first": "bob", "last": "jones"}' %>% as.tbl_json %>% 
-  gather_keys() %>% append_values_string()
+'{"first": "bob", "last": "jones"}' %>% 
+  gather_keys() %>%
+  append_values_string()
 ```
 
 Any values that do not conform to the type specified will be NA in the resulting
@@ -395,9 +395,10 @@ data.frame row will be discarded.
 
 ```{r}
 c('{"name": "bob", "children": ["sally", "george"]}', '{"name": "anne"}') %>% 
-  as.tbl_json %>% spread_values(parent.name = jstring("name")) %>%
+  spread_values(parent.name = jstring("name")) %>%
   enter_object("children") %>% 
-  gather_array %>% append_values_string("children")
+  gather_array %>% 
+  append_values_string("children")
 ```
 
 This is useful when you want to limit your data to just information found in
@@ -425,7 +426,7 @@ Let's grab the "totalamt", and then gather the array of sectors and their
 percent allocations.
 
 ```{r}
-amts <- worldbank %>% as.tbl_json %>%
+amts <- worldbank %>%
   spread_values(
     total = jnumber("totalamt")
   ) %>% 
@@ -544,7 +545,7 @@ json <- '{
       }
     ]
 }'
-json %>% as.tbl_json %>% 
+json %>%
   spread_values(customer = jstring("name")) %>% # Keep the customer name
   enter_object("shopping cart") %>%             # Look at their cart
   gather_array %>%                              # Expand the data.frame and dive into each array element
