@@ -151,8 +151,8 @@ purch_df <- jsonlite::fromJSON(purch_json, simplifyDataFrame = TRUE)
 purch_df
 ```
 
-This looks deceptively simple, the resulting data structure is actually a
-complex nested data.frame:
+This looks deceptively simple, on inspection with `str()` we see that the
+resulting data structure is actually a complex nested data.frame:
 
 ```{r}
 str(purch_df)
@@ -239,8 +239,22 @@ object with the same number of rows:
 
 ```{r}
 # Using a vector of JSON strings
-c('{"key1": "value1"}', '{"key2": "value2"}') %>% as.tbl_json
+y <- c('{"key1": "value1"}', '{"key2": "value2"}') %>% as.tbl_json
+y
 ```
+
+This creates a two row `tbl_json` object, where each row corresponds to an index
+of the character vector. We can see the underlying parsed JSON:
+
+```{r}
+attr(y, "JSON")
+```
+
+TODO:
+
+* Describe preservation of JSON under various operations ([, filter, etc.)
+* Add sections on files, data.frames
+* Show a table of methods for tbl_json
 
 ### JSON included in the package
 
@@ -281,9 +295,11 @@ JSON.
 | `spread_values()`   | object | ... = columns   | none              | N value columns  | none           |
 | `append_values_X()` | scalar | column.name     | none              | column of type X | none           |
 
-TODO: Add `json_lengths()` here and below
-TODO: Length descriptions above
-TODO: Re-order below and above to be consistent
+TODO:
+
+* Add `json_lengths()` here and below
+* Length descriptions above
+* Re-order below and above to be consistent
 
 ### Identify JSON structure with `json_types()`
 
@@ -418,12 +434,13 @@ amts <- worldbank %>% as.tbl_json %>%
     sector = jstring("Name"),
     pct = jnumber("Percent")
   ) %>%
-  select(document.id, sector, total, pct) %>%
+  mutate(total.m = total / 10^6) %>%
+  select(document.id, sector, total.m, pct) %>%
   tbl_df 
 amts
 ```
 
-Let's check that the "pct" column really adds up to 100:
+Let's check that the "pct" column really adds up to 100 by project:
 
 ```{r}
 amts %>% 
@@ -437,7 +454,7 @@ It appears to always add up to 100. Let's also check the distribution of
 the total amounts.
 
 ```{r}
-summary(amts$total)
+summary(amts$total.m)
 ```
 
 Many are 0, the mean is $80m and the max is over $1bn.
@@ -447,17 +464,13 @@ where the money is going by sector
 
 ```{r}
 amts %>%
-  mutate(
-    pct = pct / 100,
-    spend.k = total / 1000 * pct
-  ) %>%
   group_by(sector) %>%
   summarize(
-    spend.k = sum(spend.k)
+    spend.portion = sum(total.m * pct / 100)
   ) %>%
   ungroup %>%
-  mutate(pct = spend.k / sum(spend.k)) %>%
-  arrange(desc(spend.k))
+  mutate(spend.dist = spend.portion / sum(spend.portion)) %>%
+  arrange(desc(spend.dist))
 ```
 
 It looks like in this sample of projects, "Information and Communication" is
@@ -485,9 +498,13 @@ entire JSON structure.
 
 Next, you can begin working with the data in R.
 
+TODO:
+
+* Replace below
+
 ```{r}
 # assuming documents are carriage-return delimited, otherwise use readChar
-# json <- readLines(file.json)  # TODO: Need to change this
+# json <- readLines(file.json)
 
 # Inspect the types of objects
 # json %>% json_types %>% table
@@ -546,3 +563,14 @@ relationally.
 Finally, don't forget that once you are done with your JSON tidying, you can
 use [dplyr](http://github.com/hadley/dplyr) to continue manipulating the
 resulting data at your leisure!
+
+## Future work
+
+This package is still a work in progress. Significant additional features we
+are contemplating include:
+
+- Summarizing JSON structures and visualizing them to make working with new JSON
+easier
+- Keeping the JSON in a parsed C++ data structure, and using rcpp to speed up
+the manipulation of JSON
+- Push computations to document oriented databases like MongoDB
