@@ -11,6 +11,7 @@ vignette: >
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+options(dplyr.print_min = 4L, dplyr.print_max = 4L)
 ```
 
 [JSON](http://json.org/) (JavaScript Object Notation) is a lightweight and 
@@ -212,9 +213,10 @@ purch_items %>% group_by(person) %>% summarize(spend = sum(item.price))
 ### Creating a `tbl_json` object
 
 The first step in using tidyjson is to convert your JSON into a `tbl_json` object.
-Almost every function in tidyjson accepts a `tbl_json` object as it's first 
-parameter, and returns a `tbl_json` object for downstream use. `tbl_json` 
-inherits from `dplyr::tbl`.
+Almost every function in tidyjson accepts either a `tbl_json` object or a character
+vector of JSON data as it's first parameter, and returns a `tbl_json` object for 
+downstream use. To facilitate integration with dplyr, `tbl_json` inherits from 
+`dplyr::tbl`.
 
 The easiest way to construct a `tbl_json` object is directly from a character
 string:
@@ -229,7 +231,7 @@ attr(x, "JSON")
 Behind the scenes, `as.tbl_json` is parsing the JSON string and creating a
 data.frame with 1 column, `document.id`, which keeps track of the character 
 vector position (index) where the JSON data came from. In addition, each
-`tbl_json` object has an additional attribute, `JSON`, that contains a list of 
+`tbl_json` object has a "JSON" attribute that contains a list of
 JSON data of the same length as the number of rows in the `data.frame`.
 
 Often times you will have many lines of JSON data that you want to work with, 
@@ -249,12 +251,22 @@ of the character vector. We can see the underlying parsed JSON:
 attr(y, "JSON")
 ```
 
-TODO:
+If your JSON data is already embedded in a data.frame, then you will need
+to call `as.tbl_json` directly in order to specific which column contains
+the JSON data. Note that the JSON in the data.frame should be character data,
+and not a factor. Use `stringsAsFactors = FALSE` in constructing the data.frame
+to avoid turning the JSON into a factor.
 
-* Describe preservation of JSON under various operations ([, filter, etc.)
-* Add sections on files, data.frames
-* Show a table of methods for tbl_json
-* Explain that you don't have to call as.tbl_json with verbs
+```{r}
+df <- data.frame(
+  x = 1:2,
+  JSON = c('{"key1": "value1"}', '{"key2": "value2"}'),
+  stringsAsFactors = FALSE
+) 
+z <- df %>% as.tbl_json(json.column = "JSON")
+z
+attr(z, "JSON")
+```
 
 ### JSON included in the package
 
@@ -286,18 +298,19 @@ The following table provides a reference of how each verb is used and what
 (if any) effect it has on the data.frame rows and columns and on the associated
 JSON.
 
-| Verb                | JSON   | Arguments       | Row Effect        | Column Effect    | JSON Effect    |
-|:--------------------|:-------|:----------------|:------------------|:-----------------|:---------------|
-| `enter_object()`    | object | ... = key path  | Drops without key | none             | object value   | 
-| `json_types()`      | any    | column.name     | Duplicates rows   | type column      | object keys    |
-| `gather_array()`    | array  | column.name     | Duplicates rows   | index column     | array values   |
-| `gather_keys()`     | object | column.name     | Duplicates rows   | key column       | object values  |
-| `spread_values()`   | object | ... = columns   | none              | N value columns  | none           |
-| `append_values_X()` | scalar | column.name     | none              | column of type X | none           |
+| Verb                | JSON   | Arguments       | Row Effect        | Column Effect    | JSON Effect         |
+|:--------------------|:-------|:----------------|:------------------|:-----------------|:--------------------|
+| `enter_object()`    | object | ... = key path  | Drops without key | none             | enter object value  | 
+| `json_types()`      | any    | column.name     | none              | type column      | none                |
+| `gather_array()`    | array  | column.name     | Duplicates rows   | index column     | enter array values  |
+| `gather_keys()`     | object | column.name     | Duplicates rows   | key column       | enter object values |
+| `spread_values()`   | object | ... = columns   | none              | N value columns  | none                |
+| `append_values_X()` | scalar | column.name     | none              | column of type X | none                |
+| `json_lengths()`    | any    | column.name     | none              | length column    | none                |
 
 TODO:
 
-* Add `json_lengths()` here and below
+* Add `json_lengths()` below
 * Length descriptions above
 * Re-order below and above to be consistent
 
@@ -309,9 +322,7 @@ each row of the data.frame, and adds a new column (`type` by default) that
 identifies the type according to the [JSON standard](http://json.org/).
 
 ```{r}
-types <- c('{"a": 1}', '[1, 2]', '"a"', '1', 'true', 'null') %>%
-   json_types
-types$type
+c('{"a": 1}', '[1, 2]', '"a"', '1', 'true', 'null') %>% json_types
 ```
 
 This is particularly useful for inspecting your JSON data types, and can added
@@ -404,6 +415,15 @@ c('{"name": "bob", "children": ["sally", "george"]}', '{"name": "anne"}') %>%
 This is useful when you want to limit your data to just information found in
 a specific key.
 
+### Identify length of JSON objects with `json_lengths()`
+
+When investigating JSON data it can be helpful to identify the lengths of the
+JSON objects or arrays, especialy when they are 'ragged' across documents:
+
+```{r}
+c('[1, 2, 3]', '{"k1": 1, "k2": 2}', '1') %>% json_lengths
+```
+
 ## A real example
 
 Included in the tidyjson package is a `r length(worldbank)` record sample, 
@@ -461,7 +481,7 @@ summary(amts$total.m)
 Many are 0, the mean is $80m and the max is over $1bn.
 
 Let's now aggregate by the sector and compute, on a dollar weighted basis,
-where the money is going by sector
+where the money is going by sector:
 
 ```{r}
 amts %>%
@@ -473,9 +493,6 @@ amts %>%
   mutate(spend.dist = spend.portion / sum(spend.portion)) %>%
   arrange(desc(spend.dist))
 ```
-
-It looks like in this sample of projects, "Information and Communication" is
-really low on the worldbank priority list!
 
 ## Strategies
 
