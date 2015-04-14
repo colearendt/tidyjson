@@ -465,7 +465,10 @@ relationally.
 
 Finally, don't forget that once you are done with your JSON tidying, you can
 use [dplyr](http://github.com/hadley/dplyr) to continue manipulating the
-resulting data.
+resulting data. `dplyr::filter`, `dplyr::arrange` and `dplyr::mutate` can be
+used and will preserve the JSON attribute for further tidyjson manipulation.
+The same is true for the `[` operator. Other `dplyr` functions will destroy
+the JSON attribute, so you will no longer be able to manipulate the JSON data.
 
 ### World bank example
 
