@@ -298,21 +298,15 @@ The following table provides a reference of how each verb is used and what
 (if any) effect it has on the data.frame rows and columns and on the associated
 JSON.
 
-| Verb                | JSON   | Arguments       | Row Effect        | Column Effect    | JSON Effect         |
-|:--------------------|:-------|:----------------|:------------------|:-----------------|:--------------------|
-| `enter_object()`    | object | ... = key path  | Drops without key | none             | enter object value  | 
-| `json_types()`      | any    | column.name     | none              | type column      | none                |
-| `gather_array()`    | array  | column.name     | Duplicates rows   | index column     | enter array values  |
-| `gather_keys()`     | object | column.name     | Duplicates rows   | key column       | enter object values |
-| `spread_values()`   | object | ... = columns   | none              | N value columns  | none                |
-| `append_values_X()` | scalar | column.name     | none              | column of type X | none                |
-| `json_lengths()`    | any    | column.name     | none              | length column    | none                |
-
-TODO:
-
-* Add `json_lengths()` below
-* Length descriptions above
-* Re-order below and above to be consistent
+| Verb                | Use                            | Row Effect          | Column Effect    | JSON Effect  |
+|:--------------------|:-------------------------------|:--------------------|:-----------------|:-------------|
+| `json_types()`      | Identify JSON structure        | none                | type column      | none         |
+| `gather_array()`    | Stack JSON array               | Repeats rows        | index column     | enter array  |
+| `gather_keys()`     | Stack a {"key": value} object  | Repeats rows        | key column       | enter object |
+| `spread_values()`   | Create new columns from values | none                | N value columns  | none         |
+| `append_values_X()` | Append all values of a type    | none                | column of type X | none         |
+| `enter_object()`    | Dive into an object "key"      | Keeps rows with key | none             | enter object |
+| `json_lengths()`    | Identify JSON length           | none                | length column    | none         |
 
 ### Identify JSON structure with `json_types()`
 
@@ -347,7 +341,7 @@ This allows you to *enter into* an array and begin processing it's elements
 with other tidyjson functions. It retains the array.index in case the relative
 position of elements in the array is useful information.
 
-### Stack a "key": <value> object with `gather_keys()`
+### Stack a {"key": value} object with `gather_keys()`
 
 Similar to `gather_array()`, `gather_keys()` takes JSON objects and duplicates 
 the rows in the data.frame to correspond to the keys of the object, and puts the 
@@ -378,7 +372,7 @@ These values can be of varying types at varying depths, e.g.,
   )
 ```
 
-### Stack all values of a specified type with `append_values_X()`
+### Append all values of a specified type with `append_values_X()`
 
 The `append_values_X()` functions let you take the remaining JSON and add it as
 a column X (for X in "string", "number", "logical") insofar as it is of the
