@@ -550,6 +550,7 @@ Instead of using `jsonlite::prettify`, let's quickly summarize the keys using
 tidyjson and visualize the results:
 
 ```{r, fig.width = 7, fig.height = 6}
+library(ggplot2)
 key_stats <- companies %>% 
   gather_keys %>% json_types %>% group_by(key, type) %>% tally
 key_stats
