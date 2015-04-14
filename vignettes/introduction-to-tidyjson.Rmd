@@ -424,7 +424,56 @@ JSON objects or arrays, especialy when they are 'ragged' across documents:
 c('[1, 2, 3]', '{"k1": 1, "k2": 2}', '1') %>% json_lengths
 ```
 
-## A real example
+## Strategies
+
+When beginning to work with JSON data, you often don't have easy access to a
+schema describing what is in the JSON. One of the benefits of document oriented
+data structures is that they let developers create data without having to worry
+about defining the schema explicitly.
+
+Thus, the first step is to understand the structure of the JSON. Begin by 
+visually inspecting a single record with `jsonlite::prettify()`.
+
+```{r}
+'{"key": "value", "array": [1, 2, 3]}' %>% prettify
+```
+
+However, for complex data or large JSON structures this can be tedious. Instead,
+use `gather_keys`, `json_types` and `json_lengths` to summarize the data:
+
+```{r}
+'{"key": "value", "array": [1, 2, 3]}' %>% 
+  gather_keys %>% json_types %>% json_lengths
+```
+
+You can repeat this as you move through the JSON data using `enter_object()` to
+summarize nested structures as well.
+
+Once you have an understanding of how you'd like the data to be assembled, begin
+creating your tidyjson pipeline. Use `enter_objects()` and `gather_array()` to
+navigate the JSON and stack any arrays, and use `spread_values()` to get at 
+(potentially nested) key-value pairs along the way.
+
+Before entering any objects, make sure you first use `spread_values()` to 
+capture any top level identifiers you might need for analytics, summarization or
+relational uses downstream. If an identifier doesn't exist, then you can always
+fall back on the `as.tbl_json` generated document.id column.
+
+If you encounter data where information is encoded in both keys and values,
+then consider using `gather_keys()` and `append_values_X()` where `X` is the type
+of JSON scalar data you expect in the values.
+
+Note that there are often situations where there are multiple arrays or objects
+of differing types that exist at the same level of the JSON hierarchy. In this
+case, you need to use `enter_object()` to enter each of them in *separate*
+pipelines to create *separate* `data.frames` that can then be joined 
+relationally.
+
+Finally, don't forget that once you are done with your JSON tidying, you can
+use [dplyr](http://github.com/hadley/dplyr) to continue manipulating the
+resulting data.
+
+### World bank example
 
 Included in the tidyjson package is a `r length(worldbank)` record sample, 
 `worldbank`, which contains a subset of the JSON data describing world bank 
@@ -494,23 +543,14 @@ amts %>%
   arrange(desc(spend.dist))
 ```
 
-## Strategies
+### Companies example
 
-When beginning to work with JSON data, you often don't have easy access to a
-schema describing what is in the JSON. One of the benefits of document oriented
-data structures is that they let developers create data without having to worry
-about defining the schema explicitly.
+Also included in the tidyjson package is a `r length(companies)` record sample, 
+`companies`, which contains a subset of the JSON data describing startups from 
+[jsonstudio](http://jsonstudio.com/resources/).
 
-Thus, the first step is to understand the structure of the JSON. Begin by 
-visually inspecting a single record with `jsonlite::prettify()`.
-
-```{r}
-'{"key": "value", "array": [1, 2, 3]}' %>% prettify
-```
-
-However, for complex data or large JSON structures this can be tedious.
-Alternatively, we can quickly summarize the keys using tidyjson and visualize
-the results:
+Instead of using `jsonlite::prettify`, let's quickly summarize the keys using 
+tidyjson and visualize the results:
 
 ```{r, fig.width = 7, fig.height = 6}
 key_stats <- companies %>% 
@@ -571,86 +611,6 @@ rounds %>%
     labs(y = "Raised (m)") +
     facet_grid(. ~ category)
 ```
-
-Alternatively, this is a common pattern used
-
-```{r, message = FALSE}
-library(jsonlite)
-prettify('[{"name": "bob", "children": ["sally", "george"]}, {"name": "anne"}]')
-```
-
-Examining various random records can begin to give you a sense of what the JSON
-contains and how it it structured. However, keep in mind that in many cases
-documents that are missing data (either unknown or unrelevant) may omit the
-entire JSON structure.
-
-Next, you can begin working with the data in R.
-
-TODO:
-
-* Replace below
-
-```{r}
-# assuming documents are carriage-return delimited, otherwise use readChar
-# json <- readLines(file.json)
-
-# Inspect the types of objects
-# json %>% json_types %>% table
-```
-
-Then, if you want to work with a single row of data for each JSON object, use
-`spread_values()` to get at (potentially nested) key-value pairs.
-
-If all you care about is data from a certain sub-object, then use `enter_object()`
-to dive into that object directly. Make sure you first use `spread_values()` to
-capture any top level identifiers you might need for analytics, summarization or
-relational uses downstream.
-
-If you want to access arrays, use `gather_array()` to stack their elements, and
-then proceed as though you had separate documents. (Again, first spread any
-top-level keys you need.)
-
-Finally, if you have data where information is encoded in both keys and values,
-then consider using `gather_keys()` and `append_values_X()` where `X` is the type
-of JSON scalar data you expect in the values.
-
-It's important to remember that any of the above can be combined together
-iteratively to do some fairly complex data extraction. For example:
-
-```{r}
-json <- '{
-  "name": "bob",
-  "shopping cart": 
-    [
-      {
-        "date": "2014-04-02",
-        "basket": {"books": 2, "shirts": 0}
-      },
-      {
-        "date": "2014-08-23",
-        "basket": {"books": 1}
-      }
-    ]
-}'
-json %>%
-  spread_values(customer = jstring("name")) %>% # Keep the customer name
-  enter_object("shopping cart") %>%             # Look at their cart
-  gather_array %>%                              # Expand the data.frame and dive into each array element
-  spread_values(date = jstring("date")) %>%     # Keep the date of the cart
-  enter_object("basket") %>%                    # Look at their basket
-  gather_keys("product") %>%                    # Expand the data.frame for each product and capture it's name
-  append_values_number("quantity")              # Capture the values as the quantity
-```
-
-Note that there are often situations where there are multiple arrays or objects
-of differing types that exist at the same level of the JSON hierarchy. In this
-case, you need to use `enter_object()` to enter each of them in *separate*
-pipelines to create *separate* `data.frames` that can then be joined 
-relationally.
-
-Finally, don't forget that once you are done with your JSON tidying, you can
-use [dplyr](http://github.com/hadley/dplyr) to continue manipulating the
-resulting data at your leisure!
 
 ## Future work
 
