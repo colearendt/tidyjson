@@ -501,8 +501,78 @@ schema describing what is in the JSON. One of the benefits of document oriented
 data structures is that they let developers create data without having to worry
 about defining the schema explicitly.
 
-Thus, the first step is to usually understand the structure of the JSON. A first
-step can be to look at individual records with `jsonlite::prettify()`:
+Thus, the first step is to understand the structure of the JSON. Begin by 
+visually inspecting a single record with `jsonlite::prettify()`.
+
+```{r}
+'{"key": "value", "array": [1, 2, 3]}' %>% prettify
+```
+
+However, for complex data or large JSON structures this can be tedious.
+Alternatively, we can quickly summarize the keys using tidyjson and visualize
+the results:
+
+```{r, fig.width = 7, fig.height = 6}
+key_stats <- companies %>% 
+  gather_keys %>% json_types %>% group_by(key, type) %>% tally
+key_stats
+ggplot(key_stats, aes(key, n, fill = type)) +
+  geom_bar(stat = "identity", position = "stack") +
+  coord_flip()
+```
+
+Suppose we are interested in exploring the funding round data. Let's examine
+it's structure:
+
+```{r, fig.width = 7, fig.height = 2}
+companies %>%
+  enter_object("funding_rounds") %>%
+  gather_array %>% 
+  gather_keys %>% json_types %>% group_by(key, type) %>% tally %>%
+  ggplot(aes(key, n, fill = type)) +
+    geom_bar(stat = "identity", position = "stack") +
+    coord_flip()
+```
+
+Now, referencing the above visualizations, we can structure some of the data for 
+analysis:
+
+```{r}
+rounds <- companies %>%
+  spread_values(
+    id = jstring("_id", "$oid"),
+    name = jstring("name"),
+    category = jstring("category_code")
+  ) %>%
+  enter_object("funding_rounds") %>%
+  gather_array %>%
+  spread_values(
+    round = jstring("round_code"),
+    raised = jnumber("raised_amount")
+  )
+rounds %>% glimpse
+```
+
+Now we can summarize by category and round how much is raised on average by
+round:
+
+```{r, fig.width = 7, fig.height = 2}
+rounds %>%
+  filter(
+    !is.na(raised),
+    round %in% c('a', 'b', 'c'),
+    category %in% c('enterprise', 'software', 'web')
+  ) %>%
+  group_by(category, round) %>%
+  summarize(raised = mean(raised)) %>%
+  ggplot(aes(round, raised / 10^6, fill = round)) +
+    geom_bar(stat = "identity") +
+    coord_flip() +
+    labs(y = "Raised (m)") +
+    facet_grid(. ~ category)
+```
+
+Alternatively, this is a common pattern used
 
 ```{r, message = FALSE}
 library(jsonlite)
