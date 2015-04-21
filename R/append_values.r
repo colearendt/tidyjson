@@ -15,7 +15,7 @@ append_values_factory <- function(type, as.value) {
   
   function(x, column.name = type, force=TRUE) {
     
-    assert_that(is.tbl_json(x))
+    if (!is.tbl_json(x)) x <- as.tbl_json(x)
   
     # Extract json 
     json <- attr(x, "JSON")

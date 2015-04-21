@@ -5,7 +5,7 @@
 #' @export
 enter_object <- function(x, ...) {
   
-  assert_that(is.tbl_json(x))
+  if (!is.tbl_json(x)) x <- as.tbl_json(x)
   
   # Prepare path
   path <- prep_path(...)

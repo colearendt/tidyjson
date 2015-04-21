@@ -5,7 +5,7 @@ test_that("works in a simple case", {
     json <- '{"key1": 1, "key2": 2}'
 
     expect_identical(
-      json %>% as.tbl_json %>% gather_keys,
+      json %>% gather_keys,
       tbl_json(
         data.frame(
           document.id = c(1L, 1L),
@@ -29,7 +29,7 @@ test_that("works with compound values", {
 		}'
 
     expect_identical(
-      json %>% as.tbl_json %>% gather_keys,
+      json %>% gather_keys,
       tbl_json(
         data.frame(
           document.id = c(1L, 1L, 1L, 1L),
@@ -45,9 +45,9 @@ test_that("works with compound values", {
 
 test_that("throws errors with incorrect types", {
     
-    expect_error('1' %>% as.tbl_json %>% gather_keys())
-    expect_error('["a"]' %>% as.tbl_json %>% gather_keys())
-    expect_error('null' %>% as.tbl_json %>% gather_keys())
+    expect_error('1' %>% gather_keys())
+    expect_error('["a"]' %>% gather_keys())
+    expect_error('null' %>% gather_keys())
     
   }
 )
@@ -62,15 +62,15 @@ test_that("correctly handles character(0), {}, []", {
       list())
     
     expect_identical(
-      character(0) %>% as.tbl_json %>% gather_keys,
+      character(0) %>% gather_keys,
       empty)
     
     expect_identical(
-      '{}' %>% as.tbl_json %>% gather_keys,
+      '{}' %>% gather_keys,
       empty
     )
     
-    expect_error('[]' %>% as.tbl_json %>% gather_keys)
+    expect_error('[]' %>% gather_keys)
 
   }
 )

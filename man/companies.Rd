@@ -19,7 +19,6 @@ companies[[1]] \%>\% writeLines
 
 # Get the key employees data
 key_employees <- companies \%>\%
-  as.tbl_json \%>\%
   spread_values(
     name = jstring("name")
   ) \%>\%

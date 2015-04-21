@@ -74,7 +74,7 @@ test_that("exctract various values", {
     json <- '{"name": "bob", "age": 32, "customer": true}'
     
     expect_identical(
-      json %>% as.tbl_json %>% 
+      json %>%
         spread_values(
           name = jstring("name"),
           age = jnumber("age"),
@@ -102,7 +102,7 @@ test_that("exctract down a path", {
     json <- '{"name": {"first": "bob", "last": "smith"}}'
     
     expect_identical(
-      json %>% as.tbl_json %>% 
+      json %>%
         spread_values(first.name = jstring("name", "first")),
       tbl_json(
         data.frame(
@@ -129,7 +129,7 @@ test_that("correctly handles character(0)", {
       list())
     
     expect_identical(
-      character(0) %>% as.tbl_json %>% spread_values(value = jstring("key")),
+      character(0) %>% spread_values(value = jstring("key")),
       empty)
     
   }
@@ -147,7 +147,7 @@ test_that("correctly handles {}", {
       list(nl))
     
     expect_identical(
-      '{}' %>% as.tbl_json %>% spread_values(value = jstring("key")),
+      '{}' %>% spread_values(value = jstring("key")),
       empty
     )
 
@@ -166,7 +166,7 @@ test_that("correctly handles []", {
       list(list()))
     
     expect_identical(
-      '[]' %>% as.tbl_json %>% spread_values(value = jstring("key")),
+      '[]' %>% spread_values(value = jstring("key")),
       empty
     )
     

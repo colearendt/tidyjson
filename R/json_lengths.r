@@ -6,7 +6,7 @@
 #' @export
 json_lengths <- function(x, column.name = "length") {
   
-  assert_that(is.tbl_json(x))
+  if (!is.tbl_json(x)) x <- as.tbl_json(x)
   
   # Extract json 
   json <- attr(x, "JSON")

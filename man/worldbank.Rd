@@ -19,7 +19,6 @@ worldbank[[1]] \%>\% writeLines
 
 # Get the top 10 sectors by funded project in Africa
 wb_sectors <- worldbank \%>\%   # 500 Projects funded by the world bank
-  as.tbl_json \%>\%    # turn into a tbl_json object
   spread_values(
     name = jstring("project_name"), # Spread name
     region = jstring("regionname")  # Spread region

@@ -6,7 +6,7 @@
 #' @export
 json_types <- function(x, column.name = "type") {
   
-  assert_that(is.tbl_json(x))
+  if (!is.tbl_json(x)) x <- as.tbl_json(x)
   
   # Extract json 
   json <- attr(x, "JSON")
