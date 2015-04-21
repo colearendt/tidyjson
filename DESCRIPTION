@@ -17,5 +17,6 @@ LazyData: true
 Suggests:
     knitr,
     testthat,
-    ggplot2
+    ggplot2,
+    magrittr
 VignetteBuilder: knitr
