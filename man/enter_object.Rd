@@ -26,7 +26,7 @@ enter into. Keep in mind that any rows with JSON that do not contain the key
 will be discarded by this function.
 }
 \examples{
-library(dplyr)
+library(magrittr)  # for \%>\%
 c('{"name": "bob", "children": ["sally", "george"]}', '{"name": "anne"}') \%>\%
   spread_values(parent.name = jstring("name")) \%>\%
   enter_object("children") \%>\%

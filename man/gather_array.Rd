@@ -36,6 +36,7 @@ values are themselves objects or arrays), continue using other tidyjson
 functions to structure the data as needed.
 }
 \examples{
+library(magrittr)  # for \%>\%
 '[1, "a", {"k": "v"}]' \%>\% gather_array \%>\% json_types
 }
 

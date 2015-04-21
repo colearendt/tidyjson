@@ -415,7 +415,7 @@ When investigating JSON data it can be helpful to identify the lengths of the
 JSON objects or arrays, especialy when they are 'ragged' across documents:
 
 ```{r}
-c('[1, 2, 3]', '{"k1": 1, "k2": 2}', '1') %>% json_lengths
+c('[1, 2, 3]', '{"k1": 1, "k2": 2}', '1', {}) %>% json_lengths
 ```
 
 ## Strategies
