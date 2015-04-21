@@ -2,3 +2,4 @@
 .RData
 .Rhistory
 *.swp
+inst/doc

@@ -1,4 +1,13 @@
-#' Append keys to a new column
+#' Appends all values with a specified type as a new column
+#' 
+#' The append_values_X functions let you take any remaining JSON and add it as
+#' a column X (for X in "string", "number", "logical") insofar as it is of the
+#' JSON type specified.
+#'
+#' Any values that do not conform to the type specified will be NA in the resulting
+#' column. This includes other scalar types (e.g., numbers or logicals if you are
+#' using append_values_string) and *also* any rows where the JSON is still an
+#' object or an array.
 #' 
 #' @name append_values
 #' @param x a tbl_json object
@@ -6,6 +15,11 @@
 #'   under
 #' @param force parameter that determines if the variable type should be computed or not
 #'        if force is FALSE, then the function may take more memory
+#' @examples
+#' library(magrittr)  # for %>%
+#' '{"first": "bob", "last": "jones"}' %>% 
+#'   gather_keys() %>%
+#'   append_values_string()
 NULL
 
 #' Creates the append_values_* functions

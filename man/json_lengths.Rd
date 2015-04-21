@@ -2,7 +2,7 @@
 % Please edit documentation in R/json_lengths.r
 \name{json_lengths}
 \alias{json_lengths}
-\title{Add a column that tells the 'length' of the data in the root of the JSON}
+\title{Add a column that contains the length of the JSON data}
 \usage{
 json_lengths(x, column.name = "length")
 }
@@ -15,6 +15,15 @@ json_lengths(x, column.name = "length")
 a tbl_json object with column.name column that tells the length
 }
 \description{
-Add a column that tells the 'length' of the data in the root of the JSON
+When investigating JSON data it can be helpful to identify the lengths of the
+JSON objects or arrays, especialy when they are 'ragged' across documents. The
+json_lengths() function adds a column (default name "length") that contains
+the 'length' of the JSON associated with each row. For objects, this will
+be equal to the number of keys. For arrays, this will be equal to the length
+of the array. All scalar values will be of length 1.
+}
+\examples{
+library(magrittr)  # for \%>\%
+c('[1, 2, 3]', '{"k1": 1, "k2": 2}', '1', {}) \%>\% json_lengths
 }
 

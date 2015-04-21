@@ -1,0 +1,622 @@
+---
+title: "Introduction to tidyjson"
+author: "Jeremy Stanley"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\usepackage[utf8]{inputenc}
+---
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+options(dplyr.print_min = 4L, dplyr.print_max = 4L)
+```
+
+[JSON](http://json.org/) (JavaScript Object Notation) is a lightweight and 
+flexible data format that is easy for humans to read and for machines to parse. 
+JSON has become a common format used in:
+
+- Public APIs (e.g., [Twitter](https://dev.twitter.com/rest/public))
+- NoSQL databases as a document format (e.g., [MongoDB](https://www.mongodb.org/))
+- Relational databases as a new column type (e.g., [PostgreSQL](http://www.postgresql.org/docs/9.4/static/datatype-json.html))
+
+The tidyjson package provides a grammar for turning JSON data into tidy
+data.frames that are easy to work with in dplyr, ggplot2 and other modeling and 
+analytics packages.
+
+## Why use tidyjson?
+
+There are already several libraries for working with JSON data in R, such as
+[rjson](http://cran.r-project.org/web/packages/rjson/index.html),
+[rjsonio](http://cran.r-project.org/web/packages/RJSONIO/index.html) and
+[jsonlite](http://cran.r-project.org/web/packages/jsonlite/index.html). Using
+these libraries, you can transform JSON into a nested R list. However, working
+with nested lists using base R functionality is difficult.
+
+The jsonlite package goes farther by automatically creating a nested R data.frame. 
+This is easier to work with than a list, but has two main limitations. First, the 
+resulting data.frame isn't [tidy](http://vita.had.co.nz/papers/tidy-data.pdf), 
+and so it can still be difficult to work with. Second, the structure of the 
+data.frame may vary as the JSON sample changes, which can happen any time you 
+change the database query or API call that generated the data.
+
+The tidyjson package takes an alternate approach to structuring JSON data into tidy 
+data.frames. Similar to [tidyr](http://cran.r-project.org/web/packages/tidyr/index.html), tidyjson builds
+a grammar for manipulating JSON into a tidy table structure. Tidyjson is based
+on the following principles:
+
+- Leverage other libraries for efficiently parsing JSON ([jsonlite](http://cran.r-project.org/web/packages/jsonlite/index.html))
+- Integrate with pipelines built on [dplyr](http://cran.r-project.org/web/packages/dplyr/index.html)
+and the [magrittr](http://cran.r-project.org/web/packages/magrittr/index.html) `%>%` operator
+- Turn arbitrarily complex and nested JSON into tidy data.frames that can be joined later
+- Guarantee a deterministic data.frame column structure
+- Naturally handle 'ragged' arrays and / or objects (varying lengths by document)
+- Allow for extraction of data in values *or* key names
+- Ensure edge cases are handled correctly (especially empty data)
+
+## A simple example
+
+A simple example of how tidyjson works is as follows:
+
+```{r, message = FALSE}
+library(tidyjson)   # this library
+library(dplyr)      # for %>% and other dplyr functions
+
+# Define a simple JSON array of people
+people <- '
+[
+  {
+    "name": "bob",
+    "age": 32
+  }, 
+  {
+    "name": "susan", 
+    "age": 54
+  }
+]'
+
+# Structure the data
+people %>%                  # %>% is the magrittr pipeline operator 
+  gather_array %>%          # gather (stack) the array by index
+  spread_values(            # spread (widen) values to widen the data.frame
+    name = jstring("name"), # value of "name" becomes a character column
+    age = jnumber("age")    # value of "age" becomes a numeric column
+  )
+```
+
+In such a simple example, we can use `fromJSON` in the jsonlite package to do
+this much faster:
+
+```{r, message = FALSE}
+library(jsonlite)
+jsonlite::fromJSON(people, simplifyDataFrame = TRUE)
+```
+
+However, if the structure of the JSON data changed, so would the columns output 
+by `fromJSON`. So even in this simple example there is value in the explicit 
+structure defined in the tidyjson pipeline above.
+
+## A more complex example
+
+The tidyjson package really shines in a more complex example. Consider the 
+following JSON, which describes three purchases of five items made by two 
+individuals:
+
+```{r}
+purch_json <- '
+[
+  {
+    "name": "bob", 
+    "purchases": [
+      {
+        "date": "2014/09/13",
+        "items": [
+          {"name": "shoes", "price": 187},
+          {"name": "belt", "price": 35}
+        ]
+      }
+    ]
+  },
+  {
+    "name": "susan", 
+    "purchases": [
+      {
+        "date": "2014/10/01",
+        "items": [
+          {"name": "dress", "price": 58},
+          {"name": "bag", "price": 118}
+        ]
+      },
+      {
+        "date": "2015/01/03",
+        "items": [
+          {"name": "shoes", "price": 115}
+        ]
+      }
+    ]
+  }
+]'
+```
+
+Suppose we want to find out how much each person has spent. Using jsonlite, we 
+can parse the JSON:
+
+```{r}
+library(jsonlite)
+# Parse the JSON into a data.frame
+purch_df <- jsonlite::fromJSON(purch_json, simplifyDataFrame = TRUE)
+# Examine results
+purch_df
+```
+
+This looks deceptively simple, on inspection with `str()` we see that the
+resulting data structure is actually a complex nested data.frame:
+
+```{r}
+str(purch_df)
+```
+
+This is difficult to work with, and we end up writing code like this:
+
+```{r}
+items <- lapply(purch_df$purchases, `[[`, "items")
+prices <- lapply(items, lapply, `[[`, "price")
+vapply(lapply(prices, unlist), sum, integer(1))
+```
+
+Reasoning about code like this is nearly impossible, and further, the relational
+structure of the data is lost (we no longer have the name of the user).
+
+We can instead try to use dplyr and the `do{}` operator to get at the
+data in the nested data.frames, but this is equally challenging and confusing:
+```{r}
+purch_df %>% group_by(name) %>% do({
+  .$purchases[[1]] %>% rowwise %>% do({
+    .$items[, "price", drop = FALSE]
+    })
+  }) %>% summarize(price = sum(price))
+```
+
+Using tidyjson, we can build a pipeline to turn this JSON into a tidy data.frame
+where each row corresponds to a purchased item:
+
+```{r}
+purch_items <- purch_json %>%
+  gather_array %>%                                     # stack the users 
+  spread_values(person = jstring("name")) %>%          # extract the user name
+  enter_object("purchases") %>% gather_array %>%       # stack the purchases
+  spread_values(purchase.date = jstring("date")) %>%   # extract the purchase date
+  enter_object("items") %>% gather_array %>%           # stack the items
+  spread_values(                                       # extract item name and price
+    item.name = jstring("name"),
+    item.price = jnumber("price")
+  ) %>%
+  select(person, purchase.date, item.name, item.price) # select only what is needed
+```
+
+The resulting data.frame is exactly what we want
+
+```{r}
+purch_items
+```
+
+And we can easily continue the pipeline in dplyr to compute derived data
+
+```{r}
+purch_items %>% group_by(person) %>% summarize(spend = sum(item.price))
+```
+
+## Data
+
+### Creating a `tbl_json` object
+
+The first step in using tidyjson is to convert your JSON into a `tbl_json` object.
+Almost every function in tidyjson accepts either a `tbl_json` object or a character
+vector of JSON data as it's first parameter, and returns a `tbl_json` object for 
+downstream use. To facilitate integration with dplyr, `tbl_json` inherits from 
+`dplyr::tbl`.
+
+The easiest way to construct a `tbl_json` object is directly from a character
+string:
+
+```{r}
+# Using a single character string
+x <- '{"key": "value"}' %>% as.tbl_json
+x
+attr(x, "JSON")
+```
+
+Behind the scenes, `as.tbl_json` is parsing the JSON string and creating a
+data.frame with 1 column, `document.id`, which keeps track of the character 
+vector position (index) where the JSON data came from. In addition, each
+`tbl_json` object has a "JSON" attribute that contains a list of
+JSON data of the same length as the number of rows in the `data.frame`.
+
+Often times you will have many lines of JSON data that you want to work with, 
+in which case you can directly convert a character vector to obtain a `tbl_json`
+object with the same number of rows:
+
+```{r}
+# Using a vector of JSON strings
+y <- c('{"key1": "value1"}', '{"key2": "value2"}') %>% as.tbl_json
+y
+```
+
+This creates a two row `tbl_json` object, where each row corresponds to an index
+of the character vector. We can see the underlying parsed JSON:
+
+```{r}
+attr(y, "JSON")
+```
+
+If your JSON data is already embedded in a data.frame, then you will need
+to call `as.tbl_json` directly in order to specific which column contains
+the JSON data. Note that the JSON in the data.frame should be character data,
+and not a factor. Use `stringsAsFactors = FALSE` in constructing the data.frame
+to avoid turning the JSON into a factor.
+
+```{r}
+df <- data.frame(
+  x = 1:2,
+  JSON = c('{"key1": "value1"}', '{"key2": "value2"}'),
+  stringsAsFactors = FALSE
+) 
+z <- df %>% as.tbl_json(json.column = "JSON")
+z
+attr(z, "JSON")
+```
+
+### JSON included in the package
+
+The tidyjson package comes with several JSON example datasets:
+
+* `commits`: commit data for the dplyr repo from github API
+* `issues`: issue data for the dplyr repo from github API
+* `worldbank`: world bank funded projects from 
+[jsonstudio](http://jsonstudio.com/resources/)
+* `companies`: startup company data from 
+[jsonstudio](http://jsonstudio.com/resources/)
+
+Each dataset has some example tidyjson queries in `help(commits)`, 
+`help(issues)`, `help(worldbank)` and `help(companies)`.
+
+## Verbs
+
+The rest of tidyjson is comprised of various verbs with operate on `tbl_json`
+objects and return `tbl_json` objects. They are meant to be used in a pipeline
+with the `%>%` operator.
+
+Note that these verbs all operate on *both* the underlying data.frame and the
+JSON, iteratively moving data from the JSON into the data.frame. Any
+modifications of the underlying data.frame outside of these operations
+may produce unintended consequences where the data.frame and JSON become out of
+synch.
+
+The following table provides a reference of how each verb is used and what
+(if any) effect it has on the data.frame rows and columns and on the associated
+JSON.
+
+| Verb                | Use                            | Row Effect          | Column Effect    | JSON Effect  |
+|:--------------------|:-------------------------------|:--------------------|:-----------------|:-------------|
+| `json_types()`      | Identify JSON structure        | none                | type column      | none         |
+| `gather_array()`    | Stack JSON array               | Repeats rows        | index column     | enter array  |
+| `gather_keys()`     | Stack a {"key": value} object  | Repeats rows        | key column       | enter object |
+| `spread_values()`   | Create new columns from values | none                | N value columns  | none         |
+| `append_values_X()` | Append all values of a type    | none                | column of type X | none         |
+| `enter_object()`    | Dive into an object "key"      | Keeps rows with key | none             | enter object |
+| `json_lengths()`    | Identify JSON length           | none                | length column    | none         |
+
+### Identify JSON structure with `json_types()`
+
+One of the first steps you will want to take is to investigate the structure of
+your JSON data. The function `json_types()` inspects the JSON associated with 
+each row of the data.frame, and adds a new column (`type` by default) that 
+identifies the type according to the [JSON standard](http://json.org/).
+
+```{r}
+c('{"a": 1}', '[1, 2]', '"a"', '1', 'true', 'null') %>% json_types
+```
+
+This is particularly useful for inspecting your JSON data types, and can added
+after `gather_array()` (or `gather_keys()`) to inspect the types of the elements
+(or values) in arrays (or objects).
+
+### Stack a JSON array with `gather_array()`
+
+Arrays are sometimes vectors (fixed or varying length integer, character or 
+logical vectors). But they also often contain lists of other objects (like
+a list of purchases for a user). The function `gather_array()` takes JSON arrays
+and duplicates the rows in the data.frame to correspond to the indices of the 
+array, and puts the elements of the array into the JSON attribute. 
+This is equivalent to "stacking" the array in the data.frame, and lets you 
+continue to manipulate the remaining JSON in the elements of the array.
+
+```{r}
+'[1, "a", {"k": "v"}]' %>% gather_array %>% json_types
+```
+
+This allows you to *enter into* an array and begin processing it's elements
+with other tidyjson functions. It retains the array.index in case the relative
+position of elements in the array is useful information.
+
+### Stack a {"key": value} object with `gather_keys()`
+
+Similar to `gather_array()`, `gather_keys()` takes JSON objects and duplicates 
+the rows in the data.frame to correspond to the keys of the object, and puts the 
+values of the object into the JSON attribute.
+
+```{r}
+'{"name": "bob", "age": 32}' %>% gather_keys %>% json_types
+```
+
+This allows you to *enter into* the keys of the objects just like `gather_array`
+let you enter elements of the array.
+
+### Create new columns with JSON values with `spread_values()`
+
+Adding new columns to your `data.frame` is accomplished with `spread_values()`, 
+which lets you dive into (potentially nested) JSON objects and extract specific 
+values. `spread_values()` takes `jstring()`, `jnumber()` or `jlogical()` 
+function calls as arguments in order to specify the type of the data that should 
+be captured at each desired key location
+
+These values can be of varying types at varying depths, e.g.,
+
+```{r}
+'{"name": {"first": "bob", "last": "jones"}, "age": 32}' %>%
+  spread_values(
+    first.name = jstring("name", "first"), 
+    age = jnumber("age")
+  )
+```
+
+### Append all values of a specified type with `append_values_X()`
+
+The `append_values_X()` functions let you take the remaining JSON and add it as
+a column X (for X in "string", "number", "logical") insofar as it is of the
+JSON type specified. For example:
+
+```{r}
+'{"first": "bob", "last": "jones"}' %>% 
+  gather_keys() %>%
+  append_values_string()
+```
+
+Any values that do not conform to the type specified will be NA in the resulting
+column. This includes other scalar types (e.g., numbers or logicals if you are
+using `append_values_string()`) and *also* any rows where the JSON is still an
+object or an array.
+
+### Dive into a specific object "key" with `enter_object()`
+
+For complex JSON structures, you will often need to navigate into nested objects
+in order to continue structuring your data. The function `enter_object()` lets 
+you dive into a specific object key in the JSON attribute, so that all further 
+tidyjson calls happen inside that object (all other JSON data outside the object 
+is discarded). If the object doesn't exist for a given row / index, then that 
+data.frame row will be discarded.
+
+```{r}
+c('{"name": "bob", "children": ["sally", "george"]}', '{"name": "anne"}') %>% 
+  spread_values(parent.name = jstring("name")) %>%
+  enter_object("children") %>% 
+  gather_array %>% 
+  append_values_string("children")
+```
+
+This is useful when you want to limit your data to just information found in
+a specific key.
+
+### Identify length of JSON objects with `json_lengths()`
+
+When investigating JSON data it can be helpful to identify the lengths of the
+JSON objects or arrays, especialy when they are 'ragged' across documents:
+
+```{r}
+c('[1, 2, 3]', '{"k1": 1, "k2": 2}', '1', {}) %>% json_lengths
+```
+
+## Strategies
+
+When beginning to work with JSON data, you often don't have easy access to a
+schema describing what is in the JSON. One of the benefits of document oriented
+data structures is that they let developers create data without having to worry
+about defining the schema explicitly.
+
+Thus, the first step is to understand the structure of the JSON. Begin by 
+visually inspecting a single record with `jsonlite::prettify()`.
+
+```{r}
+'{"key": "value", "array": [1, 2, 3]}' %>% prettify
+```
+
+However, for complex data or large JSON structures this can be tedious. Instead,
+use `gather_keys`, `json_types` and `json_lengths` to summarize the data:
+
+```{r}
+'{"key": "value", "array": [1, 2, 3]}' %>% 
+  gather_keys %>% json_types %>% json_lengths
+```
+
+You can repeat this as you move through the JSON data using `enter_object()` to
+summarize nested structures as well.
+
+Once you have an understanding of how you'd like the data to be assembled, begin
+creating your tidyjson pipeline. Use `enter_objects()` and `gather_array()` to
+navigate the JSON and stack any arrays, and use `spread_values()` to get at 
+(potentially nested) key-value pairs along the way.
+
+Before entering any objects, make sure you first use `spread_values()` to 
+capture any top level identifiers you might need for analytics, summarization or
+relational uses downstream. If an identifier doesn't exist, then you can always
+fall back on the `as.tbl_json` generated document.id column.
+
+If you encounter data where information is encoded in both keys and values,
+then consider using `gather_keys()` and `append_values_X()` where `X` is the type
+of JSON scalar data you expect in the values.
+
+Note that there are often situations where there are multiple arrays or objects
+of differing types that exist at the same level of the JSON hierarchy. In this
+case, you need to use `enter_object()` to enter each of them in *separate*
+pipelines to create *separate* `data.frames` that can then be joined 
+relationally.
+
+Finally, don't forget that once you are done with your JSON tidying, you can
+use [dplyr](http://github.com/hadley/dplyr) to continue manipulating the
+resulting data. `dplyr::filter`, `dplyr::arrange` and `dplyr::mutate` can be
+used and will preserve the JSON attribute for further tidyjson manipulation.
+The same is true for the `[` operator. Other `dplyr` functions will destroy
+the JSON attribute, so you will no longer be able to manipulate the JSON data.
+
+### World bank example
+
+Included in the tidyjson package is a `r length(worldbank)` record sample, 
+`worldbank`, which contains a subset of the JSON data describing world bank 
+funded projects from [jsonstudio](http://jsonstudio.com/resources/).
+
+First, let's take a look at a single record. We can use `jsonlite::prettify` to
+make the JSON easy to read:
+
+```{r}
+library(jsonlite)
+worldbank[1] %>% prettify
+```
+
+An interesting objects is "majorsector_percent", which appears to capture the
+distribution of each project by sector. We also have several funding amounts,
+such as "totalamt", which indicate how much money went into each project.
+
+Let's grab the "totalamt", and then gather the array of sectors and their
+percent allocations.
+
+```{r}
+amts <- worldbank %>%
+  spread_values(
+    total = jnumber("totalamt")
+  ) %>% 
+  enter_object("majorsector_percent") %>% gather_array %>%
+  spread_values(
+    sector = jstring("Name"),
+    pct = jnumber("Percent")
+  ) %>%
+  mutate(total.m = total / 10^6) %>%
+  select(document.id, sector, total.m, pct) %>%
+  tbl_df 
+amts
+```
+
+Let's check that the "pct" column really adds up to 100 by project:
+
+```{r}
+amts %>% 
+  group_by(document.id) %>%
+  summarize(pct.total = sum(pct)) %>%
+  group_by(pct.total) %>%
+  tally
+```
+
+It appears to always add up to 100. Let's also check the distribution of
+the total amounts.
+
+```{r}
+summary(amts$total.m)
+```
+
+Many are 0, the mean is $80m and the max is over $1bn.
+
+Let's now aggregate by the sector and compute, on a dollar weighted basis,
+where the money is going by sector:
+
+```{r}
+amts %>%
+  group_by(sector) %>%
+  summarize(
+    spend.portion = sum(total.m * pct / 100)
+  ) %>%
+  ungroup %>%
+  mutate(spend.dist = spend.portion / sum(spend.portion)) %>%
+  arrange(desc(spend.dist))
+```
+
+### Companies example
+
+Also included in the tidyjson package is a `r length(companies)` record sample, 
+`companies`, which contains a subset of the JSON data describing startups from 
+[jsonstudio](http://jsonstudio.com/resources/).
+
+Instead of using `jsonlite::prettify`, let's quickly summarize the keys using 
+tidyjson and visualize the results:
+
+```{r, fig.width = 7, fig.height = 6}
+library(ggplot2)
+key_stats <- companies %>% 
+  gather_keys %>% json_types %>% group_by(key, type) %>% tally
+key_stats
+ggplot(key_stats, aes(key, n, fill = type)) +
+  geom_bar(stat = "identity", position = "stack") +
+  coord_flip()
+```
+
+Suppose we are interested in exploring the funding round data. Let's examine
+it's structure:
+
+```{r, fig.width = 7, fig.height = 2}
+companies %>%
+  enter_object("funding_rounds") %>%
+  gather_array %>% 
+  gather_keys %>% json_types %>% group_by(key, type) %>% tally %>%
+  ggplot(aes(key, n, fill = type)) +
+    geom_bar(stat = "identity", position = "stack") +
+    coord_flip()
+```
+
+Now, referencing the above visualizations, we can structure some of the data for 
+analysis:
+
+```{r}
+rounds <- companies %>%
+  spread_values(
+    id = jstring("_id", "$oid"),
+    name = jstring("name"),
+    category = jstring("category_code")
+  ) %>%
+  enter_object("funding_rounds") %>%
+  gather_array %>%
+  spread_values(
+    round = jstring("round_code"),
+    raised = jnumber("raised_amount")
+  )
+rounds %>% glimpse
+```
+
+Now we can summarize by category and round how much is raised on average by
+round:
+
+```{r, fig.width = 7, fig.height = 2}
+rounds %>%
+  filter(
+    !is.na(raised),
+    round %in% c('a', 'b', 'c'),
+    category %in% c('enterprise', 'software', 'web')
+  ) %>%
+  group_by(category, round) %>%
+  summarize(raised = mean(raised)) %>%
+  ggplot(aes(round, raised / 10^6, fill = round)) +
+    geom_bar(stat = "identity") +
+    coord_flip() +
+    labs(y = "Raised (m)") +
+    facet_grid(. ~ category)
+```
+
+## Future work
+
+This package is still a work in progress. Significant additional features we
+are contemplating include:
+
+- Summarizing JSON structures and visualizing them to make working with new JSON
+easier
+- Keeping the JSON in a parsed C++ data structure, and using rcpp to speed up
+the manipulation of JSON
+- Push computations to document oriented databases like MongoDB

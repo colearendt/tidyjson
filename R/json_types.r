@@ -1,9 +1,21 @@
 #' Add a column that tells the 'type' of the data in the root of the JSON
-#' 
+#'
+#' The function json_types() inspects the JSON associated with 
+#' each row of the tbl_json data.frame, and adds a new column ("type" by 
+#' default) that identifies the type according to the 
+#' JSON standard at http://json.org/.
+#'
+#' This is particularly useful for inspecting your JSON data types, and can added
+#' after gather_array() (or gather_keys()) to inspect the types of the elements
+#' (or values) in arrays (or objects).
+#'
 #' @param x a tbl_json object
 #' @param column.name the name to specify for the type column
 #' @return a tbl_json object with column.name column that tells the type
 #' @export
+#' @examples 
+#' library(magrittr)  # for %>%
+#' c('{"a": 1}', '[1, 2]', '"a"', '1', 'true', 'null') %>% json_types
 json_types <- function(x, column.name = "type") {
   
   if (!is.tbl_json(x)) x <- as.tbl_json(x)

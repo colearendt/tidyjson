@@ -2,7 +2,7 @@
 % Please edit documentation in R/gather_keys.r
 \name{gather_keys}
 \alias{gather_keys}
-\title{Gathers every key from the top level of the json and stacks them}
+\title{Stack a JSON {"key": value} object}
 \usage{
 gather_keys(x, column.name = "key")
 }
@@ -16,6 +16,18 @@ a tbl_json with a new column (column.name) that captures the keys
   and JSON attribute of the associated value data
 }
 \description{
-Gathers every key from the top level of the json and stacks them
+Given a JSON key value structure, like {"key1": 1, "key2": 2}, the
+gather_keys() function duplicates the rows of the tbl_json data.frame for
+every key, adds a new column (default name "key") to capture the key names,
+and then dives into the JSON values to enable further manipulation with
+downstream tidyjson functions.
+}
+\details{
+This allows you to *enter into* the keys of the objects just like `gather_array`
+let you enter elements of the array.
+}
+\examples{
+library(magrittr)  # for \%>\%
+'{"name": "bob", "age": 32}' \%>\% gather_keys \%>\% json_types
 }
 
