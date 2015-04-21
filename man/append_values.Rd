@@ -34,7 +34,7 @@ using append_values_string) and *also* any rows where the JSON is still an
 object or an array.
 }
 \examples{
-library(magrittr)
+library(dplyr)
 '{"first": "bob", "last": "jones"}' \%>\%
   gather_keys() \%>\%
   append_values_string()

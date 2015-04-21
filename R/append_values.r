@@ -16,7 +16,7 @@
 #' @param force parameter that determines if the variable type should be computed or not
 #'        if force is FALSE, then the function may take more memory
 #' @examples
-#' library(magrittr)
+#' library(dplyr)
 #' '{"first": "bob", "last": "jones"}' %>% 
 #'   gather_keys() %>%
 #'   append_values_string()
