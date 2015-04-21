@@ -13,9 +13,10 @@ From: http://jsonstudio.com/resources/
 }
 \examples{
 library(dplyr)
+library(jsonlite)
 
 # Print the first record
-worldbank[[1]] \%>\% writeLines
+worldbank[[1]] \%>\% prettify
 
 # Get the top 10 sectors by funded project in Africa
 wb_sectors <- worldbank \%>\%   # 500 Projects funded by the world bank

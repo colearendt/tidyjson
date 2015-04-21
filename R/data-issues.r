@@ -8,8 +8,8 @@
 #' 
 #' library(dplyr)
 #' 
-#' # Show first 2k characters of JSON
-#' issues %>% substr(1, 2000) %>% writeLines
+#' # Show first 200 characters of JSON
+#' issues %>% substr(1, 200) %>% writeLines
 #' 
 #' # Extract metadata for every issue
 #' issues %>%          # single json document of github issues from dplyr 
@@ -22,7 +22,7 @@
 #'     sate        = jstring("state"),
 #'     locked      = jlogical("locked"),
 #'     comments    = jnumber("comments")
-#'   )
+#'   ) %>% head
 #' 
 #' # Extract label content for issues with labels
 #' issues %>%          # single json document of github issues from dplyr 
@@ -34,14 +34,15 @@
 #'     url   = jstring("url"),
 #'     name  = jstring("name"),
 #'     color = jstring("color")
-#'   )
+#'   ) %>% head
 #' 
 #' # Get all URLs at the top level of the JSON
 #' issues %>% 
 #'   gather_array %>%
 #'   gather_keys %>%
 #'   append_values_string() %>%
-#'   filter(grepl("url", key))
+#'   filter(grepl("url", key)) %>%
+#'   head
 NULL
 
 
