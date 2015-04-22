@@ -133,7 +133,7 @@ wrap_dplyr_verb <- function(dplyr.verb) {
     y <- dplyr.verb(tbl_df(.data), ...)
   
     # Reconstruct tbl_json without ..JSON column
-    tbl_json(select(y, -..JSON), y$..JSON)
+    tbl_json(select_(y, "-..JSON"), y$..JSON)
     
   }
 }
