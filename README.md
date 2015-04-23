@@ -85,7 +85,7 @@ string or vector.
 '[{"key1": "value1"}, {"key2": "value2"}]' %>% as.tbl_json
 
 # Will return a 2 row data.frame with a length 2 JSON attribute
-c('{"key1": "value1"}', '{"key2": "value2"}' %>% as.tbl_json
+c('{"key1": "value1"}', '{"key2": "value2"}') %>% as.tbl_json
 ```
 
 Behind the scenes, `as.tbl_json` is parsing the JSON strings and creating a
