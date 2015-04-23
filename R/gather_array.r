@@ -11,7 +11,7 @@
 #' lists of other objects (like a list of purchases for a user). The function 
 #' gather_array() takes JSON arrays and duplicates the rows in the data.frame to 
 #' correspond to the indices of the array, and puts the elements of 
-#' the array into the JSON attribute. This is equivalent to “stacking” the array 
+#' the array into the JSON attribute. This is equivalent to "stacking" the array 
 #' in the data.frame, and lets you continue to manipulate the remaining JSON 
 #' in the elements of the array. For simple arrays, use append_values_* to 
 #' capture all of the values of the array. For more complex arrays (where the

@@ -28,13 +28,11 @@ is.tbl_json(x)
 
 \item{drop.null.json}{drop NULL json entries from data.frame and json}
 
-\item{x}{character vector of json}
+\item{x}{an object to convert into a tbl_json object}
 
 \item{...}{other arguments}
 
 \item{json.column}{the name of the JSON column of data in x, if x is a data.frame}
-
-\item{x}{data.frame that has a column of JSON data}
 }
 \description{
 Combines structured JSON (as a data.frame) with remaining JSON
@@ -43,9 +41,5 @@ Note that json.list must have the same length as nrow(df), and if json.list
 has any NULL elements, the corresponding rows will be removed from df. Also
 note that "..JSON" is a reserved column name used internally for filtering
 tbl_json objects, and so is not allowed in the data.frame names.
-
-Turns a character vector into a tbl_json object
-
-Turns a data.frame into a tbl_json object
 }
 

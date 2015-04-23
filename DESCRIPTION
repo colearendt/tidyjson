@@ -12,10 +12,11 @@ Imports:
     jsonlite,
     dplyr
 URL: https://github.com/sailthru/tidyjson
-License: http://www.apache.org/licenses/LICENSE-2.0
+License: MIT + file LICENSE
 LazyData: true
 Suggests:
     knitr,
     testthat,
-    ggplot2
+    ggplot2,
+    magrittr
 VignetteBuilder: knitr

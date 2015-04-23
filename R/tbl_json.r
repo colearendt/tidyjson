@@ -13,6 +13,8 @@ NULL
 #' @param df data.frame
 #' @param json.list list of json lists parsed with fromJSON
 #' @param drop.null.json drop NULL json entries from data.frame and json
+#' @param x an object to convert into a tbl_json object
+#' @param json.column the name of the JSON column of data in x, if x is a data.frame
 #' @param ... other arguments
 #' @rdname tbl_json
 #' @export
@@ -44,10 +46,8 @@ as.tbl_json <- function(x, ...) UseMethod("as.tbl_json")
 #' @rdname tbl_json
 as.tbl_json.tbl_json <- function(x, ...) x
 
-#' Turns a character vector into a tbl_json object
-#' @param x character vector of json
-#' @rdname tbl_json
 #' @export
+#' @rdname tbl_json
 as.tbl_json.character <- function(x, ...) {
 
   # Parse the json
@@ -60,11 +60,8 @@ as.tbl_json.character <- function(x, ...) {
   tbl_json(ids, json)
 }
 
-#' Turns a data.frame into a tbl_json object
-#' @param x data.frame that has a column of JSON data
-#' @param json.column the name of the JSON column of data in x, if x is a data.frame
-#' @rdname tbl_json
 #' @export
+#' @rdname tbl_json
 as.tbl_json.data.frame <- function(x, json.column, ...) {
   
   assert_that(is.character(json.column))
@@ -81,8 +78,8 @@ as.tbl_json.data.frame <- function(x, json.column, ...) {
   
 }
 
-#' @rdname tbl_json
 #' @export
+#' @rdname tbl_json
 is.tbl_json <- function(x) inherits(x, "tbl_json")
 
 #' Extract subsets of a tbl_json object (not replace)
@@ -136,7 +133,7 @@ wrap_dplyr_verb <- function(dplyr.verb) {
     y <- dplyr.verb(tbl_df(.data), ...)
   
     # Reconstruct tbl_json without ..JSON column
-    tbl_json(select(y, -..JSON), y$..JSON)
+    tbl_json(select_(y, "-..JSON"), y$..JSON)
     
   }
 }

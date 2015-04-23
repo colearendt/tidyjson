@@ -14,8 +14,8 @@ Commit data for the dplyr repo from github API
 \examples{
 library(dplyr)
 
-# Show first 2k characters of JSON
-commits \%>\% substr(1, 2000) \%>\% writeLines
+# Show first 200 characters of JSON
+commits \%>\% substr(1, 200) \%>\% writeLines
 
 # Extract metadata for every commit
 commits \%>\%   # single json document of github commits from dplyr
@@ -24,6 +24,6 @@ commits \%>\%   # single json document of github commits from dplyr
     sha         = jstring("sha"),
     author      = jstring("commit", "author", "name"),
     author.date = jstring("commit", "author", "date")
-  )
+  ) \%>\% head
 }
 
