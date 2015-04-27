@@ -1,10 +1,10 @@
 Package: tidyjson
-Title: A Grammar for Turning JSON Into Tidy Tables.
+Title: A Grammar for Turning 'JSON' into Tidy Tables
 Version: 0.2.1
 Author: Jeremy Stanley <jeremy.stanley@gmail.com>
 Maintainer: Jeremy Stanley <jeremy.stanley@gmail.com>
-Description: An easy and consistent way to turn JSON into tidy data frames
-    that are natural to work with in dplyr, ggplot2 and other tools.
+Description: An easy and consistent way to turn 'JSON' into tidy data frames
+    that are natural to work with in 'dplyr', 'ggplot2' and other tools.
 Depends:
     R (>= 3.1.0)
 Imports:
