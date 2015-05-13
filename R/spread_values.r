@@ -41,18 +41,23 @@ spread_values <- function(x, ...) {
 #' @param conversion.function function to convert vector to appropriate type
 jfactory <- function(na.value, conversion.function) {
   
-  function(...) {
+  function(..., recursive = FALSE) {
   
     # Prepare path
     path <- prep_path(...)
-  
+
     # Return a closure to deal with JSON lists
     function(json) {
       data <- list_path(json, path)
       data <- replace_nulls(data, na.value)
-      conversion.function(data)
+      if (recursive == FALSE) {
+         conversion.function(data)
+      } else {
+         vapply(data, function(d) conversion.function(unlist(d)),
+                FUN.VALUE=conversion.function(0))
+      }
     }
-    
+  
   }
   
 }
@@ -62,6 +67,8 @@ jfactory <- function(na.value, conversion.function) {
 #' 
 #' @name jfunctions
 #' @param ... the path to follow
+#' @param recursive logical indicating whether second level and beyond objects
+#'        should be extracted.  Only works when there exists one a single value
 #' @return a function that can operate on parsed JSON data
 NULL
 

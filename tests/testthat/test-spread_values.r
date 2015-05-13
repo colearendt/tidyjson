@@ -9,7 +9,10 @@ test_that("works with simple input", {
     
     expect_identical(jstring("name", "first")(json), c("bob", "susan"))
     expect_identical(jstring("name", "last")(json), c("smith", "jones"))
-    
+
+    expect_identical(jstring("name", "first", recursive=TRUE)(json), c("bob", "susan"))
+    expect_identical(jstring("name", "last", recursive=TRUE)(json), c("smith", "jones"))
+     
   }
 )
 
@@ -24,6 +27,9 @@ test_that("handles missing input properly", {
     )
     
     expect_identical(jstring("name")(json),
+      c("bob", "", NA_character_, NA_character_, NA_character_)
+    )
+    expect_identical(jstring("name", recursive=TRUE)(json),
       c("bob", "", NA_character_, NA_character_, NA_character_)
     )
     
@@ -42,6 +48,9 @@ test_that("handles missing input properly", {
     )
     
     expect_identical(jnumber("age")(json),
+      c(32, NA_real_, NA_real_, NA_real_)
+    )
+    expect_identical(jnumber("age", recursive=TRUE)(json),
       c(32, NA_real_, NA_real_, NA_real_)
     )
     
@@ -63,6 +72,9 @@ test_that("handles missing input properly", {
     expect_identical(jlogical("is.past")(json),
       c(TRUE, FALSE, NA, NA, NA) 
     )
+    expect_identical(jlogical("is.past", recursive=TRUE)(json),
+      c(TRUE, FALSE, NA, NA, NA) 
+    )
   
   }
 )
@@ -72,48 +84,58 @@ context("spread_values")
 test_that("exctract various values", {
     
     json <- '{"name": "bob", "age": 32, "customer": true}'
-    
-    expect_identical(
-      json %>%
-        spread_values(
-          name = jstring("name"),
-          age = jnumber("age"),
-          customer = jlogical("customer")
-        ),
-      tbl_json(
+    expected_value <- tbl_json(
         data.frame(
           document.id = 1L,
           name = "bob",
           age = 32,
           customer = TRUE,
           stringsAsFactors = FALSE
+        ), list(fromJSON(json)))
+    
+    expect_identical(
+      json %>% as.tbl_json %>% 
+        spread_values(
+          name = jstring("name"),
+          age = jnumber("age"),
+          customer = jlogical("customer")
         ),
-        list(
-          fromJSON(json)
-        )
-      )
+      expected_value
+    )
+
+    expect_identical(
+      json %>% as.tbl_json %>% 
+        spread_values(
+          name = jstring("name", recursive=TRUE),
+          age = jnumber("age", recursive=TRUE),
+          customer = jlogical("customer", recursive=TRUE)
+        ),
+      expected_value
     )
     
   }
 )
 
-test_that("exctract down a path", {
+test_that("extract down a path", {
     
     json <- '{"name": {"first": "bob", "last": "smith"}}'
+    expected_value <-  tbl_json(
+ 		       data.frame(
+          		document.id = 1L,
+          		first.name = "bob",
+          		stringsAsFactors = FALSE
+        		), list(fromJSON(json)))
     
     expect_identical(
-      json %>%
+      json %>% as.tbl_json %>% 
         spread_values(first.name = jstring("name", "first")),
-      tbl_json(
-        data.frame(
-          document.id = 1L,
-          first.name = "bob",
-          stringsAsFactors = FALSE
-        ),
-        list(
-          fromJSON(json)
-        )
-      )
+      expected_value
+    )
+
+    expect_identical(
+      json %>% as.tbl_json %>% 
+        spread_values(first.name = jstring("name", "first", recursive=TRUE)),
+      expected_value
     )
     
   }
@@ -129,9 +151,12 @@ test_that("correctly handles character(0)", {
       list())
     
     expect_identical(
-      character(0) %>% spread_values(value = jstring("key")),
+      character(0) %>% as.tbl_json %>% spread_values(value = jstring("key")),
       empty)
-    
+    expect_identical(
+      character(0) %>% as.tbl_json %>% spread_values(value = jstring("key", recursive=TRUE)),
+      empty)
+     
   }
 )
 
@@ -147,11 +172,13 @@ test_that("correctly handles {}", {
       list(nl))
     
     expect_identical(
-      '{}' %>% spread_values(value = jstring("key")),
+      '{}' %>% as.tbl_json %>% spread_values(value = jstring("key")),
       empty
     )
-
-
+    expect_identical(
+      '{}' %>% as.tbl_json %>% spread_values(value = jstring("key", recursive=TRUE)),
+      empty
+    )
   }
 )
 
@@ -166,9 +193,97 @@ test_that("correctly handles []", {
       list(list()))
     
     expect_identical(
-      '[]' %>% spread_values(value = jstring("key")),
+      '[]' %>% as.tbl_json %>% spread_values(value = jstring("key")),
+      empty
+    )
+    expect_identical(
+      '[]' %>% as.tbl_json %>% spread_values(value = jstring("key", recursive=TRUE)),
       empty
     )
     
   }
 )
+
+context("recursive option")
+
+test_that("recursive works for simple input", {
+
+    json <- list(
+      fromJSON('{"name": {"first": "bob", "last": "smith"}}'),
+      fromJSON('{"name": {"first": "susan", "last": "jones"}}')
+    )
+    
+    expect_identical(jstring("name", "first", recursive=TRUE)(json), 
+                     c("bob", "susan"))
+    expect_identical(jstring("name", "last", recursive=TRUE)(json), 
+                     c("smith", "jones"))
+ 
+  }
+)
+
+test_that("recursive works for complex input", {
+
+    json <- list(
+      fromJSON('{"name": {"first": {"string" : "bob"}, "last": "smith"}}'),
+      fromJSON('{"name": {"first": "susan", "last": "jones"}}')
+    )
+    
+    expect_identical(jstring("name", "first", recursive=TRUE)(json), 
+                     c("bob", "susan"))
+    expect_identical(jstring("name", "last", recursive=TRUE)(json), 
+                     c("smith", "jones"))
+
+    json <- list(
+      fromJSON('{"price": {"value" : 30}}'),
+      fromJSON('{"price": 30}')
+    )
+
+    expect_identical(jnumber("price")(json), c(NA_real_, 30))
+    expect_identical(jnumber("price", recursive=TRUE)(json), c(30, 30))
+
+  
+ 
+  }
+)
+
+test_that("recursive works for complex input and 2 levels of recursion", {
+
+    json <- list(
+      fromJSON('{"name": {"first": {"string" : {"string" : "bob"}}, "last": "smith"}}'),
+      fromJSON('{"name": {"first": "susan", "last": "jones"}}')
+    )
+
+    expect_identical(jstring("name", "first", recursive=TRUE)(json), 
+                     c("bob", "susan"))
+    expect_identical(jstring("name", "last", recursive=TRUE)(json), 
+                     c("smith", "jones"))
+
+    json <- list(
+      fromJSON('{"price": {"value" : {"value" : 30}}}'),
+      fromJSON('{"price": 30}')
+    )
+
+    expect_identical(jnumber("price")(json), c(NA_real_, 30))
+    expect_identical(jnumber("price", recursive=TRUE)(json), c(30, 30))
+  }
+)
+
+test_that("recursive returns an error when multiple values are present", {
+
+    json <- list(
+      fromJSON('{"name": {"first": {"string": "bob", "string" : "robert"}, "last": "smith"}}'),
+      fromJSON('{"name": {"first": "susan", "last": "jones"}}')
+    )
+  
+    expect_error(jstring("name", "first", recursive=TRUE)(json))
+
+    json <- list(
+      fromJSON('{"price": {"value" : {"value1" : 30, "value2": 30}}}'),
+      fromJSON('{"price": 30}')
+    )
+ 
+    expect_error(jnumber("price", recursive=TRUE)(json))
+ 
+  }
+)
+
