@@ -68,7 +68,8 @@ jfactory <- function(na.value, conversion.function) {
 #' @name jfunctions
 #' @param ... the path to follow
 #' @param recursive logical indicating whether second level and beyond objects
-#'        should be extracted.  Only works when there exists one a single value
+#'        should be extracted.  Only works when there exists a single value in 
+#'        the nested json object
 #' @return a function that can operate on parsed JSON data
 NULL
 

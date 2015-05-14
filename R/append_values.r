@@ -16,7 +16,8 @@
 #' @param force parameter that determines if the variable type should be computed or not
 #'        if force is FALSE, then the function may take more memory
 #' @param recursive logical indicating whether to extract a single value from a 
-#'        nested object.  Only used when force = TRUE
+#'        nested object.  Only used when force = TRUE.  If force=FALSE, and
+#'        recursive=TRUE, throws an error.
 #' @examples
 #' library(magrittr)  # for %>%
 #' '{"first": "bob", "last": "jones"}' %>% 
@@ -32,6 +33,8 @@ append_values_factory <- function(type, as.value) {
   function(x, column.name = type, force=TRUE, recursive=FALSE) {
     
     if (!is.tbl_json(x)) x <- as.tbl_json(x)
+
+    if (force == FALSE) assert_that(recursive == FALSE)
   
     # Extract json 
     json <- attr(x, "JSON")
@@ -56,7 +59,6 @@ append_values_factory <- function(type, as.value) {
           loc <- (names(new_val) != "")
           new_val[loc] <- NA
        }
-
        new_val <- new_val %>% as.value
        assert_that(length(new_val) == nrow(x))
        x[column.name] <- new_val
@@ -70,6 +72,7 @@ append_values_factory <- function(type, as.value) {
 
 #' Unlists while preserving NULLs and only unlisting lists with one value
 #' @param l a list that we want to unlist
+#' @param recursive logical indicating whether to unlist nested lists
 my_unlist <- function(l, recursive = FALSE) {
   nulls <- vapply(l, length, 1L) != 1
   l[nulls] <- NA

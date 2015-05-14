@@ -29,10 +29,6 @@ test_that("handles missing input properly", {
     expect_identical(jstring("name")(json),
       c("bob", "", NA_character_, NA_character_, NA_character_)
     )
-    expect_identical(jstring("name", recursive=TRUE)(json),
-      c("bob", "", NA_character_, NA_character_, NA_character_)
-    )
-    
   }
 )
 
@@ -50,10 +46,6 @@ test_that("handles missing input properly", {
     expect_identical(jnumber("age")(json),
       c(32, NA_real_, NA_real_, NA_real_)
     )
-    expect_identical(jnumber("age", recursive=TRUE)(json),
-      c(32, NA_real_, NA_real_, NA_real_)
-    )
-    
   }
 )
 
@@ -94,7 +86,7 @@ test_that("exctract various values", {
         ), list(fromJSON(json)))
     
     expect_identical(
-      json %>% as.tbl_json %>% 
+      json %>% 
         spread_values(
           name = jstring("name"),
           age = jnumber("age"),
@@ -102,17 +94,6 @@ test_that("exctract various values", {
         ),
       expected_value
     )
-
-    expect_identical(
-      json %>% as.tbl_json %>% 
-        spread_values(
-          name = jstring("name", recursive=TRUE),
-          age = jnumber("age", recursive=TRUE),
-          customer = jlogical("customer", recursive=TRUE)
-        ),
-      expected_value
-    )
-    
   }
 )
 
@@ -127,17 +108,10 @@ test_that("extract down a path", {
         		), list(fromJSON(json)))
     
     expect_identical(
-      json %>% as.tbl_json %>% 
+      json %>% 
         spread_values(first.name = jstring("name", "first")),
       expected_value
     )
-
-    expect_identical(
-      json %>% as.tbl_json %>% 
-        spread_values(first.name = jstring("name", "first", recursive=TRUE)),
-      expected_value
-    )
-    
   }
 )
 
@@ -151,12 +125,8 @@ test_that("correctly handles character(0)", {
       list())
     
     expect_identical(
-      character(0) %>% as.tbl_json %>% spread_values(value = jstring("key")),
+      character(0) %>% spread_values(value = jstring("key")),
       empty)
-    expect_identical(
-      character(0) %>% as.tbl_json %>% spread_values(value = jstring("key", recursive=TRUE)),
-      empty)
-     
   }
 )
 
@@ -171,14 +141,7 @@ test_that("correctly handles {}", {
         stringsAsFactors = FALSE),
       list(nl))
     
-    expect_identical(
-      '{}' %>% as.tbl_json %>% spread_values(value = jstring("key")),
-      empty
-    )
-    expect_identical(
-      '{}' %>% as.tbl_json %>% spread_values(value = jstring("key", recursive=TRUE)),
-      empty
-    )
+    expect_identical('{}' %>% spread_values(value = jstring("key")), empty)
   }
 )
 
@@ -192,15 +155,7 @@ test_that("correctly handles []", {
         stringsAsFactors = FALSE),
       list(list()))
     
-    expect_identical(
-      '[]' %>% as.tbl_json %>% spread_values(value = jstring("key")),
-      empty
-    )
-    expect_identical(
-      '[]' %>% as.tbl_json %>% spread_values(value = jstring("key", recursive=TRUE)),
-      empty
-    )
-    
+    expect_identical('[]' %>% spread_values(value = jstring("key")), empty)
   }
 )
 
@@ -284,6 +239,22 @@ test_that("recursive returns an error when multiple values are present", {
  
     expect_error(jnumber("price", recursive=TRUE)(json))
  
+  }
+)
+
+test_that("recursive works when nulls are present", {
+
+    json <- c('{"name": {"first": {"string": "bob"}, "last": "smith"}}', 
+              '{"name": {"last": "jones"}}')
+
+    expect_identical(
+       (json %>% spread_values(name = jstring("name", "first", recursive=TRUE)))$name,
+       c("bob", NA_character_))
+
+    json <- c('{"name": {"first": {"string1": "bob", "string2": "robert"}}, "last": "smith"}', 
+              '{"name": {"first": {"string1": "bob"}}, "last": "jones"}')
+
+
   }
 )
 

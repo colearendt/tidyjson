@@ -8,6 +8,8 @@ my_unlist(l, recursive = FALSE)
 }
 \arguments{
 \item{l}{a list that we want to unlist}
+
+\item{recursive}{logical indicating whether to unlist nested lists}
 }
 \description{
 Unlists while preserving NULLs and only unlisting lists with one value

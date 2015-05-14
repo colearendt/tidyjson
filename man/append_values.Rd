@@ -26,7 +26,8 @@ under}
 if force is FALSE, then the function may take more memory}
 
 \item{recursive}{logical indicating whether to extract a single value from a
-nested object.  Only used when force = TRUE}
+nested object.  Only used when force = TRUE.  If force=FALSE, and
+recursive=TRUE, throws an error.}
 }
 \description{
 The append_values_X functions let you take any remaining JSON and add it as
