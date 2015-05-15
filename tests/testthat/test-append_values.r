@@ -182,6 +182,46 @@ test_that("correctly handles append when trying to append an array", {
   }
 )
 
+test_that("recursive works as expected", {
+
+   data <- '{"item1": {"price" : 30}, "item2" : 40, "item3" : 30}' %>% gather_keys 
+   expected_na <- c(NA_real_, 40, 30)
+   expected_val <- c(30, 40, 30)
+
+   expect_identical(
+     (data %>% append_values_number(force=TRUE, recursive=FALSE))$number, 
+     expected_na)
+   expect_identical(
+     (data %>% append_values_number(force=TRUE, recursive=TRUE))$number, 
+     expected_val)
+   expect_identical(
+     (data %>% append_values_number(force=FALSE, recursive=FALSE))$number, 
+     expected_na)
+   expect_error(
+     (data %>% append_values_number(force=FALSE, recursive=TRUE))$number)
+
+   data <- '{"item1": {"price" : {"usd" : {"real" : 30}}}, "item2" : 40, "item3" : 30}' %>% 
+              gather_keys 
+
+   expect_identical(
+     (data %>% append_values_number(recursive=FALSE))$number, 
+     expected_na)
+   expect_identical(
+     (data %>% append_values_number(recursive=TRUE))$number, 
+     expected_val)
+
+   data <- '{"item1": {"price" : 30, "qty" : 1}, "item2" : 40, "item3" : 30}' %>% gather_keys 
+
+   expect_identical(
+     (data %>% append_values_number(recursive=FALSE))$number, 
+     expected_na)
+   expect_identical(
+     (data %>% append_values_number(recursive=TRUE))$number, 
+     expected_na)
+
+  }
+)
+
 context("my_unlist")
 test_that("my_unlist safely handles edge cases", {
 
@@ -189,6 +229,10 @@ test_that("my_unlist safely handles edge cases", {
     expect_identical(my_unlist(list("a", NA_character_)), c("a", NA_character_))
     expect_identical(my_unlist(list(1, NULL)), c(1, NA_integer_))
     expect_identical(my_unlist(list(1, list(1, 1))), c(1, NA_integer_))
+    expect_identical(my_unlist(list(1, list(1))), list(1, 1))
+
+    expect_identical(my_unlist(list(1, NA), recursive=TRUE), c(1, NA_integer_))
+    expect_identical(my_unlist(list(1, list(1)), recursive=TRUE), c(1,1))
 
   }
 )
