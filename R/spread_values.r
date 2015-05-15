@@ -50,7 +50,7 @@ jfactory <- function(na.value, conversion.function) {
     function(json) {
       data <- list_path(json, path)
       data <- replace_nulls(data, na.value)
-      if (recursive == FALSE) {
+      if (!recursive) {
          conversion.function(data)
       } else {
          vapply(data, function(d) conversion.function(unlist(d)),

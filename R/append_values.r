@@ -16,7 +16,7 @@
 #' @param force parameter that determines if the variable type should be computed or not
 #'        if force is FALSE, then the function may take more memory
 #' @param recursive logical indicating whether to extract a single value from a 
-#'        nested object.  Only used when force = TRUE.  If force=FALSE, and
+#'        nested object.  Only used when force = TRUE.  If force = FALSE, and
 #'        recursive=TRUE, throws an error.
 #' @examples
 #' library(magrittr)  # for %>%
@@ -30,7 +30,7 @@ NULL
 #' @param as.value function to force coercion to numeric, string, or logical
 append_values_factory <- function(type, as.value) {
   
-  function(x, column.name = type, force=TRUE, recursive=FALSE) {
+  function(x, column.name = type, force = TRUE, recursive = FALSE) {
     
     if (!is.tbl_json(x)) x <- as.tbl_json(x)
 
@@ -55,8 +55,8 @@ append_values_factory <- function(type, as.value) {
 
        # if new_val is a list and recursive = FALSE, then
        # need to identify values with a name and change to NA
-       if (is.list(new_val) & recursive == FALSE) {
-          loc <- (names(new_val) != "")
+       if (is.list(new_val) && !recursive) {
+          loc <- names(new_val) != ""
           new_val[loc] <- NA
        }
        new_val <- new_val %>% as.value
@@ -102,12 +102,12 @@ append_values_type <- function(json, type) {
 
 #' @export
 #' @rdname append_values
-append_values_string <- append_values_factory("string", function(x) as.character(x))
+append_values_string <- append_values_factory("string", as.character)
 
 #' @export
 #' @rdname append_values
-append_values_number <- append_values_factory("number", function(x) as.numeric(x))
+append_values_number <- append_values_factory("number", as.numeric)
 
 #' @export
 #' @rdname append_values
-append_values_logical <- append_values_factory("logical", function(x) as.logical(x))
+append_values_logical <- append_values_factory("logical", as.logical)
