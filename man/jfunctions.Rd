@@ -18,7 +18,7 @@ jlogical(..., recursive = FALSE)
 \item{...}{the path to follow}
 
 \item{recursive}{logical indicating whether second level and beyond objects
-should be extracted.  Only works when there exists a single value in 
+should be extracted.  Only works when there exists a single value in
 the nested json object}
 }
 \value{

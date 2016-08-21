@@ -14,7 +14,7 @@ and 'value' must be a call to jstring(), jnumber() or jlogical() specifying
 the path to get the value (and the type implicit in the function name)}
 }
 \description{
-The spread_values() function lets you dive into (potentially nested) JSON 
+The spread_values() function lets you dive into (potentially nested) JSON
 objects and extract specific values. spread_values() takes jstring(),
 jnumber() or jlogical() named function calls as arguments in order to specify
 the type of the data that should be captured at each desired key location.
@@ -24,7 +24,7 @@ These values can be of varying types at varying depths.
 library(magrittr)  # for \%>\%
 '{"name": {"first": "bob", "last": "jones"}, "age": 32}' \%>\%
   spread_values(
-    first.name = jstring("name", "first"), 
+    first.name = jstring("name", "first"),
     age = jnumber("age")
   )
 }
