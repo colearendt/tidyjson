@@ -16,7 +16,7 @@ a tbl_json with a new column (column.name) that captures the keys
   and JSON attribute of the associated value data
 }
 \description{
-Given a JSON key value structure, like {"key1": 1, "key2": 2}, the 
+Given a JSON key value structure, like {"key1": 1, "key2": 2}, the
 gather_keys() function duplicates the rows of the tbl_json data.frame for
 every key, adds a new column (default name "key") to capture the key names,
 and then dives into the JSON values to enable further manipulation with
@@ -27,7 +27,7 @@ This allows you to *enter into* the keys of the objects just like `gather_array`
 let you enter elements of the array.
 }
 \examples{
-library(magrittr)  # for \%>\% 
+library(magrittr)  # for \%>\%
 '{"name": "bob", "age": 32}' \%>\% gather_keys \%>\% json_types
 }
 
