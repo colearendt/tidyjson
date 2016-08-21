@@ -10,6 +10,7 @@ Depends:
 Imports:
     assertthat,
     jsonlite,
+    purrr,
     dplyr
 URL: https://github.com/sailthru/tidyjson
 License: MIT + file LICENSE
