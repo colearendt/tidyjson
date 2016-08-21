@@ -23,7 +23,7 @@ be equal to the number of keys. For arrays, this will be equal to the length
 of the array. All scalar values will be of length 1.
 }
 \examples{
-library(magrittr)  # for \%>\% 
+library(magrittr)  # for \%>\%
 c('[1, 2, 3]', '{"k1": 1, "k2": 2}', '1', {}) \%>\% json_lengths
 }
 
