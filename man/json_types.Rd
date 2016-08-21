@@ -15,9 +15,9 @@ json_types(x, column.name = "type")
 a tbl_json object with column.name column that tells the type
 }
 \description{
-The function json_types() inspects the JSON associated with 
-each row of the tbl_json data.frame, and adds a new column ("type" by 
-default) that identifies the type according to the 
+The function json_types() inspects the JSON associated with
+each row of the tbl_json data.frame, and adds a new column ("type" by
+default) that identifies the type according to the
 JSON standard at http://json.org/.
 }
 \details{
