@@ -25,7 +25,7 @@ under}
 \item{force}{parameter that determines if the variable type should be computed or not
 if force is FALSE, then the function may take more memory}
 
-\item{recursive}{logical indicating whether to extract a single value from a 
+\item{recursive}{logical indicating whether to extract a single value from a
 nested object.  Only used when force = TRUE.  If force = FALSE, and
 recursive=TRUE, throws an error.}
 }
@@ -42,7 +42,7 @@ object or an array.
 }
 \examples{
 library(magrittr)  # for \%>\%
-'{"first": "bob", "last": "jones"}' \%>\% 
+'{"first": "bob", "last": "jones"}' \%>\%
   gather_keys() \%>\%
   append_values_string()
 }
