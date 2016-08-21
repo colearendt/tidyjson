@@ -20,3 +20,4 @@ Suggests:
     ggplot2,
     magrittr
 VignetteBuilder: knitr
+RoxygenNote: 5.0.1
