@@ -47,7 +47,7 @@
 json_structure <- function(x) {
 
   # Create initial structure for top level
-  structure <- json_structure_init(json)
+  structure <- json_structure_init(x)
 
   this_level <- 1L
   while(structure %>% should_json_structure_expand_more(this_level)) {
@@ -65,9 +65,9 @@ json_structure <- function(x) {
 
 }
 
-json_structure_init <- function(json) {
+json_structure_init <- function(x) {
 
-  json %>% as.tbl_json %>%
+  x %>% as.tbl_json %>%
     mutate(
       parent.id = NA_character_,
       level = 1L,
