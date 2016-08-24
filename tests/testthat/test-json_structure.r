@@ -106,3 +106,24 @@ test_that("works with empty values appropriately", {
   )
 
 })
+
+test_that("works with tbl_json already", {
+
+  expect_identical(
+    c('"a"', '"b"') %>% as.tbl_json %>% json_structure,
+    tbl_json(
+      data_frame(
+        document.id = c(1L, 2L),
+        parent.id = rep(NA_character_, 2),
+        level = rep(1L, 2),
+        index = rep(1L, 2),
+        child.id = rep("1", 2),
+        key = rep(NA_character_, 2),
+        type = rep("string", 2) %>% factor(levels = allowed_json_types),
+        length = rep(1L, 2)
+      ),
+      list("a", "b")
+    )
+  )
+
+})

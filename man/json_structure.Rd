@@ -7,7 +7,7 @@
 json_structure(x)
 }
 \arguments{
-\item{x}{a tbl_json object}
+\item{x}{a json string or a tbl_json object}
 }
 \value{
 a tbl_json object with the following columns:
