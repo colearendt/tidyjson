@@ -1,6 +1,6 @@
 # tidyjson
 
-[![Build Status](https://travis-ci.org/sailthru/tidyjson.png?branch=master)](https://travis-ci.org/sailthru/tidyjson)
+[![Build Status](https://travis-ci.org/jeremystan/tidyjson.png?branch=master)](https://travis-ci.org/jeremystan/tidyjson)
 
 tidyjson is a complementary set of tools to [tidyr](https://github.com/hadley/tidyr)
 for working with JSON data. It's primary objective is to turn JSON data into 
