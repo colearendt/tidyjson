@@ -13,24 +13,29 @@
 #'   \code{document.id} 1L if \code{x} is a single JSON string, otherwise the
 #'   index of \code{x}.
 #'
-#'   \code{parent.id} the string identifier of the parent node for this child
+#'   \code{parent.id} the string identifier of the parent node for this child.
 #'
 #'   \code{level} what level of the hierarchy this child resides at, starting
-#'   at 1L and incrementing for each level of nesting.
+#'   at \code{0L} for the root and incrementing for each level of nested
+#'   array or object.
 #'
 #'   \code{index} what index of the parent object / array this child resides
-#'   at (from \code{gather_array} for arrays)
+#'   at (from \code{gather_array} for arrays).
 #'
 #'   \code{child.id} a unique ID for this leaf in this document, represented
 #'   as <parent>.<index> where <parent> is the ID for the parent and <index>
-#'   is this index
+#'   is this index.
+#'
+#'   \code{seq} the sequence of keys / indices that led to this child
+#'   (parents that are arrays are excluded) as a list, where character strings
+#'   denote objects and integers denote array positions
 #'
 #'   \code{key} if this is the value of an object, what was the key that it
-#'   is listed under (from \code{gather_keys})
+#'   is listed under (from \code{gather_keys}).
 #'
-#'   \code{type} the type of this object (from \code{json_types})
+#'   \code{type} the type of this object (from \code{json_types}).
 #'
-#'   \code{length} the length of this object (from \code{json_lengths})
+#'   \code{length} the length of this object (from \code{json_lengths}).
 #'
 #' @export
 #' @examples
@@ -51,7 +56,7 @@ json_structure <- function(x) {
   # Create initial structure for top level
   structure <- json_structure_init(x)
 
-  this_level <- 1L
+  this_level <- 0L
   while(structure %>% should_json_structure_expand_more(this_level)) {
 
     structure <- rbind_tbl_json(
@@ -72,9 +77,10 @@ json_structure_init <- function(x) {
   x %>%
     mutate(
       parent.id = NA_character_,
-      level = 1L,
+      level = 0L,
       index = 1L,
       child.id = "1",
+      seq = replicate(n(), list()),
       key = NA_character_
     ) %>%
     json_types %>%
@@ -101,6 +107,7 @@ json_structure_empty <- function() {
       level = integer(0),
       index = integer(0),
       child.id = character(0),
+      seq = list(),
       key = character(0),
       type = factor(character(0), levels = allowed_json_types),
       length = integer(0)
@@ -141,6 +148,7 @@ json_structure_objects <- function(s) {
     transmute(
       document.id,
       parent.id = child.id,
+      seq,
       level = level + 1L
     ) %>%
     gather_keys %>%
@@ -152,9 +160,12 @@ json_structure_objects <- function(s) {
     group_by(parent.id) %>%
     mutate(index = 1L:n()) %>%
     ungroup %>%
-    mutate(child.id = paste(parent.id, index, sep = ".")) %>%
+    mutate(
+      child.id = paste(parent.id, index, sep = "."),
+      seq = map2(seq, key, c)
+    ) %>%
     select(
-      document.id, parent.id, level, index, child.id, key, type, length
+      document.id, parent.id, level, index, child.id, seq, key, type, length
     )
 
   # Reconstruct tbl_json object
@@ -169,14 +180,19 @@ json_structure_arrays <- function(s) {
     transmute(
       document.id,
       parent.id = child.id,
+      seq,
       level = level + 1L
     ) %>%
     gather_array("index") %>%
     json_types %>%
     json_lengths %>%
-    mutate(child.id = paste(parent.id, index, sep = ".")) %>%
+    mutate(
+      child.id = paste(parent.id, index, sep = "."),
+      seq = map2(seq, index, c)
+    ) %>%
     transmute(
-      document.id, parent.id, level, index, child.id, key = NA_character_, type, length
+      document.id, parent.id, level, index, child.id,
+      seq, key = NA_character_, type, length
     )
 
 }
@@ -190,4 +206,3 @@ rbind_tbl_json <- function(x, y) {
   )
 
 }
-

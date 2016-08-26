@@ -8,9 +8,10 @@ test_that("simple string works", {
       data_frame(
         document.id = 1L,
         parent.id = NA_character_,
-        level = 1L,
+        level = 0L,
         index = 1L,
         child.id = "1",
+        seq = list(list()),
         key = NA_character_,
         type = "string" %>% factor(levels = allowed_json_types),
         length = 1L
@@ -29,9 +30,10 @@ test_that("simple object works", {
       data_frame(
         document.id = c(1L, 1L),
         parent.id = c(NA_character_, "1"),
-        level = c(1L, 2L),
+        level = c(0L, 1L),
         index = c(1L, 1L),
         child.id = c("1", "1.1"),
+        seq = list(list(), list("key")),
         key = c(NA_character_, "key"),
         type = c("object", "string") %>% factor(levels = allowed_json_types),
         length = c(1L, 1L)
@@ -50,9 +52,10 @@ test_that("simple array works", {
       data_frame(
         document.id = c(1L, 1L, 1L),
         parent.id = c(NA_character_, "1", "1"),
-        level = c(1L, 2L, 2L),
+        level = c(0L, 1L, 1L),
         index = c(1L, 1L, 2L),
         child.id = c("1", "1.1", "1.2"),
+        seq = list(list(), list(1L), list(2L)),
         key = rep(NA_character_, 3),
         type = c("array", "number", "number") %>% factor(levels = allowed_json_types),
         length = c(2L, 1L, 1L)
@@ -71,9 +74,10 @@ test_that("nested object works", {
       data_frame(
         document.id = c(1L, 1L, 1L),
         parent.id = c(NA_character_, "1", "1.1"),
-        level = c(1L, 2L, 3L),
+        level = c(0L, 1L, 2L),
         index = c(1L, 1L, 1L),
         child.id = c("1", "1.1", "1.1.1"),
+        seq = list(list(), list("k1"), list("k1", "k2")),
         key = c(NA_character_, "k1", "k2"),
         type = c("object", "object", "string") %>% factor(levels = allowed_json_types),
         length = c(1L, 1L, 1L)
@@ -94,9 +98,10 @@ test_that("works with empty values appropriately", {
       data_frame(
         document.id = 1L,
         parent.id = NA_character_,
-        level = 1L,
+        level = 0L,
         index = 1L,
         child.id = "1",
+        seq = list(list()),
         key = NA_character_,
         type = "null" %>% factor(levels = allowed_json_types),
         length = 0L
@@ -115,15 +120,28 @@ test_that("works with tbl_json already", {
       data_frame(
         document.id = c(1L, 2L),
         parent.id = rep(NA_character_, 2),
-        level = rep(1L, 2),
+        level = rep(0L, 2),
         index = rep(1L, 2),
         child.id = rep("1", 2),
+        seq = list(list(), list()),
         key = rep(NA_character_, 2),
         type = rep("string", 2) %>% factor(levels = allowed_json_types),
         length = rep(1L, 2)
       ),
       list("a", "b")
     )
+  )
+
+})
+
+test_that("seq works for a deeply nested sequence", {
+
+  expect_identical(
+    '{"a": {"2": [1, {"3": "value"}] } }' %>%
+      json_structure %>%
+      `[[`("seq") %>%
+      `[[`(6),
+    list("a", "2", 2L, "3")
   )
 
 })
