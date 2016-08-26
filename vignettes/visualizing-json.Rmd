@@ -30,7 +30,8 @@ For a refrehser, see the [JSON specification](http://www.json.org/), which is
 a very concise summary of how JSON is formatted. In essence, there are
 three types of JSON data structures.
 
-An object is a name/value pair, like `'{"string": "value"}'`:
+Per the specification, an object is a name/value pair, like 
+`'{"string": "value"}'`:
 
 ![](http://www.json.org/object.gif)
 
@@ -42,6 +43,18 @@ A value is a string, number, logical or NULL scalar:
 
 ![](http://www.json.org/value.gif)
 
+What is particularly interesting about JSON is the following:
+
+* Documents can omit objects, and so no single document is representative of
+the schema of a collection
+* Objects and arrays can be deeply nested, it is not uncommon to have an 
+object with arrays of objects with arrays of objects of values
+* The system generating JSON can change over time, and so older documents can
+have different implicit schemas from newer documents
+
+All of this makes visualizing JSON data structures very useful when embarking
+on an analysis.
+
 ## Load required libraries
 
 Before we start, let's load `tidyjson` along with other data manipulation and
@@ -49,7 +62,7 @@ visualization libraries, and set a seed so we get consistent results.
 
 ```{r, message = FALSE}
 library(needs)
-needs(tidyjson, jsonlite, dplyr, purrr, magrittr,
+needs(tidyjson, jsonlite, dplyr, purrr, magrittr, forcats,
       ggplot2, igraph, RColorBrewer, wordcloud, viridis)
 set.seed(1)
 ```
@@ -170,13 +183,17 @@ keys %>%
     scale_color_viridis(direction = -1)
 ```
 
+This shows there are many comon strings and arrays, and many uncommon 
+objects, strings and numbers in the documents.
+
 ## Visualizing as Graphs
 
-Plot as a network graph
+To really understand the structure of a document, we need to visaulize it as
+a graph. This function will plot the structure of a document using `igraph`.
 
 ```{r}
-plot_structure_graph <- function(json, legend = TRUE, vertex.size = 4,
-                                 edge.width = 2, show.labels = TRUE) {
+plot_structure_graph <- function(json, legend = TRUE, vertex.size = 6,
+                                 edge.width = .5, show.labels = TRUE) {
   
   structure <- json %>% json_structure
   
@@ -219,36 +236,58 @@ plot_structure_graph <- function(json, legend = TRUE, vertex.size = 4,
 }
 ```
 
-Plot a single company
+Let's look at our simple example
 
 ```{r}
 co_examp %>% plot_structure_graph
 ```
 
-A lot of variety
+For this company, almost all of the data is in the top level object.
+
+Now, let's create a function that plots a panel of these graphs:
 
 ```{r, fig.height = 8}
-nrow <- 7
-ncol <- 6
-op <- par(mfrow = c(nrow, ncol))
-walk(companies[1:(nrow*ncol)], plot_structure_graph, legend = FALSE, 
-     edge.width = .5, show.labels = FALSE)
-par(op)
+plot_structure_panel <- function(json, nrow, ncol, ...) {
+  
+  # Set up grid
+  op <- par(mfrow = c(nrow, ncol))
+  
+  indices <- seq_along(json) %>% keep(`<=`, nrow * ncol)
+  
+  for (i in indices) {
+    plot_structure_graph(json[[i]], ...)
+    if ("names" %in% names(attributes(json))) 
+      title(names(json)[i], col.main = 'red')
+  }
+  
+  par(op)
+  invisible(NULL)
+}
 ```
 
-The most complex
+And let's look at several simultaneously:
+
+```{r, fig.height = 8}
+plot_structure_panel(companies, 7, 6, legend = FALSE, show.labels = FALSE,
+                     vertex.size = 4)
+```
+
+Clearly there is a huge amount of variety in the JSON documents!
+
+Let's look at the most complex example:
 
 ```{r}
 most_complex <- companies[which(co_length == max(co_length))]
 
-most_complex %>% spread_values(name = jstring("name")) %>% extract2("name")
+most_complex_name <- most_complex %>% 
+  spread_values(name = jstring("name")) %>% 
+  extract2("name")
 ``` 
 
-Let's try to plot it!
+The most complex company is `r most_complex_name`! Let's try to plot it:
 
 ```{r}
-plot_structure_graph(most_complex, vertex.size = 2, edge.width = 1, 
-                     show.labels = FALSE)
+plot_structure_graph(most_complex, show.labels = FALSE, vertex.size = 2)
 ```
 
 That is just too big, let's simplify things by just looking at the top level
@@ -259,16 +298,10 @@ objects <- most_complex %>%
   gather_keys %>%
   json_types %>%
   filter(type == "object")
-  
-nrow <- 2
-ncol <- 2
-op <- par(mfrow = c(nrow, ncol))
-for(i in 1:nrow(objects)) {
-  plot_structure_graph(objects[i, ], legend = FALSE, 
-                       vertex.size = 2, edge.width = 1)
-  title(objects$key[i], col.main = 'red')
-}
-par(op)
+
+objects %>% 
+  split(.$key) %>%
+  plot_structure_panel(2, 2, legend = FALSE)
 ```
 
 Now let's look at just the arrays, and take only the longest for each
@@ -290,23 +323,90 @@ Many are very long, and likely have the similar structures (but no guarantees
 in JSON!), so let's just look at the first for each:
 
 ```{r, fig.height = 9}
-arrays %<>% filter(array.index == 1)
-
-nrow <- 4
-ncol <- 3
-op <- par(mfrow = c(nrow, ncol))
-for(i in 1:nrow(arrays)) {
-  plot_structure_graph(arrays[i, ], legend = FALSE)
-  title(arrays$key[i], col.main = 'red')
-}
-par(op)
+arrays %>%
+  filter(array.index == 1) %>%
+  split(.$key) %>%
+  plot_structure_panel(4, 3, legend = FALSE)
 ```
 
-TODO:
+## Working with funding data
 
-1. Start structure levels at 0 (more intuitive for root to be level 0
-1. Consider adding a "complexity" function to tidyjson which unlists recursively
-and takes the length of the resulting JSON
-1. Is there some way to create a schema?
+Now let's use this insight to structure funding and geo data for a visualization.
 
+First, let's get funding round data:
 
+```{r}
+rounds <- companies %>%
+  enter_object("funding_rounds") %>%
+  gather_array %>%
+  spread_values(
+    round = jstring("round_code"),
+    currency = jstring("raised_currency_code"),
+    raised = jnumber("raised_amount")
+  )
+rounds %>% head
+```
+
+Now, let's get geo data:
+
+```{r}
+geos <- companies %>%
+  enter_object("offices") %>%
+  gather_array %>%
+  spread_values(
+    country = jstring("country_code"),
+    state = jstring("state_code"),
+    description = jstring("description")
+  )
+geos %>% head
+```
+
+Now, let's join together the data for the US companies, assuming that the
+first office in the array is the headquarters (seems reasonable from a quick
+visual inspection of `geos`).
+
+```{r}
+hqs <- geos %>%
+  filter(array.index == 1) %>%
+  filter(country == "USA") %>%
+  select(document.id, state)
+  
+rounds_usd <- rounds %>%
+  filter(currency == "USD") %>%
+  filter(!is.na(raised)) %>%
+  select(document.id, round, raised)
+
+rounds_by_geo <- inner_join(rounds_usd, hqs, by = "document.id")
+```
+
+Now we can visualize the results
+
+```{r}
+rounds_by_geo %>%
+  filter(!is.na(state)) %>%
+  mutate(
+    round = round %>% fct_collapse(
+      "angel" = c("seed", "angel"),
+      "d-f"   = c("d", "e", "f"),
+      "other" = c("grant", "partial", "post_ipo_equity", "private_equity", 
+                  "debt_round", "unattributed")
+    ) %>% fct_relevel("angel", "a", "b", "c", "d-f", "other")
+  ) %>%
+  mutate(
+    state = state %>% fct_lump(2)
+  ) %>%
+  ggplot(aes(state, raised, fill = state)) +
+    geom_violin() +
+    scale_y_log10() + 
+    annotation_logticks(side = 'l') +
+    facet_grid(. ~ round) +
+    theme(legend.position = "bottom") +
+    labs(x = "", y = "Amount Raised (USD)")
+```
+
+Which shows a few interesting things:
+
+* Round sizes don't increase dramatically from b through f
+* Variance is much higher in angel and a rounds (and other)
+* NY and other US states have similar distributions with the exception of d-f
+rounds, where CA seems higher than NY
