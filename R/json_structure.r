@@ -26,9 +26,9 @@
 #'   as <parent>.<index> where <parent> is the ID for the parent and <index>
 #'   is this index.
 #'
-#'   \code{key.seq} the sequence of keys that led to this child (parents that
-#'   are arrays are excluded) as a list, where character strings denote
-#'   objects and integers denote array positions
+#'   \code{seq} the sequence of keys / indices that led to this child
+#'   (parents that are arrays are excluded) as a list, where character strings
+#'   denote objects and integers denote array positions
 #'
 #'   \code{key} if this is the value of an object, what was the key that it
 #'   is listed under (from \code{gather_keys}).
@@ -80,7 +80,7 @@ json_structure_init <- function(x) {
       level = 0L,
       index = 1L,
       child.id = "1",
-      key.seq = replicate(n(), list()),
+      seq = replicate(n(), list()),
       key = NA_character_
     ) %>%
     json_types %>%
@@ -107,7 +107,7 @@ json_structure_empty <- function() {
       level = integer(0),
       index = integer(0),
       child.id = character(0),
-      key.seq = list(),
+      seq = list(),
       key = character(0),
       type = factor(character(0), levels = allowed_json_types),
       length = integer(0)
@@ -148,7 +148,7 @@ json_structure_objects <- function(s) {
     transmute(
       document.id,
       parent.id = child.id,
-      key.seq,
+      seq,
       level = level + 1L
     ) %>%
     gather_keys %>%
@@ -162,10 +162,10 @@ json_structure_objects <- function(s) {
     ungroup %>%
     mutate(
       child.id = paste(parent.id, index, sep = "."),
-      key.seq = map2(key.seq, key, c)
+      seq = map2(seq, key, c)
     ) %>%
     select(
-      document.id, parent.id, level, index, child.id, key.seq, key, type, length
+      document.id, parent.id, level, index, child.id, seq, key, type, length
     )
 
   # Reconstruct tbl_json object
@@ -180,7 +180,7 @@ json_structure_arrays <- function(s) {
     transmute(
       document.id,
       parent.id = child.id,
-      key.seq,
+      seq,
       level = level + 1L
     ) %>%
     gather_array("index") %>%
@@ -188,11 +188,11 @@ json_structure_arrays <- function(s) {
     json_lengths %>%
     mutate(
       child.id = paste(parent.id, index, sep = "."),
-      key.seq = map2(key.seq, index, c)
+      seq = map2(seq, index, c)
     ) %>%
     transmute(
       document.id, parent.id, level, index, child.id,
-      key.seq, key = NA_character_, type, length
+      seq, key = NA_character_, type, length
     )
 
 }

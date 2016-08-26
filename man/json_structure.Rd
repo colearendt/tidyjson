@@ -28,9 +28,9 @@ a tbl_json object with the following columns:
   as <parent>.<index> where <parent> is the ID for the parent and <index>
   is this index.
 
-  \code{key.seq} the sequence of keys that led to this child (parents that
-  are arrays are excluded) as a list, where character strings denote
-  objects and integers denote array positions
+  \code{seq} the sequence of keys / indices that led to this child
+  (parents that are arrays are excluded) as a list, where character strings
+  denote objects and integers denote array positions
 
   \code{key} if this is the value of an object, what was the key that it
   is listed under (from \code{gather_keys}).
