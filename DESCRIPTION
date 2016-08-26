@@ -10,6 +10,7 @@ Depends:
 Imports:
     assertthat,
     jsonlite,
+    purrr,
     dplyr
 URL: https://github.com/sailthru/tidyjson
 License: MIT + file LICENSE
@@ -20,3 +21,4 @@ Suggests:
     ggplot2,
     magrittr
 VignetteBuilder: knitr
+RoxygenNote: 5.0.1

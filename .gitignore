@@ -3,3 +3,5 @@
 .Rhistory
 *.swp
 inst/doc
+.Rproj.user
+*.Rproj
