@@ -22,7 +22,7 @@ tidyjson operates on the following principles:
 You can install tidyjson from github directly by running:
 
 ```R
-devtools::install_github("sailthru/tidyjson")
+devtools::install_github("jeremystan/tidyjson")
 ```
 
 tidyjson comes with several JSON examples:
