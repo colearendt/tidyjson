@@ -1,5 +1,5 @@
 ---
-title: "Visualizing JSON"
+title: "Visualizing JSON Schema"
 author: "Jeremy Stanley"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -14,36 +14,127 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height
 options(dplyr.print_min = 4L, dplyr.print_max = 4L)
 ```
 
+JSON is a very simple data standard that, through nested data structures, can
+represent incredibly complex datasets. In some cases, a set of JSON data
+closely corresponds to a table in a SQL database. However, more commonly a
+JSON document more closely maps to an entire SQL databse.
+
+Understanding the structure of your JSON data is critical before you begin
+analyzing the data. In this vignette, we use `tidyjson` to inspect the
+structure of JSON data and then create various visualizations to help
+understand a complex JSON dataset.
+
+## JSON Definition
+
+For a refrehser, see the [JSON specification](http://www.json.org/), which is
+a very concise summary of how JSON is formatted. In essence, there are
+three types of JSON data structures.
+
+An object is a name/value pair, like `'{"string": "value"}'`:
+
+![](http://www.json.org/object.gif)
+
+An array is an ordered list, like `'[1, 2, 3]'`:
+
+![](http://www.json.org/array.gif)
+
+A value is a string, number, logical or NULL scalar:
+
+![](http://www.json.org/value.gif)
+
 ## Load required libraries
 
+Before we start, let's load `tidyjson` along with other data manipulation and
+visualization libraries, and set a seed so we get consistent results.
+
 ```{r, message = FALSE}
-library(tidyjson)   # this library
-library(dplyr)      # for %>% and other dplyr functions
-library(ggplot2)    # for plotting
-library(igraph)     # for graph visualizations
-library(RColorBrewer) # for colors
-library(jsonlite)   # for fromJSON
-library(purrr)      # for list operations
-library(wordcloud)
-library(magrittr)
+library(needs)
+needs(tidyjson, jsonlite, dplyr, purrr, magrittr,
+      ggplot2, igraph, RColorBrewer, wordcloud, viridis)
+set.seed(1)
 ```
 
 ## Companies Data
 
-Let's work with a sample of the companies data
+Let's work with the `companies` dataset included in the `tidyjson` package, 
+originating at [jsonstudio](http://jsonstudio.com/resources). It is a 
+`r class(companies)` vector of 
+`r length(companies) %>% format(big.mark = ',')` 
+JSON strings, each describing a startup company.
+
+First, let's convert the JSON to a nested list using `jsonlite::fromJSON`, where
+we use `simplifyVector = FALSE` to avoid any simplification (which, while handy
+can lead to inconsistent results across documents which may not have the same
+set of objects).
 
 ```{r}
-set.seed(1)
-samp_co <- companies[sample(1:length(companies), 50)]
+co_list <- companies %>% map(fromJSON, simplifyVector = FALSE)
 ```
 
-We can see the structure of a sample record with `str`
+We can then find out how complex each record is by recursively unlisting it
+and computing the length:
 
 ```{r}
-str(fromJSON(samp_co[[1]]))
+co_length <- co_list %>% map(unlist, recursive = TRUE) %>% map_int(length)
+```
+
+Then we can visualize the distribution of lengths on a log-scale:
+
+```{r}
+co_length %>%
+  data_frame(length = .) %>%
+  ggplot(aes(length)) +
+    geom_density() +
+    scale_x_log10() +
+    annotation_logticks(side = 'b')
+```
+
+It appears that some companies have unlisted length less than 10, while others 
+are in the hundreds or even thousands. The median is `r median(co_length)`.
+
+Let's pick an example that is particularly small to start with:
+
+```{r}
+first_examp_index <- co_length %>% 
+  detect_index(equals, 20L)
+
+co_examp <- companies[first_examp_index]
+
+co_examp
+```
+
+Even for such a small example it's hard to understand the structure from the
+raw JSON. We can instead use `jsonlite::prettify` to print a prettier version:
+
+```{r}
+co_examp %>% 
+  prettify(indent = 2) %>% 
+  capture.output %>%
+  paste(collapse = "\n") %>%
+  gsub("\\[\n\n( )*\\]", "[ ]", .) %>%
+  writeLines
+```
+
+Where everything after `prettify` is done to collapse empty arrays from
+occupying multiple lines, of which there are many.
+
+Alternatively, we can visualize the same object after we converted it into
+an R list using `str`:
+
+```{r}
+str(co_list[first_examp_index])
 ```
 
 Alternatively, we can compute the structure using `tidyjson::json_structure`
+
+```{r}
+co_examp %>% json_structure %>% select(-document.id)
+```
+
+This gives us a `data.frame` where each row corresponds to an object, array
+or scalar in the JSON document.
+
+## Working with many companies
 
 ```{r}
 structure <- companies %>% json_structure
@@ -62,48 +153,68 @@ As a word cloud
 keys %$% wordcloud(key, ndoc, scale = c(1.5, .1), min.freq = 100)
 ```
 
-In ggplot2
+Alternatively in ggplot2
 
-```{r, fig.height = 12}
+```{r, fig.height = 9}
 keys %>%
-  ggplot(aes(ndoc, key, colour = type)) +
-    geom_segment(aes(xend = 0, yend = key)) +
-    facet_grid(level ~ ., scale = "free_y", space = "free", switch = 'y')
+  ungroup %>%
+  group_by(type) %>%
+  arrange(desc(ndoc), level) %>%
+  mutate(rank = 1:n()) %>%
+  ggplot(aes(1, rank)) +
+    geom_text(aes(label = key, color = ndoc)) +
+    scale_y_reverse() +
+    facet_grid(. ~ type) +
+    theme_void() +
+    theme(legend.position = "bottom") +
+    scale_color_viridis(direction = -1)
 ```
+
+## Visualizing as Graphs
 
 Plot as a network graph
 
 ```{r}
-plot_structure_graph <- function(json, legend = TRUE) {
+plot_structure_graph <- function(json, legend = TRUE, vertex.size = 4,
+                                 edge.width = 2, show.labels = TRUE) {
   
   structure <- json %>% json_structure
   
   type_colors <- brewer.pal(6, "Accent")
+  
+  graph_edges <- structure %>%
+    filter(!is.na(parent.id)) %>%
+    select(parent.id, child.id)
+  
+  graph_vertices <- structure %>% 
+    transmute(child.id, 
+              vertex.color = type_colors[as.integer(type)],
+              vertex.label = key)
+  
+  if (!show.labels)
+    graph_vertices$vertex.label <- rep(NA_character_, nrow(graph_vertices))
 
-  g <- graph_from_data_frame(
-    structure %>%
-      filter(!is.na(parent.id)) %>%
-      select(parent.id, child.id),
-    directed = TRUE,
-    vertices = structure %>% 
-      transmute(child.id, 
-                vertex.color = type_colors[as.integer(type)],
-                vertex.label = ifelse(type %in% c("object", "array") & length > 0,
-                                      key, NA_character_)))
+  g <- graph_from_data_frame(graph_edges, vertices = graph_vertices,
+                             directed = FALSE)
   
   op <- par(mar = c(0, 0, 0, 0))
-  plot(g, edge.arrow.size = .1, vertex.color = V(g)$vertex.color, vertex.size = 4,
-       vertex.label = V(g)$vertex.label, layout = layout_with_kk, 
-       edge.color = 'grey70', edge.width = 2)
+  plot(g, 
+       vertex.color = V(g)$vertex.color, 
+       vertex.size = vertex.size,
+       vertex.label = V(g)$vertex.label, 
+       vertex.frame.color = NA,
+       layout = layout_with_kk, 
+       edge.color = 'grey70', 
+       edge.width = edge.width)
   
   if (legend)
     legend(x = -1.3, y = -.6, levels(structure$type), pch = 21,
-           col="#777777", pt.bg = type_colors, 
+           col= "white", pt.bg = type_colors,
            pt.cex = 2, cex = .8, bty = "n", ncol = 1)
   
   par(op)
   
-  NULL
+  invisible(NULL)
   
 }
 ```
@@ -111,27 +222,24 @@ plot_structure_graph <- function(json, legend = TRUE) {
 Plot a single company
 
 ```{r}
-samp_co[[1]] %>% plot_structure_graph
+co_examp %>% plot_structure_graph
 ```
 
 A lot of variety
 
-```{r}
-nrow <- 3
-ncol <- 4
+```{r, fig.height = 8}
+nrow <- 7
+ncol <- 6
 op <- par(mfrow = c(nrow, ncol))
-walk(samp_co[1:(nrow*ncol)], plot_structure_graph, legend = FALSE)
+walk(companies[1:(nrow*ncol)], plot_structure_graph, legend = FALSE, 
+     edge.width = .5, show.labels = FALSE)
 par(op)
 ```
 
 The most complex
 
 ```{r}
-lengths <- companies %>% 
-  map(fromJSON, simplifyVector = FALSE) %>%
-  map(unlist, recursive = TRUE) %>%
-  map_int(length)
-most_complex <- companies[which(lengths == max(lengths))]
+most_complex <- companies[which(co_length == max(co_length))]
 
 most_complex %>% spread_values(name = jstring("name")) %>% extract2("name")
 ``` 
@@ -139,24 +247,66 @@ most_complex %>% spread_values(name = jstring("name")) %>% extract2("name")
 Let's try to plot it!
 
 ```{r}
-plot_structure_graph(most_complex)
+plot_structure_graph(most_complex, vertex.size = 2, edge.width = 1, 
+                     show.labels = FALSE)
 ```
 
-That is just too big, let's simplify things
+That is just too big, let's simplify things by just looking at the top level
+objects
 
-```{r, fig.height = 8}
-sub_objects <- most_complex %>%
+```{r}
+objects <- most_complex %>%
   gather_keys %>%
   json_types %>%
-  json_lengths %>%
-  filter(length > 1)
-
-nrow <- 5
-ncol <- 3
+  filter(type == "object")
+  
+nrow <- 2
+ncol <- 2
 op <- par(mfrow = c(nrow, ncol))
-for(i in 1:nrow(sub_objects)) {
-  plot_structure_graph(sub_objects[i, ], legend = FALSE)
-  title(sub_objects$key[i], col.main = 'red')
+for(i in 1:nrow(objects)) {
+  plot_structure_graph(objects[i, ], legend = FALSE, 
+                       vertex.size = 2, edge.width = 1)
+  title(objects$key[i], col.main = 'red')
 }
 par(op)
 ```
+
+Now let's look at just the arrays, and take only the longest for each
+
+```{r}
+arrays <- most_complex %>%
+  gather_keys %>%
+  json_types %>%
+  filter(type == "array") %>%
+  gather_array
+
+arrays %>%
+  ggplot(aes(key)) +
+    geom_bar() +
+    coord_flip()
+```
+
+Many are very long, and likely have the similar structures (but no guarantees
+in JSON!), so let's just look at the first for each:
+
+```{r, fig.height = 9}
+arrays %<>% filter(array.index == 1)
+
+nrow <- 4
+ncol <- 3
+op <- par(mfrow = c(nrow, ncol))
+for(i in 1:nrow(arrays)) {
+  plot_structure_graph(arrays[i, ], legend = FALSE)
+  title(arrays$key[i], col.main = 'red')
+}
+par(op)
+```
+
+TODO:
+
+1. Start structure levels at 0 (more intuitive for root to be level 0
+1. Consider adding a "complexity" function to tidyjson which unlists recursively
+and takes the length of the resulting JSON
+1. Is there some way to create a schema?
+
+
