@@ -318,8 +318,6 @@ samp_co_tibble %>%
   select(-json, -acquisition)
 ```
 
-<stopped here>
-
 ## `gather_array`
 
 Let's look inside of the funding rounds array
@@ -371,6 +369,24 @@ samp_co_tibble %>%
     raised = rounds %>% map("raised_amount") %>% map_dbl(`%||%`, NA)
   ) %>%
   select(-rounds)
+```
+
+```{r}
+samp_co_tibble %>%
+  mutate(
+    name  = json %>% map("name") %>% map_chr(`%||%`, NA),
+    rounds = json %>% map("funding_rounds")
+  ) %>%
+  filter(map_int(rounds, length) > 0) %>%
+  mutate(round.df = rounds %>%
+    at_depth(3, `%||%`, NA) %>%
+    at_depth(2, . %$% tibble(funded_year, round_code, raised_amount)) %>%
+    at_depth(1, bind_rows)
+  ) %>%
+  select(-json, -rounds) %>%
+  unnest(round.df) %>%
+  group_by(name) %>%
+  mutate(round_number = 1:n())
 ```
 
 ## `append_values_*`
