@@ -31,18 +31,3 @@ list_path <- function(l, path) {
 
   l
 }
-
-#' Replace nulls with something else
-#' @param l a list
-#' @param replace what to replace NULLs in the list with
-replace_nulls <- function(l, replace) {
-
-  # Find the nulls
-  nulls <- map_lgl(l, is.null)
-
-  if (any(nulls))
-    l[nulls] <- replace
-
-  l
-
-}
