@@ -44,12 +44,13 @@ jfactory <- function(na.value, conversion.function) {
   function(..., recursive = FALSE) {
 
     # Prepare path
-    path <- prep_path(...)
+    path <- list(...)
 
     # Return a closure to deal with JSON lists
     function(json) {
-      data <- list_path(json, path)
-      data <- replace_nulls(data, na.value)
+      data <- json %>%
+        map(path) %>%
+        map(`%||%`, na.value)
       if (!recursive) {
          conversion.function(data)
       } else {

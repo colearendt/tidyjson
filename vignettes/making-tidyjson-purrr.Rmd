@@ -17,18 +17,8 @@ options(dplyr.print_min = 4L, dplyr.print_max = 4L)
 ## Load required libraries
 
 ```{r, message = FALSE}
-library(igraph)
-library(RColorBrewer)
-library(tidyjson)   # this library
-library(dplyr)      # for %>% and other dplyr functions
-library(purrr)      # to compare against purrr
-library(jsonlite)   # use fromJSON
-library(tidyr)      # for nest and unnnest
-library(tibble)     # for tibble creation
-library(magrittr)   # for `%$%`
-library(ggplot2)    # for plotting
-library(forcats)    # easier factor manipulation
-library(stringr)    # for truncating values
+library(needs)
+needs(tidyjson, jsonlite, dplyr, purrr, magrittr, forcats, tibble, tidyr)
 ```
 
 ## Companies Data
@@ -62,12 +52,14 @@ or file
 samp_co %>% fromJSON
 ```  
 
-Rather, we'll have to construct a tibble manually and then convert it with
-`jsonlite::fromJSON` using `purrr::map`, where I use `dplyr::transmute` in order
-to drop the converted text column.
+Rather, we'll have to construct a tibble manually. We can convert each JSON
+document to a list using `jsonlite::fromJSON` and iterate over every document
+using `purrr::map`.
 
 ```{r}
-tibble(json = samp_co %>% map(fromJSON))
+samp_co %>%
+  map(fromJSON) %>%
+  tibble(json = .)
 ```
 
 ## `gather_keys`
@@ -77,16 +69,28 @@ First let's look at the prevalance of keys in the top level
 ```{r}
 samp_co %>%
   gather_keys %>%
-  count(key) %>%
-  arrange(desc(n))
+  count(key)
 ```
 
 ```{r}
-tibble(json = samp_co %>% map(fromJSON)) %>%
+samp_co %>%
+  map(fromJSON) %>%
+  tibble(json = .) %>%
   mutate(key = json %>% map(names)) %>%
   unnest(key) %>%
-  count(key) %>%
-  arrange(desc(n))
+  count(key)
+```
+
+We can accomplish the same thing using only `purrr` functions, but in general
+`dplyr` will be easier:
+
+```{r}
+samp_co %>%
+  map(fromJSON) %>%
+  map(names) %>%
+  flatten_chr %>%
+  table %>%
+  head
 ```
 
 ## `json_types`
@@ -97,47 +101,58 @@ Similarly, we can look at the types of the keys
 samp_co %>%
   gather_keys %>%
   json_types %>%
-  count(type) %>%
-  arrange(desc(n))
+  count(type)
 ```
 
 With purrr
 
 ```{r}
-tibble(json = samp_co %>% map(fromJSON)) %>%
+samp_co %>%
+  map(fromJSON) %>%
+  tibble(json = .) %>%
   transmute(type = json %>% map(map_chr, class)) %>%
   unnest(type) %>%
-  count(type) %>%
-  arrange(desc(n))
+  count(type)
 ```
 
 In some cases we are getting lists and in other cases data.frames. Perhaps if
 we turn simplification off in fromJSON:
 
 ```{r}
-tibble(json = samp_co %>% map(fromJSON, simplifyDataFrame = FALSE)) %>%
+samp_co %>%
+  map(fromJSON, simplifyVector = FALSE) %>%
+  tibble(json = .) %>%
   transmute(type = json %>% map(map_chr, class)) %>%
   unnest(type) %>%
-  count(type) %>%
-  arrange(desc(n))
+  count(type)
 ```
 
 This is better, but it seems to be collapsing the arrays and objects together.
 
 ```{r}
-tibble(json = samp_co %>% map(fromJSON, simplifyDataFrame = FALSE)) %>%
+samp_co %>%
+  map(fromJSON, simplifyVector = FALSE) %>%
+  tibble(json = .) %>%
   transmute(type = json %>% map(tidyjson:::determine_types)) %>%
   unnest(type) %>%
-  count(type) %>%
-  arrange(desc(n))
+  count(type)
 ```
 
 We get the correct answer by using the internal `tidyjson:::determine_types`
 function.
 
+Let's create a new object, `samp_co_tibble` to avoid having to repeat the
+`%>% map %>% tibble` sequence.
+
+```{r}
+samp_co_tibble <- samp_co %>%
+  map(fromJSON, simplifyVector = FALSE) %>%
+  tibble(json = .)
+```
+
 ## `json_lengths`
 
-`json_lenghts`
+In tidyjson
 
 ```{r}
 samp_co %>%
@@ -153,7 +168,7 @@ samp_co %>%
 in purrr
 
 ```{r}
-tibble(json = samp_co %>% map(fromJSON, simplifyDataFrame = FALSE)) %>%
+samp_co_tibble %>%
   mutate(key    = json %>% map(names),
          type   = json %>% map(tidyjson:::determine_types),
          length = json %>% map(map_int, length)) %>%
@@ -170,18 +185,14 @@ In order to decide what to capture, let's first look at the columns available
 to us
 
 ```{r, fig.width = 6, fig.height = 6}
-samp_co %>% gather_keys %>% json_types %>% 
-  mutate(key = key %>% fct_rev) %>%
+samp_co %>% 
+  json_structure %>%
+  filter(level == 1 & type != "null") %>%
   count(key, type) %>%
-  mutate(null = type == "null") %>%
-  group_by(key) %>%
-  arrange(null, desc(n)) %>%
-  mutate(first_type = type[[1]]) %>%
-  mutate(not.null = !null) %>%
-  ggplot(aes(n, key, colour = not.null)) +
-    geom_segment(aes(xend = 0, yend = key), size = 2) +
-    facet_grid(first_type ~ ., scale = "free", space = "free", switch = 'y') +
-    theme(strip.text.y = element_text(angle = 180))
+  group_by(type) %>%
+  summarize(keys = paste(key, collapse = ", ")) %>%
+  spread(type, keys) %>%
+  as.list
 ```
 
 Many of the top level keys are objects or arrays, but some are strings and
@@ -200,7 +211,7 @@ samp_co %>%
 We can attempt something similar with map_chr for the character strings
 
 ```{r, error = TRUE}
-tibble(json = samp_co %>% map(fromJSON, simplifyDataFrame = FALSE)) %>%
+samp_co_tibble %>%
   mutate(
     id            = json %>% map_chr("_id", "$oid"),
     name          = json %>% map_chr("name"),
@@ -210,16 +221,16 @@ tibble(json = samp_co %>% map(fromJSON, simplifyDataFrame = FALSE)) %>%
 ```
 
 This fails because `email_address`, `number_of_employees` and `founded_year` all
-have `null` values in them. We can fix this by handling the NULLs explicitly.
+have `null` values in them. We can fix this by handling the NULLs explicitly
+using the `null_default` operator in purrr, `%||%`.
 
 ```{r}
-rep_null <- function(x) ifelse(is.null(x), NA, x)
-tibble(json = samp_co %>% map(fromJSON, simplifyDataFrame = FALSE)) %>%
+samp_co_tibble %>%
   mutate(
-    id            = json %>% map("_id") %>% map("$oid") %>% map_chr(rep_null),
-    name          = json %>% map("name") %>% map_chr(rep_null),
-    email_address = json %>% map("email_address") %>% map_chr(rep_null),
-    founded_year  = json %>% map("founded_year") %>% map_dbl(rep_null)
+    id            = json %>% map("_id") %>% map("$oid") %>% map_chr(`%||%`, NA),
+    name          = json %>% map("name") %>% map_chr(`%||%`, NA),
+    email_address = json %>% map("email_address") %>% map_chr(`%||%`, NA),
+    founded_year  = json %>% map("founded_year") %>% map_dbl(`%||%`, NA)
   )
 ```
 
@@ -227,26 +238,24 @@ Alternatively, we can try to use select to just get the columns we want and then
 unnest them. However, this fails for the same `null` reason as above.
 
 ```{r, error = TRUE}
-tibble(json = samp_co %>% map(fromJSON, simplifyDataFrame = FALSE)) %>%
+samp_co_tibble %>%
   mutate(sub = json %>% 
     map(. %$% tibble(name, email_address, number_of_employees, founded_year))) %>%
   unnest(sub)
 ```
 
-If we create a modified tibble constructor that ensures everything passes through
-rep_null first then this works
+If we first map `%||%` at depth `2` to replace `NULL`s with `NA`s then this works:
 
-```{r, error = TRUE}
-tibble_null <- function(...)
-  lst(...) %>% map(rep_null) %>% as_tibble
-
-tibble(json = samp_co %>% map(fromJSON, simplifyDataFrame = FALSE)) %>%
-  mutate(sub = json %>% 
-    map(. %$% tibble_null(name, email_address, number_of_employees, founded_year))) %>%
+```{r}
+samp_co_tibble %>%
+  mutate(sub = json %>%
+    at_depth(2, `%||%`, NA) %>%
+    map(. %$% tibble(name, email_address, number_of_employees, founded_year))) %>%
   unnest(sub)
 ```
 
-However, we cannot access `"_id", "$oid"` in this way.
+However, we cannot access `"_id", "$oid"` in this way, in part because it is
+nested twice, and in part because `"_id"` begins with an `_`.
 
 ## `enter_object`
 
@@ -294,17 +303,17 @@ Note that `enter_object` drops rows without data.
 Now, let's try with purrr
 
 ```{r}
-tibble(json = samp_co %>% map(fromJSON, simplifyDataFrame = FALSE)) %>%
+samp_co_tibble %>%
   mutate(
-    name        = json %>% map("name") %>% map_chr(rep_null),
+    name        = json %>% map("name") %>% map_chr(`%||%`, NA),
     acquisition = json %>% map("acquisition")
   ) %>%
-  filter(!map_lgl(acquisition, is.null)) %>%
+  filter(acquisition %>% map_lgl(is.null) %>% not) %>%
   mutate(
-    year        = acquisition %>% map("acquired_year") %>% map_int(rep_null),
-    amount      = acquisition %>% map("price_amount") %>% map_dbl(rep_null),
-    currency    = acquisition %>% map("price_currency_code") %>% map_chr(rep_null),
-    acquired_by = acquisition %>% map("acquiring_company") %>% map("name") %>% map_chr(rep_null)
+    year        = acquisition %>% map("acquired_year") %>% map_int(`%||%`, NA),
+    amount      = acquisition %>% map("price_amount") %>% map_dbl(`%||%`, NA),
+    currency    = acquisition %>% map("price_currency_code") %>% map_chr(`%||%`, NA),
+    acquired_by = acquisition %>% map("acquiring_company") %>% map("name") %>% map_chr(`%||%`, NA)
   ) %>%
   select(-json, -acquisition)
 ```
@@ -342,9 +351,9 @@ samp_co %>%
 Now with purrr (must be a better way)
 
 ```{r}
-tibble(json = samp_co %>% map(fromJSON, simplifyDataFrame = FALSE)) %>%
+samp_co_tibble %>%
   mutate(
-    name  = json %>% map("name") %>% map_chr(rep_null),
+    name  = json %>% map("name") %>% map_chr(`%||%`, NA),
     rounds = json %>% map("funding_rounds")
   ) %>%
   filter(map_int(rounds, length) > 0) %>%
@@ -355,11 +364,29 @@ tibble(json = samp_co %>% map(fromJSON, simplifyDataFrame = FALSE)) %>%
   group_by(name) %>%
   mutate(round_number = 1:n()) %>%
   mutate(
-    year   = rounds %>% map("funded_year") %>% map_int(rep_null),
-    round  = rounds %>% map("round_code") %>% map_chr(rep_null),
-    raised = rounds %>% map("raised_amount") %>% map_dbl(rep_null)
+    year   = rounds %>% map("funded_year") %>% map_int(`%||%`, NA),
+    round  = rounds %>% map("round_code") %>% map_chr(`%||%`, NA),
+    raised = rounds %>% map("raised_amount") %>% map_dbl(`%||%`, NA)
   ) %>%
   select(-rounds)
+```
+
+```{r}
+samp_co_tibble %>%
+  mutate(
+    name  = json %>% map("name") %>% map_chr(`%||%`, NA),
+    rounds = json %>% map("funding_rounds")
+  ) %>%
+  filter(map_int(rounds, length) > 0) %>%
+  mutate(round.df = rounds %>%
+    at_depth(3, `%||%`, NA) %>%
+    at_depth(2, . %$% tibble(funded_year, round_code, raised_amount)) %>%
+    at_depth(1, bind_rows)
+  ) %>%
+  select(-json, -rounds) %>%
+  unnest(round.df) %>%
+  group_by(name) %>%
+  mutate(round_number = 1:n())
 ```
 
 ## `append_values_*`
@@ -381,7 +408,7 @@ samp_co %>%
 In purrr
 
 ```{r}
-tibble(json = samp_co %>% map(fromJSON, simplifyDataFrame = FALSE)) %>%
+samp_co_tibble %>%
   mutate(document.id = 1:n(),
          key    = json %>% map(names),
          type   = json %>% map(tidyjson:::determine_types),
