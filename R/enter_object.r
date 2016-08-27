@@ -27,7 +27,7 @@ enter_object <- function(x, ...) {
   if (!is.tbl_json(x)) x <- as.tbl_json(x)
 
   # Prepare path
-  path <- prep_path(...)
+  path <- list(...)
 
   # Extract json
   json <- attr(x, "JSON")
