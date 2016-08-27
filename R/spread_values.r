@@ -49,7 +49,7 @@ jfactory <- function(na.value, conversion.function) {
     # Return a closure to deal with JSON lists
     function(json) {
       data <- json %>%
-        list_path(path) %>%
+        map(path) %>%
         map(`%||%`, na.value)
       if (!recursive) {
          conversion.function(data)

@@ -16,18 +16,3 @@ prep_path <- function(...) {
 
   path
 }
-
-#' Recursively access a path
-#' @param l a list
-#' @param path a path of keys to follow
-list_path <- function(l, path) {
-
-  # Unwind this step
-  l <- map(l, `[[`, path[1])
-
-  # Keep going if more remains in the path
-  if (length(path) > 1)
-    l <- list_path(l, path[-1])
-
-  l
-}

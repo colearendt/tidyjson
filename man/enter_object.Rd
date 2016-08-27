@@ -14,9 +14,9 @@ enter_object(x, ...)
 \description{
 JSON can contain nested objects, such as {"key1": {"key2": [1, 2, 3]}}. The
 function enter_object() can be used to access the array nested under "key1"
-and "key2". After using enter_object(), all further tidyjson calls happen 
-inside the referenced object (all other JSON data outside the object 
-is discarded). If the object doesn't exist for a given row / index, then that 
+and "key2". After using enter_object(), all further tidyjson calls happen
+inside the referenced object (all other JSON data outside the object
+is discarded). If the object doesn't exist for a given row / index, then that
 data.frame row will be discarded.
 }
 \details{
@@ -29,8 +29,8 @@ will be discarded by this function.
 library(magrittr)  # for \%>\%
 c('{"name": "bob", "children": ["sally", "george"]}', '{"name": "anne"}') \%>\%
   spread_values(parent.name = jstring("name")) \%>\%
-  enter_object("children") \%>\% 
-  gather_array \%>\% 
+  enter_object("children") \%>\%
+  gather_array \%>\%
   append_values_string("children")
 }
 
