@@ -26,7 +26,7 @@ spread_values <- function(x, ...) {
   json <- attr(x, "JSON")
 
   # Get new values
-  new_values <- map(lst(...), function(f) f(json))
+  new_values <- invoke_map(lst(...), .x = list(NULL), json)
 
   # Add on new values
   x <- bind_cols(x, new_values)
