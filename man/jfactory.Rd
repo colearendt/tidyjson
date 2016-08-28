@@ -4,12 +4,10 @@
 \alias{jfactory}
 \title{Factory that creates the j* functions below}
 \usage{
-jfactory(na.value, conversion.function)
+jfactory(map.function)
 }
 \arguments{
-\item{na.value}{value to replace NULL with}
-
-\item{conversion.function}{function to convert vector to appropriate type}
+\item{map.function}{function to map to collapse}
 }
 \description{
 Factory that creates the j* functions below

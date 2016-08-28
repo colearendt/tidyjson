@@ -6,6 +6,9 @@
 #' the type of the data that should be captured at each desired key location.
 #' These values can be of varying types at varying depths.
 #'
+#' Note that jstring, jnumber and jlogical will fail if they encounter the
+#' incorrect type in any document
+#'
 #' @param x tbl_json object
 #' @param ... column=value list where 'column' will be the column name created
 #'   and 'value' must be a call to jstring(), jnumber() or jlogical() specifying
@@ -26,38 +29,33 @@ spread_values <- function(x, ...) {
   json <- attr(x, "JSON")
 
   # Get new values
-  new_values <- map(lst(...), function(f) f(json))
+  new_values <- invoke_map(lst(...), .x = list(NULL), json)
 
   # Add on new values
-  x <- data.frame(x, new_values, stringsAsFactors = FALSE)
+  y <- bind_cols(x, new_values)
 
-  tbl_json(x, json)
+  tbl_json(y, json)
 
 }
 
 #' Factory that creates the j* functions below
 #'
-#' @param na.value value to replace NULL with
-#' @param conversion.function function to convert vector to appropriate type
-jfactory <- function(na.value, conversion.function) {
+#' @param map.function function to map to collapse
+jfactory <- function(map.function) {
 
   function(..., recursive = FALSE) {
 
-    # Prepare path
-    path <- list(...)
+    if (recursive)  recursive.fun <- unlist
+    else            recursive.fun <- identity
 
     # Return a closure to deal with JSON lists
     function(json) {
-      data <- json %>%
-        map(path) %>%
-        map(`%||%`, na.value)
-      if (!recursive) {
-         conversion.function(data)
-      } else {
-         # This must be vapply as we do not know which map_* function to call
-         vapply(data, function(d) conversion.function(unlist(d)),
-                FUN.VALUE = conversion.function(0))
-      }
+
+      json %>%
+        map(list(...)) %>%
+        map(`%||%`, NA) %>%
+        map.function(recursive.fun)
+
     }
 
   }
@@ -66,6 +64,8 @@ jfactory <- function(na.value, conversion.function) {
 
 #' Navigates nested objects to get at keys of a specific type, to be used as
 #' arguments to spread_values
+#'
+#' Note that these functions fail if they encounter the incorrect type.
 #'
 #' @name jfunctions
 #' @param ... the path to follow
@@ -77,12 +77,12 @@ NULL
 
 #' @rdname jfunctions
 #' @export
-jstring <- jfactory(NA_character_, as.character)
+jstring <- jfactory(map_chr)
 
 #' @rdname jfunctions
 #' @export
-jnumber <- jfactory(NA_real_, as.numeric)
+jnumber <- jfactory(map_dbl)
 
 #' @rdname jfunctions
 #' @export
-jlogical <- jfactory(NA, as.logical)
+jlogical <- jfactory(map_lgl)
