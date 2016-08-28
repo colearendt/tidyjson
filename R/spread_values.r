@@ -29,7 +29,7 @@ spread_values <- function(x, ...) {
   new_values <- map(lst(...), function(f) f(json))
 
   # Add on new values
-  x <- data.frame(x, new_values, stringsAsFactors = FALSE)
+  x <- bind_cols(x, new_values)
 
   tbl_json(x, json)
 
