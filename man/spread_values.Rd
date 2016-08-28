@@ -20,6 +20,10 @@ jnumber() or jlogical() named function calls as arguments in order to specify
 the type of the data that should be captured at each desired key location.
 These values can be of varying types at varying depths.
 }
+\details{
+Note that jstring, jnumber and jlogical will fail if they encounter the
+incorrect type in any document
+}
 \examples{
 library(magrittr)  # for \%>\%
 '{"name": {"first": "bob", "last": "jones"}, "age": 32}' \%>\%

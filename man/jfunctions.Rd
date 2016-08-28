@@ -25,7 +25,6 @@ the nested json object}
 a function that can operate on parsed JSON data
 }
 \description{
-Navigates nested objects to get at keys of a specific type, to be used as
-arguments to spread_values
+Note that these functions fail if they encounter the incorrect type.
 }
 
