@@ -39,7 +39,8 @@ spread_values <- function(x, ...) {
 #'
 #' @param na.value value to replace NULL with
 #' @param conversion.function function to convert vector to appropriate type
-jfactory <- function(na.value, conversion.function) {
+#' @param map.function function to map to collapse
+jfactory <- function(na.value, conversion.function, map.function) {
 
   function(..., recursive = FALSE) {
 
@@ -52,11 +53,9 @@ jfactory <- function(na.value, conversion.function) {
         map(path) %>%
         map(`%||%`, na.value)
       if (!recursive) {
-         conversion.function(data)
+        data %>% conversion.function
       } else {
-         # This must be vapply as we do not know which map_* function to call
-         vapply(data, function(d) conversion.function(unlist(d)),
-                FUN.VALUE = conversion.function(0))
+        data %>% map.function(unlist)
       }
     }
 
@@ -77,12 +76,12 @@ NULL
 
 #' @rdname jfunctions
 #' @export
-jstring <- jfactory(NA_character_, as.character)
+jstring <- jfactory(NA_character_, as.character, map_chr)
 
 #' @rdname jfunctions
 #' @export
-jnumber <- jfactory(NA_real_, as.numeric)
+jnumber <- jfactory(NA_real_, as.numeric, map_dbl)
 
 #' @rdname jfunctions
 #' @export
-jlogical <- jfactory(NA, as.logical)
+jlogical <- jfactory(NA, as.logical, map_lgl)
