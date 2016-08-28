@@ -1,24 +1,24 @@
 ---
 title: "Making tidyjson purrr"
-author: "Jeremy Stanley"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Making tidyjson purrr}
   %\VignetteEngine{knitr::rmarkdown}
-  %\usepackage[utf8]{inputenc}
+  \usepackage[utf8]{inputenc}
 ---
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
-options(dplyr.print_min = 4L, dplyr.print_max = 4L)
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(collapse = T, comment = "#>")
+options(tibble.print_min = 4L, tibble.print_max = 4L)
+library(tidyjson)
 ```
 
 ## Load required libraries
 
 ```{r, message = FALSE}
 library(needs)
-needs(tidyjson, jsonlite, dplyr, purrr, magrittr, forcats, tibble, tidyr)
+needs(jsonlite, dplyr, purrr, magrittr, forcats, tibble, tidyr)
 ```
 
 ## Companies Data

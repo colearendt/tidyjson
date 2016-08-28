@@ -1,17 +1,17 @@
 ---
 title: "Introduction to tidyjson"
-author: "Jeremy Stanley"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Introduction to tidyjson}
   %\VignetteEngine{knitr::rmarkdown}
-  %\usepackage[utf8]{inputenc}
+  \usepackage[utf8]{inputenc}
 ---
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
-options(dplyr.print_min = 4L, dplyr.print_max = 4L)
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(collapse = T, comment = "#>")
+options(tibble.print_min = 4L, tibble.print_max = 4L)
+library(tidyjson)
 ```
 
 [JSON](http://json.org/) (JavaScript Object Notation) is a lightweight and 
@@ -61,7 +61,6 @@ and the [magrittr](http://cran.r-project.org/web/packages/magrittr/index.html) `
 A simple example of how tidyjson works is as follows:
 
 ```{r, message = FALSE}
-library(tidyjson)   # this library
 library(dplyr)      # for %>% and other dplyr functions
 
 # Define a simple JSON array of people

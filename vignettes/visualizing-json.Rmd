@@ -1,17 +1,17 @@
 ---
-title: "Visualizing JSON Schema"
-author: "Jeremy Stanley"
+title: "Visualizing JSON schema"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Visualizing JSON schema}
   %\VignetteEngine{knitr::rmarkdown}
-  %\usepackage[utf8]{inputenc}
+  \usepackage[utf8]{inputenc}
 ---
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
-options(dplyr.print_min = 4L, dplyr.print_max = 4L)
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(collapse = T, comment = "#>")
+options(tibble.print_min = 4L, tibble.print_max = 4L)
+library(tidyjson)
 ```
 
 JSON is a very simple data standard that, through nested data structures, can
@@ -62,7 +62,7 @@ visualization libraries, and set a seed so we get consistent results.
 
 ```{r, message = FALSE}
 library(needs)
-needs(tidyjson, jsonlite, dplyr, purrr, magrittr, forcats,
+needs(jsonlite, dplyr, purrr, magrittr, forcats,
       ggplot2, igraph, RColorBrewer, wordcloud, viridis)
 set.seed(1)
 ```
