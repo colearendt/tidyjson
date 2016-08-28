@@ -12,7 +12,6 @@
 #' @return a tbl_json object with column.name column that tells the length
 #' @export
 #' @examples
-#' library(magrittr)  # for %>%
 #' c('[1, 2, [3, 4]]', '{"k1": 1, "k2": [2, [3, 4]]}', '1', {}) %>%
 #'   json_lengths %>% json_complexity
 json_complexity <- function(x, column.name = "complexity") {

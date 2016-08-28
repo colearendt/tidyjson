@@ -27,7 +27,6 @@ This allows you to *enter into* the keys of the objects just like `gather_array`
 let you enter elements of the array.
 }
 \examples{
-library(magrittr)  # for \%>\%
 '{"name": "bob", "age": 32}' \%>\% gather_keys \%>\% json_types
 }
 

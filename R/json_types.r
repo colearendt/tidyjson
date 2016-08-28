@@ -14,7 +14,6 @@
 #' @return a tbl_json object with column.name column that tells the type
 #' @export
 #' @examples
-#' library(magrittr)  # for %>%
 #' c('{"a": 1}', '[1, 2]', '"a"', '1', 'true', 'null') %>% json_types
 json_types <- function(x, column.name = "type") {
 

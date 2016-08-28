@@ -48,7 +48,6 @@ an array, then subsequent rows will recursively correspond to the elements
 (and their children) of the object or array.
 }
 \examples{
-library(magrittr)  # for \%>\%
 
 # A simple string
 '"string"' \%>\% json_structure

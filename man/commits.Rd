@@ -13,8 +13,6 @@ Commit data for the dplyr repo from github API
 }
 \examples{
 
-library(dplyr)
-
 # Show first 200 characters of JSON
 commits \%>\% substr(1, 200) \%>\% writeLines
 

@@ -16,7 +16,6 @@
 #' @param ... path to filter
 #' @export
 #' @examples
-#' library(magrittr)  # for %>%
 #' c('{"name": "bob", "children": ["sally", "george"]}', '{"name": "anne"}') %>%
 #'   spread_values(parent.name = jstring("name")) %>%
 #'   enter_object("children") %>%

@@ -39,7 +39,6 @@
 #'
 #' @export
 #' @examples
-#' library(magrittr)  # for %>%
 #'
 #' # A simple string
 #' '"string"' %>% json_structure

@@ -15,7 +15,6 @@
 #'   the path to get the value (and the type implicit in the function name)
 #' @export
 #' @examples
-#' library(magrittr)  # for %>%
 #' '{"name": {"first": "bob", "last": "jones"}, "age": 32}' %>%
 #'   spread_values(
 #'     first.name = jstring("name", "first"),

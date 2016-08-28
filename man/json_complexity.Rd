@@ -23,7 +23,6 @@ object by recursively stripping away all objects or arrays, and the complexity
 is the count of these scalar values. Note that 'null' has complexity 0.
 }
 \examples{
-library(magrittr)  # for \%>\%
 c('[1, 2, [3, 4]]', '{"k1": 1, "k2": [2, [3, 4]]}', '1', {}) \%>\%
   json_lengths \%>\% json_complexity
 }

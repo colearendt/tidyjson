@@ -19,7 +19,6 @@
 #'        nested object.  Only used when force = TRUE.  If force = FALSE, and
 #'        recursive=TRUE, throws an error.
 #' @examples
-#' library(magrittr)  # for %>%
 #' '{"first": "bob", "last": "jones"}' %>%
 #'   gather_keys() %>%
 #'   append_values_string()

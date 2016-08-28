@@ -6,8 +6,6 @@
 #' @format JSON
 #' @examples
 #' 
-#' library(dplyr)
-#' 
 #' # Show first 200 characters of JSON
 #' commits %>% substr(1, 200) %>% writeLines
 #' 

@@ -24,7 +24,6 @@
 #'   index and JSON attribute extracted from the array
 #' @export
 #' @examples
-#' library(magrittr)  # for %>%
 #' '[1, "a", {"k": "v"}]' %>% gather_array %>% json_types
 gather_array <- function(x, column.name = "array.index") {
 

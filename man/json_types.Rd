@@ -26,7 +26,6 @@ after gather_array() (or gather_keys()) to inspect the types of the elements
 (or values) in arrays (or objects).
 }
 \examples{
-library(magrittr)  # for \%>\%
 c('{"a": 1}', '[1, 2]', '"a"', '1', 'true', 'null') \%>\% json_types
 }
 

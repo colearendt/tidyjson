@@ -25,7 +25,6 @@ Note that jstring, jnumber and jlogical will fail if they encounter the
 incorrect type in any document
 }
 \examples{
-library(magrittr)  # for \%>\%
 '{"name": {"first": "bob", "last": "jones"}, "age": 32}' \%>\%
   spread_values(
     first.name = jstring("name", "first"),

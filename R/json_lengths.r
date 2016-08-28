@@ -12,7 +12,6 @@
 #' @return a tbl_json object with column.name column that tells the length
 #' @export
 #' @examples
-#' library(magrittr)  # for %>%
 #' c('[1, 2, 3]', '{"k1": 1, "k2": 2}', '1', {}) %>% json_lengths
 json_lengths <- function(x, column.name = "length") {
 

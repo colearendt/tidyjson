@@ -15,7 +15,6 @@
 #'   and JSON attribute of the associated value data
 #' @export
 #' @examples
-#' library(magrittr)  # for %>%
 #' '{"name": "bob", "age": 32}' %>% gather_keys %>% json_types
 gather_keys <- function(x, column.name = "key") {
 

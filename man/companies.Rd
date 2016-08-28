@@ -23,7 +23,7 @@ library(jsonlite)
 key_employees <- companies \%>\%
   spread_values(
     name = jstring("name")
-  ) \%>\% 
+  ) \%>\%
   mutate(
     company.sort_order = rank(name)
   ) \%>\%
@@ -31,15 +31,14 @@ key_employees <- companies \%>\%
   gather_array("relationship.index") \%>\%
   spread_values(
     is.past = jlogical("is_past"),
-    name = jstring("person", "permalink"),
+    person.name = jstring("person", "permalink"),
     title = jstring("title")
   )
 
 # Show the top 10 titles
 key_employees \%>\%
   filter(!is.past) \%>\%
-  group_by(title) \%>\%
-  tally() \%>\%
+  count(title) \%>\%
   arrange(desc(n)) \%>\%
   top_n(10)
 }

@@ -35,8 +35,7 @@ wb_sectors \%>\% head
 # Get the top 10 sectors by funded project in Africa
 wb_sectors \%>\%
   filter(region == "Africa") \%>\% # Filter to just Africa
-  group_by(sector) \%>\%           # Group by sector
-  tally() \%>\%                    # Count funded projects
+  count(sector) \%>\%              # Count by sector
   arrange(desc(n)) \%>\%           # Arrange descending
   top_n(10)                      # Take the top 10
 }
