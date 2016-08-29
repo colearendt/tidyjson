@@ -18,7 +18,7 @@ library(tidyjson)
 
 ```{r, message = FALSE}
 library(needs)
-needs(jsonlite, dplyr, purrr, magrittr, forcats, tibble, tidyr)
+needs(jsonlite, dplyr, purrr = "0.2.2.9000", magrittr, forcats, tibble, tidyr)
 ```
 
 ## Companies Data
@@ -213,7 +213,7 @@ We can attempt something similar with map_chr for the character strings
 ```{r, error = TRUE}
 samp_co_tibble %>%
   mutate(
-    id            = json %>% map_chr("_id", "$oid"),
+    id            = json %>% map_chr(c("_id", "$oid")),
     name          = json %>% map_chr("name"),
     email_address = json %>% map_chr("email_address"),
     founded_year  = json %>% map_dbl("founded_year")
@@ -222,15 +222,15 @@ samp_co_tibble %>%
 
 This fails because `email_address`, `number_of_employees` and `founded_year` all
 have `null` values in them. We can fix this by handling the NULLs explicitly
-using the `null_default` operator in purrr, `%||%`.
+using the `.null` argument in the `map_*` functions.
 
 ```{r}
 samp_co_tibble %>%
   mutate(
-    id            = json %>% map("_id") %>% map("$oid") %>% map_chr(`%||%`, NA),
-    name          = json %>% map("name") %>% map_chr(`%||%`, NA),
-    email_address = json %>% map("email_address") %>% map_chr(`%||%`, NA),
-    founded_year  = json %>% map("founded_year") %>% map_dbl(`%||%`, NA)
+    id            = json %>% map_chr(c("_id", "$oid"), .null = NA),
+    name          = json %>% map_chr("name", .null = NA),
+    email_address = json %>% map_chr("email_address", .null = NA),
+    founded_year  = json %>% map_dbl("founded_year", .null = NA)
   )
 ```
 
@@ -305,15 +305,15 @@ Now, let's try with purrr
 ```{r}
 samp_co_tibble %>%
   mutate(
-    name        = json %>% map("name") %>% map_chr(`%||%`, NA),
+    name        = json %>% map_chr("name", .null = NA),
     acquisition = json %>% map("acquisition")
   ) %>%
   filter(acquisition %>% map_lgl(is.null) %>% not) %>%
   mutate(
-    year        = acquisition %>% map("acquired_year") %>% map_int(`%||%`, NA),
-    amount      = acquisition %>% map("price_amount") %>% map_dbl(`%||%`, NA),
-    currency    = acquisition %>% map("price_currency_code") %>% map_chr(`%||%`, NA),
-    acquired_by = acquisition %>% map("acquiring_company") %>% map("name") %>% map_chr(`%||%`, NA)
+    year        = acquisition %>% map_int("acquired_year", .null = NA),
+    amount      = acquisition %>% map_dbl("price_amount", .null = NA),
+    currency    = acquisition %>% map_chr("price_currency_code", .null = NA),
+    acquired_by = acquisition %>% map_chr(c("acquiring_company", "name"), .null = NA)
   ) %>%
   select(-json, -acquisition)
 ```
@@ -353,7 +353,7 @@ Now with purrr (must be a better way)
 ```{r}
 samp_co_tibble %>%
   mutate(
-    name  = json %>% map("name") %>% map_chr(`%||%`, NA),
+    name  = json %>% map_chr("name", .null = NA),
     rounds = json %>% map("funding_rounds")
   ) %>%
   filter(map_int(rounds, length) > 0) %>%
@@ -364,9 +364,9 @@ samp_co_tibble %>%
   group_by(name) %>%
   mutate(round_number = 1:n()) %>%
   mutate(
-    year   = rounds %>% map("funded_year") %>% map_int(`%||%`, NA),
-    round  = rounds %>% map("round_code") %>% map_chr(`%||%`, NA),
-    raised = rounds %>% map("raised_amount") %>% map_dbl(`%||%`, NA)
+    year   = rounds %>% map_int("funded_year", .null = NA),
+    round  = rounds %>% map_chr("round_code", .null = NA),
+    raised = rounds %>% map_dbl("raised_amount", .null = NA)
   ) %>%
   select(-rounds)
 ```
@@ -374,7 +374,7 @@ samp_co_tibble %>%
 ```{r}
 samp_co_tibble %>%
   mutate(
-    name  = json %>% map("name") %>% map_chr(`%||%`, NA),
+    name  = json %>% map_chr("name", .null = NA),
     rounds = json %>% map("funding_rounds")
   ) %>%
   filter(map_int(rounds, length) > 0) %>%
