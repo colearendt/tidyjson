@@ -75,14 +75,17 @@ test_that("correctly handles character(0), {}, []", {
   }
 )
 
-test_that("column.name works", {
+test_that("column.name works and doesn't clobber existing key", {
 
   expect_identical(
     '{"key1": 1, "key2": 2}' %>%
+      as.tbl_json %>%
+      mutate(key = 1L) %>%
       gather_keys("new"),
     tbl_json(
       data_frame(
         document.id = rep(1L, 2),
+        key = rep(1L, 2),
         new = c("key1", "key2")
       ),
       list(1L, 2L)

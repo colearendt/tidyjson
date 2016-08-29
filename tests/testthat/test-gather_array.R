@@ -159,14 +159,17 @@ test_that("correctly handles character(0), {}, []", {
   }
 )
 
-test_that("column.name works", {
+test_that("column.name works and doesn't clobber existing index", {
 
   expect_identical(
     '["a", "b"]' %>%
+      as.tbl_json %>%
+      mutate(array.index = 1L) %>%
       gather_array("new"),
     tbl_json(
       data_frame(
         document.id = rep(1L, 2),
+        array.index = rep(1L, 2),
         new = c(1L, 2L)
       ),
       list("a", "b")

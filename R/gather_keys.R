@@ -43,9 +43,9 @@ gather_keys <- function(x, column.name = "key") {
   # unnest keys
   y <- x %>%
     tbl_df %>%
-    mutate(key = json %>% map(names)) %>%
-    unnest(key) %>%
-    rename_(.dots = setNames("key", column.name))
+    mutate(..key = json %>% map(names)) %>%
+    unnest(..key) %>%
+    rename_(.dots = setNames("..key", column.name))
 
   # unnest json
   json <- json %>% unlist(recursive = FALSE)
