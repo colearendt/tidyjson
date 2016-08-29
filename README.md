@@ -2,6 +2,7 @@
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tidyjson)](http://cran.r-project.org/package=tidyjson)
 [![Build Status](https://travis-ci.org/jeremystan/tidyjson.svg?branch=master)](https://travis-ci.org/jeremystan/tidyjson)
+[![Coverage Status](https://img.shields.io/codecov/c/github/jeremystan/tidyjson/master.svg)](https://codecov.io/github/jeremystan/tidyjson?branch=master)
 
 tidyjson is a complementary set of tools to [tidyr](https://github.com/hadley/tidyr)
 for working with JSON data. It's primary objective is to turn JSON data into 
