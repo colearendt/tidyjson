@@ -11,7 +11,8 @@ Imports:
     assertthat,
     jsonlite,
     purrr (>= 0.2.2.9000),
-    dplyr
+    dplyr,
+    magrittr
 URL: https://github.com/sailthru/tidyjson
 License: MIT + file LICENSE
 LazyData: true
@@ -19,6 +20,14 @@ Suggests:
     knitr,
     testthat,
     ggplot2,
-    magrittr
+    rmarkdown,
+    needs,
+    forcats,
+    tibble,
+    tidyr,
+    igraph,
+    RColorBrewer,
+    wordcloud,
+    viridis
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
