@@ -20,6 +20,14 @@ Suggests:
     testthat,
     ggplot2,
     magrittr,
-    rmarkdown
+    rmarkdown,
+    needs,
+    forcats,
+    tibble,
+    tidyr,
+    igraph,
+    RColorBrewer,
+    wordcloud,
+    viridis
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1

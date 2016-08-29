@@ -4,4 +4,7 @@ language: R
 sudo: false
 cache: packages
 
-r_github_packages: hadley/purrr
+r_github_packages:
+  - hadley/purrr
+  - hadley/forcats
+
