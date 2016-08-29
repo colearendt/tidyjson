@@ -6,6 +6,7 @@
 #' @import jsonlite
 #' @importFrom purrr map map_lgl map_dbl map_int map_chr map2 %||% invoke_map
 #' @import dplyr
+#' @import tidyr
 NULL
 
 # Quiet R CMD Check "no visible binding for global variable" when using dplyr

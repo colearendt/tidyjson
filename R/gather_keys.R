@@ -35,25 +35,19 @@ gather_keys <- function(x, column.name = "key") {
   # Determine types
   types <- determine_types(json)
 
-  # Check if not arrays
+  # Check if not objects
   not_objects <- types != "object"
   if (any(not_objects))
     stop(sprintf("%s records are values not objects", sum(not_objects)))
 
-  # Get array lengths
-  lengths <- map_int(json, length)
+  # unnest keys
+  y <- x %>%
+    tbl_df %>%
+    mutate(key = json %>% map(names)) %>%
+    unnest(key)
 
-  # Compute indices
-  indices <- rep(seq_along(json), lengths)
-
-  # Expand x
-  y <- x[indices, , drop = FALSE]
-
-  # Add key names
-  y[column.name] <- unlist(map(json, names))
-
-  # Unwind JSON one level
-  json <- unlist(json, recursive = FALSE)
+  # unnest json
+  json <- json %>% unlist(recursive = FALSE)
 
   # Remove names
   names(json) <- NULL
