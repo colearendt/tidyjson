@@ -45,9 +45,9 @@ test_that("works with compound values", {
 
 test_that("throws errors with incorrect types", {
 
-    expect_error('1' %>% gather_keys(), "1 records are values not objects")
-    expect_error('["a"]' %>% gather_keys(), "1 records are values not objects")
-    expect_error('null' %>% gather_keys(), "1 records are values not objects")
+    expect_error('1' %>% gather_keys(), "1 records are not objects")
+    expect_error('["a"]' %>% gather_keys(), "1 records are not objects")
+    expect_error('null' %>% gather_keys(), "1 records are not objects")
 
   }
 )
@@ -87,6 +87,26 @@ test_that("column.name works and doesn't clobber existing key", {
         document.id = rep(1L, 2),
         key = rep(1L, 2),
         new = c("key1", "key2")
+      ),
+      list(1L, 2L)
+    )
+  )
+
+}
+)
+
+test_that("preserves a NULL column", {
+
+  expect_identical(
+    '{"key1": 1, "key2": 2}' %>%
+      as.tbl_json %>%
+      mutate(col = list(NULL)) %>%
+      gather_keys,
+    tbl_json(
+      data_frame(
+        document.id = rep(1L, 2),
+        col = rep(list(NULL), 2),
+        key = c("key1", "key2")
       ),
       list(1L, 2L)
     )

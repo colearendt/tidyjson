@@ -178,3 +178,23 @@ test_that("column.name works and doesn't clobber existing index", {
 
 }
 )
+
+test_that("preserves a NULL column", {
+
+  expect_identical(
+    '["a", "b"]' %>%
+      as.tbl_json %>%
+      mutate(col = list(NULL)) %>%
+      gather_array,
+    tbl_json(
+      data_frame(
+        document.id = rep(1L, 2),
+        col = rep(list(NULL), 2),
+        array.index = rep(1L, 2)
+      ),
+      list("a", "b")
+    )
+  )
+
+}
+)
