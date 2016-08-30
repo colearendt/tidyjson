@@ -7,10 +7,9 @@ cache: packages
 r_packages:
   - covr
 
-after_success:
-  - Rscript -e 'library(covr); codecov()'
-
 r_github_packages:
   - hadley/purrr
   - hadley/forcats
 
+after_success:
+  - Rscript -e 'library(covr); codecov()'
