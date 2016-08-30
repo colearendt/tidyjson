@@ -45,9 +45,9 @@ test_that("works with compound values", {
 
 test_that("throws errors with incorrect types", {
 
-    expect_error('1' %>% gather_keys())
-    expect_error('["a"]' %>% gather_keys())
-    expect_error('null' %>% gather_keys())
+    expect_error('1' %>% gather_keys(), "1 records are values not objects")
+    expect_error('["a"]' %>% gather_keys(), "1 records are values not objects")
+    expect_error('null' %>% gather_keys(), "1 records are values not objects")
 
   }
 )

@@ -19,6 +19,7 @@
 gather_keys <- function(x, column.name = "key") {
 
   assert_that(!("..key" %in% names(x)))
+  assert_that(!("..json" %in% names(x)))
 
   if (!is.tbl_json(x)) x <- as.tbl_json(x)
 
@@ -45,17 +46,15 @@ gather_keys <- function(x, column.name = "key") {
   # unnest keys
   y <- x %>%
     tbl_df %>%
-    mutate(..key = json %>% map(names)) %>%
-    unnest(..key) %>%
+    mutate(
+      ..key = json %>% map(names),
+      ..json = json %>%
+        map(~data_frame(..json = as.list(.)))
+    ) %>%
+    unnest(..key, ..json) %>%
     rename_(.dots = setNames("..key", column.name))
 
-  # unnest json
-  json <- json %>% unlist(recursive = FALSE)
-
-  # Remove names
-  names(json) <- NULL
-
   # Construct tbl_json
-  tbl_json(y, json)
+  tbl_json(y %>% select(-..json), y$..json)
 
 }
