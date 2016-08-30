@@ -1,4 +1,5 @@
 ^\.travis\.yml$
-cran-comments.md
+^cran-comments\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^codecov\.yml$
