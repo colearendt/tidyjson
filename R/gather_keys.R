@@ -28,31 +28,41 @@ gather_keys <- function(x, column.name = "key") {
 
   # Handle the case where json is just an empty list
   if (identical(json, list())) {
-    # Drop any rows
     y <- x[integer(0), , drop = FALSE]
-    # Setup
     y[column.name] <- character(0)
     return(tbl_json(y, list()))
   }
 
-  # Determine types
-  types <- determine_types(json)
-
-  # Check if not objects
-  not_objects <- types != "object"
-  if (any(not_objects))
-    stop(sprintf("%s records are values not objects", sum(not_objects)))
-
   # unnest keys
-  y <- x %>%
-    tbl_df %>%
-    mutate(
-      ..key = json %>% map(names),
-      ..json = json %>%
-        map(~data_frame(..json = as.list(.)))
-    ) %>%
-    unnest(..key, ..json) %>%
-    rename_(.dots = setNames("..key", column.name))
+  tryCatch({
+
+    y <- x %>%
+      tbl_df %>%
+      mutate(
+        ..key = json %>% map(names),
+        ..json = json %>%
+          map(~data_frame(..json = as.list(.)))
+      ) %>%
+      unnest(..key, ..json) %>%
+      rename_(.dots = setNames("..key", column.name))
+
+    },
+    error = function(e) {
+
+      # Determine types
+      types <- determine_types(json)
+
+      # Check if not objects
+      not_objects <- types != "object"
+      if (any(not_objects)) {
+        stop(sprintf("%s records are values not objects", sum(not_objects)))
+      } else {
+        # Throw whatever other error we found
+        stop(e$message)
+      }
+
+    }
+  )
 
   # Construct tbl_json
   tbl_json(y %>% select(-..json), y$..json)
