@@ -44,6 +44,12 @@ jfactory <- function(map.function) {
 
   function(..., recursive = FALSE) {
 
+    if (class(substitute(...)) == "name") {
+      path <- list(deparse(substitute(...)))
+    } else {
+      path <- list(...)
+    }
+
     if (recursive)  recursive.fun <- unlist
     else            recursive.fun <- identity
 
@@ -51,7 +57,7 @@ jfactory <- function(map.function) {
     function(json) {
 
       json %>%
-        map(list(...)) %>%
+        map(path) %>%
         map(`%||%`, NA) %>%
         map.function(recursive.fun)
 
