@@ -18,6 +18,8 @@
 #' '{"name": "bob", "age": 32}' %>% gather_keys %>% json_types
 gather_keys <- function(x, column.name = "key") {
 
+  assert_that(!("..key" %in% names(x)))
+
   if (!is.tbl_json(x)) x <- as.tbl_json(x)
 
   # Get JSON
