@@ -42,7 +42,7 @@ gather_factory <- function(default.column.name, default.column.empty,
         ..json = json %>%
           map(~data_frame(..json = as.list(.)))
       ) %>%
-      unnest(..key, ..json) %>%
+      unnest(..key, ..json, .drop = FALSE) %>%
       rename_(.dots = setNames("..key", column.name))
 
     # Construct tbl_json

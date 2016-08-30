@@ -190,7 +190,7 @@ test_that("preserves a NULL column", {
       data_frame(
         document.id = rep(1L, 2),
         col = rep(list(NULL), 2),
-        array.index = rep(1L, 2)
+        array.index = c(1L, 2L)
       ),
       list("a", "b")
     )
