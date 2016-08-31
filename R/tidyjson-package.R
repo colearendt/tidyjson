@@ -9,6 +9,7 @@
 #' @import tidyr
 #' @importFrom igraph graph_from_data_frame plot.igraph V layout_with_kk
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom graphics par
 NULL
 
 # Quiet R CMD Check "no visible binding for global variable" when using dplyr

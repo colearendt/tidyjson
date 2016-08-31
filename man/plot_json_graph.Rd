@@ -23,6 +23,8 @@ the json is very complex}
 \item{show.labels}{should object names be shown}
 
 \item{plot}{should the plot be rendered?}
+
+\item{...}{further arguments to igraph::plot.igraph}
 }
 \value{
 the igraph object

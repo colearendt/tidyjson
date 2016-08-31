@@ -33,6 +33,7 @@
 #'        the json is very complex
 #' @param show.labels should object names be shown
 #' @param plot should the plot be rendered?
+#' @param ... further arguments to igraph::plot.igraph
 #' @return the igraph object
 #' @export
 #' @examples
