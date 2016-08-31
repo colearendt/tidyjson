@@ -14,14 +14,14 @@ test_that("json_schema works for simple examples", {
 test_that("json_schema works for a more complex example", {
 
   json <- c(
-    '{"k1": "a",  "k2": [1, 2]}',
-    '{"k1": null, "k2": [1, 2, 3], "k3": true, "k4": null}',
-    '{            "k2": null,                  "k4": {"k5": "a"}}'
+    '{"k0": null, "k1": "a",  "k2": [1, 2]}',
+    '{"k0": null, "k1": null, "k2": [1, 2, 3], "k3": true, "k4": null}',
+    '{"k0": null,             "k2": null,                  "k4": {"k5": "a"}}'
   )
 
   expect_identical(
     json_schema(json),
-    '{"k1": "string", "k2": ["number"], "k3": logical, "k4": {"k5": "string"}}'
+    '{"k0": "null", "k1": "string", "k2": ["number"], "k3": "logical", "k4": {"k5": "string"}}'
   )
 
 })
