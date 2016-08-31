@@ -13,7 +13,9 @@ Imports:
     purrr (>= 0.2.2.9000),
     dplyr,
     magrittr,
-    tidyr
+    tidyr,
+    igraph,
+    RColorBrewer
 URL: https://github.com/sailthru/tidyjson
 License: MIT + file LICENSE
 LazyData: true
@@ -25,8 +27,6 @@ Suggests:
     needs,
     forcats,
     tibble,
-    igraph,
-    RColorBrewer,
     wordcloud,
     viridis
 VignetteBuilder: knitr

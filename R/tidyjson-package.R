@@ -7,6 +7,8 @@
 #' @importFrom purrr map map_lgl map_dbl map_int map_chr map2 %||% invoke_map
 #' @import dplyr
 #' @import tidyr
+#' @importFrom igraph graph_from_data_frame plot.igraph V layout_with_kk
+#' @importFrom RColorBrewer brewer.pal
 NULL
 
 # Quiet R CMD Check "no visible binding for global variable" when using dplyr
