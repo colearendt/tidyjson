@@ -37,16 +37,16 @@
 #'
 enter_object <- function(x, ...) {
 
+  if (!is.tbl_json(x)) x <- as.tbl_json(x)
+
+  # Extract json
+  json <- attr(x, "JSON")
+
   # Capture ... as list
   path <- f_list(...)
 
   # Convert NSE to character strings
   path <- map_if(path, is_formula, compose(as.character, uq))
-
-  if (!is.tbl_json(x)) x <- as.tbl_json(x)
-
-  # Extract json
-  json <- attr(x, "JSON")
 
   # Access path
   json <- json %>% map(path)
