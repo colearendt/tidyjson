@@ -15,7 +15,8 @@ jnumber(..., recursive = FALSE)
 jlogical(..., recursive = FALSE)
 }
 \arguments{
-\item{...}{the path to follow}
+\item{...}{the path to follow (can be unquoted strings, quoted strings,
+or a mixture of both}
 
 \item{recursive}{logical indicating whether second level and beyond objects
 should be extracted.  Only works when there exists a single value in
