@@ -12,27 +12,44 @@
 #' enter into. Keep in mind that any rows with JSON that do not contain the key
 #' will be discarded by this function.
 #'
+#' Note that the path to filter can either be a comma separated list of strings
+#' or unquoted formulas
+#'
 #' @param x a tbl_json object
 #' @param ... path to filter
 #' @export
 #' @examples
 #' c('{"name": "bob", "children": ["sally", "george"]}', '{"name": "anne"}') %>%
 #'   spread_values(parent.name = jstring("name")) %>%
-#'   enter_object("children") %>%
+#'   enter_object(~children) %>%
 #'   gather_array %>%
 #'   append_values_string("children")
+#'
+#' # The path can be nested
+#' '{"attributes": { "demographics": {"age": 32, "gender": "male"}}}' %>%
+#'   enter_object(~attributes, ~demographics) %>%
+#'   spread_values(age = jnumber(~age), gender = jstring(~gender))
+#'
+#' # You can also use strings rather than formulas
+#' '{"attributes": { "demographics": {"age": 32, "gender": "male"}}}' %>%
+#'   enter_object("attributes", "demographics") %>%
+#'   spread_values(age = jnumber("age"), gender = jstring("gender"))
+#'
 enter_object <- function(x, ...) {
 
-  if (!is.tbl_json(x)) x <- as.tbl_json(x)
+  # Capture ... as list
+  path <- f_list(...)
 
-  # Prepare path
-  path <- list(...)
+  # Convert NSE to character strings
+  path <- map_if(path, is_formula, compose(as.character, uq))
+
+  if (!is.tbl_json(x)) x <- as.tbl_json(x)
 
   # Extract json
   json <- attr(x, "JSON")
 
   # Access path
-  json <- map(json, path)
+  json <- json %>% map(path)
 
   tbl_json(x, json, drop.null.json = TRUE)
 

@@ -8,7 +8,7 @@
 #' @importFrom purrr map_if is_formula compose
 #' @import dplyr
 #' @import tidyr
-#' @importFrom lazyeval dots_capture uq
+#' @importFrom lazyeval dots_capture uq f_list
 NULL
 
 # Quiet R CMD Check "no visible binding for global variable" when using dplyr
