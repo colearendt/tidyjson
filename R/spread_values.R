@@ -10,16 +10,24 @@
 #' incorrect type in any document
 #'
 #' @param x tbl_json object
-#' @param ... column=value list where 'column' will be the column name created
+#' @param ... column = value list where 'column' will be the column name created
 #'   and 'value' must be a call to jstring(), jnumber() or jlogical() specifying
 #'   the path to get the value (and the type implicit in the function name)
 #' @export
 #' @examples
 #' '{"name": {"first": "bob", "last": "jones"}, "age": 32}' %>%
 #'   spread_values(
-#'     first.name = jstring("name", "first"),
+#'     first.name = jstring(~name, ~first),
+#'     age = jnumber(~age)
+#'   )
+#'
+#' # You can also use quoted strings or a mixture of both quoted and unquoted
+#' '{"name": {"first": "bob", "last": "jones"}, "age": 32}' %>%
+#'   spread_values(
+#'     first.name = jstring("name", ~first),
 #'     age = jnumber("age")
 #'   )
+#'
 spread_values <- function(x, ...) {
 
   if (!is.tbl_json(x)) x <- as.tbl_json(x)
@@ -44,6 +52,12 @@ jfactory <- function(map.function) {
 
   function(..., recursive = FALSE) {
 
+    # Capture ... as list
+    path <- f_list(...)
+
+    # Convert NSE to character strings
+    path <- map_if(path, is_formula, compose(as.character, uq))
+
     if (recursive)  recursive.fun <- unlist
     else            recursive.fun <- identity
 
@@ -51,7 +65,7 @@ jfactory <- function(map.function) {
     function(json) {
 
       json %>%
-        map(list(...)) %>%
+        map(path) %>%
         map(`%||%`, NA) %>%
         map.function(recursive.fun)
 
@@ -67,7 +81,8 @@ jfactory <- function(map.function) {
 #' Note that these functions fail if they encounter the incorrect type.
 #'
 #' @name jfunctions
-#' @param ... the path to follow
+#' @param ... the path to follow (can be unquoted strings, quoted strings,
+#'        or a mixture of both
 #' @param recursive logical indicating whether second level and beyond objects
 #'        should be extracted.  Only works when there exists a single value in
 #'        the nested json object

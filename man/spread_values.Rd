@@ -9,7 +9,7 @@ spread_values(x, ...)
 \arguments{
 \item{x}{tbl_json object}
 
-\item{...}{column=value list where 'column' will be the column name created
+\item{...}{column = value list where 'column' will be the column name created
 and 'value' must be a call to jstring(), jnumber() or jlogical() specifying
 the path to get the value (and the type implicit in the function name)}
 }
@@ -27,8 +27,16 @@ incorrect type in any document
 \examples{
 '{"name": {"first": "bob", "last": "jones"}, "age": 32}' \%>\%
   spread_values(
-    first.name = jstring("name", "first"),
+    first.name = jstring(~name, ~first),
+    age = jnumber(~age)
+  )
+
+# You can also use quoted strings or a mixture of both quoted and unquoted
+'{"name": {"first": "bob", "last": "jones"}, "age": 32}' \%>\%
+  spread_values(
+    first.name = jstring("name", ~first),
     age = jnumber("age")
   )
+
 }
 

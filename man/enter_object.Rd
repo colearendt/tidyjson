@@ -24,12 +24,26 @@ This is useful when you want to limit your data to just information found in
 a specific key. Use the ... to specific a sequence of keys that you want to
 enter into. Keep in mind that any rows with JSON that do not contain the key
 will be discarded by this function.
+
+Note that the path to filter can either be a comma separated list of strings
+or unquoted formulas
 }
 \examples{
 c('{"name": "bob", "children": ["sally", "george"]}', '{"name": "anne"}') \%>\%
   spread_values(parent.name = jstring("name")) \%>\%
-  enter_object("children") \%>\%
+  enter_object(~children) \%>\%
   gather_array \%>\%
   append_values_string("children")
+
+# The path can be nested
+'{"attributes": { "demographics": {"age": 32, "gender": "male"}}}' \%>\%
+  enter_object(~attributes, ~demographics) \%>\%
+  spread_values(age = jnumber(~age), gender = jstring(~gender))
+
+# You can also use strings rather than formulas
+'{"attributes": { "demographics": {"age": 32, "gender": "male"}}}' \%>\%
+  enter_object("attributes", "demographics") \%>\%
+  spread_values(age = jnumber("age"), gender = jstring("gender"))
+
 }
 

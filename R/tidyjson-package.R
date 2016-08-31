@@ -5,8 +5,10 @@
 #' @import assertthat
 #' @import jsonlite
 #' @importFrom purrr map map_lgl map_dbl map_int map_chr map2 %||% invoke_map
+#' @importFrom purrr map_if is_formula compose
 #' @import dplyr
 #' @import tidyr
+#' @importFrom lazyeval uq f_list
 NULL
 
 # Quiet R CMD Check "no visible binding for global variable" when using dplyr

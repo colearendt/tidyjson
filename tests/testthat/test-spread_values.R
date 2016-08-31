@@ -32,6 +32,24 @@ test_that("handles missing input properly", {
   }
 )
 
+test_that("works with standard, NSE and mixed evaluation", {
+
+  json <- list(
+    fromJSON('{"name": {"first": "bob", "last": "smith"}}'),
+    fromJSON('{"name": {"first": "susan", "last": "jones"}}')
+  )
+
+  # Standard
+  expect_identical(jstring("name", "first")(json), c("bob", "susan"))
+
+  # NSE
+  expect_identical(jstring(~name, ~first)(json), c("bob", "susan"))
+
+  # Mixed
+  expect_identical(jstring(~name, "first")(json), c("bob", "susan"))
+
+})
+
 context("jnumber")
 
 test_that("handles missing input properly", {
@@ -158,6 +176,27 @@ test_that("correctly handles []", {
     expect_identical('[]' %>% spread_values(value = jstring("key")), empty)
   }
 )
+
+test_that("works when defined in a function", {
+
+  f <- function(json, string) {
+    json %>% spread_values(value = jstring(string))
+  }
+
+  # When string is passed in
+  expect_identical(
+    '{"key": "value"}' %>% f("key"),
+    '{"key": "value"}' %>% spread_values(value = jstring("key"))
+  )
+
+  # When variable named string is passed in
+  newkey <- "key"
+  expect_identical(
+    '{"key": "value"}' %>% f(newkey),
+    '{"key": "value"}' %>% spread_values(value = jstring("key"))
+  )
+
+})
 
 context("recursive option")
 
