@@ -27,14 +27,14 @@ incorrect type in any document
 \examples{
 '{"name": {"first": "bob", "last": "jones"}, "age": 32}' \%>\%
   spread_values(
-    first.name = jstring(name, first),
-    age = jnumber(age)
+    first.name = jstring(~name, ~first),
+    age = jnumber(~age)
   )
 
 # You can also use quoted strings or a mixture of both quoted and unquoted
 '{"name": {"first": "bob", "last": "jones"}, "age": 32}' \%>\%
   spread_values(
-    first.name = jstring("name", first),
+    first.name = jstring("name", ~first),
     age = jnumber("age")
   )
 

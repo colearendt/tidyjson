@@ -17,14 +17,14 @@
 #' @examples
 #' '{"name": {"first": "bob", "last": "jones"}, "age": 32}' %>%
 #'   spread_values(
-#'     first.name = jstring(name, first),
-#'     age = jnumber(age)
+#'     first.name = jstring(~name, ~first),
+#'     age = jnumber(~age)
 #'   )
 #'
 #' # You can also use quoted strings or a mixture of both quoted and unquoted
 #' '{"name": {"first": "bob", "last": "jones"}, "age": 32}' %>%
 #'   spread_values(
-#'     first.name = jstring("name", first),
+#'     first.name = jstring("name", ~first),
 #'     age = jnumber("age")
 #'   )
 #'
@@ -53,7 +53,7 @@ jfactory <- function(map.function) {
   function(..., recursive = FALSE) {
 
     # Capture ... as list
-    path <- dots_capture(...)
+    path <- f_list(...)
 
     # Convert NSE to character strings
     path <- map_if(path, is_formula, compose(as.character, uq))

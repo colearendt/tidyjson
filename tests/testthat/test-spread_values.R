@@ -43,10 +43,10 @@ test_that("works with standard, NSE and mixed evaluation", {
   expect_identical(jstring("name", "first")(json), c("bob", "susan"))
 
   # NSE
-  expect_identical(jstring(name, first)(json), c("bob", "susan"))
+  expect_identical(jstring(~name, ~first)(json), c("bob", "susan"))
 
   # Mixed
-  expect_identical(jstring(name, "first")(json), c("bob", "susan"))
+  expect_identical(jstring(~name, "first")(json), c("bob", "susan"))
 
 })
 
