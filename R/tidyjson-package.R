@@ -5,7 +5,8 @@
 #' @import assertthat
 #' @import jsonlite
 #' @importFrom purrr map map_lgl map_dbl map_int map_chr map2 %||% invoke_map
-#' @importFrom purrr map_if at_depth flatten_chr flatten_dbl
+#' @importFrom purrr map_if at_depth flatten_chr flatten_dbl compose partial
+#' @importFrom purrr map2_chr
 #' @import dplyr
 #' @import tidyr
 #' @importFrom igraph graph_from_data_frame plot.igraph V layout_with_kk

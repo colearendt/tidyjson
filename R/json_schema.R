@@ -7,12 +7,14 @@ json_schema <- function(x) {
   structure <- x %>% json_structure %>% tbl_df
 
   # Change all array indices to 1L in sequence to unify arrays
-  # Also create an id that is the call to construct the seq
   structure <- structure %>%
     mutate(seq = seq %>% at_depth(2, . %>% map_if(is.numeric, pmin, 1))) %>%
     select(seq, key, type) %>%
-    unique %>%
-    mutate(seq.id = seq %>% map_chr(deparse)) %>%
+    unique
+
+  # Also create an id that is the call to construct the seq
+  structure <- structure %>%
+    mutate(seq.id = seq %>% map_chr(compose(partial(paste0, collapse = ""), deparse))) %>%
     mutate(order = 1:n())
 
   # Which seq.ids are entirely null?
