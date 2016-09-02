@@ -89,22 +89,9 @@ test_that("problem with mixed type arrays", {
 
 })
 
-test_that("json_schema works for a very complex example", {
+test_that("json_schema works for real examples", {
 
+  expect_is(json_schema(worldbank[1]), "character")
   expect_is(json_schema(companies[1]), "character")
 
-  expect_is(json_schema(companies[1:5]), "character")
-
-  schema <- json_schema(companies[1:2])
-  schema %>% (jsonlite::prettify)
-
 })
-
-# Need to implement
-# <anything> >> null
-# [<anyting>] >> []
-# {<anything>} >> {}
-
-# How to handle mixed root types?
-
-
