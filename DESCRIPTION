@@ -28,6 +28,7 @@ Suggests:
     forcats,
     tibble,
     wordcloud,
-    viridis
+    viridis,
+    listviewer
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
