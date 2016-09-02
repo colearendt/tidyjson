@@ -258,10 +258,37 @@ test_that("dplyr::mutate works in a more complex pipeline", {
 
 test_that("dplyr::slice works", {
 
-  sliced <- '[1, 2, 3]' %>% gather_array %>% slice(1:2)
+  new <- '[1, 2, 3]' %>% gather_array %>% slice(1:2)
 
-  expect_is(sliced, "tbl_json")
-  expect_identical(nrow(sliced), 2L)
-  expect_identical(length(attr(sliced, "JSON")), 2L)
+  expect_is(new, "tbl_json")
+  expect_identical(nrow(new), 2L)
+  expect_identical(length(attr(new, "JSON")), 2L)
+
+})
+
+test_that("dplyr::rename works", {
+
+  new <- '[1, 2, 3]' %>% gather_array %>% rename(blah = document.id)
+
+  expect_is(new, "tbl_json")
+  expect_identical(names(new), c("blah", "array.index"))
+
+})
+
+test_that("dplyr::transmute works", {
+
+  new <- '[1, 2, 3]' %>% gather_array %>% transmute(blah = document.id)
+
+  expect_is(new, "tbl_json")
+  expect_identical(names(new), "blah")
+
+})
+
+test_that("dplyr::sample_n works", {
+
+  new <- '[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]' %>% gather_array %>% sample_n(2)
+
+  expect_is(new, "tbl_json")
+  expect_identical(new$array.index, attr(new, "JSON") %>% flatten_int)
 
 })
