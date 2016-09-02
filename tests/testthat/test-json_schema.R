@@ -21,7 +21,7 @@ test_that("json_schema works for a more complex example", {
 
   expect_identical(
     json_schema(json),
-    '{"k0": "null", "k1": "string", "k2": ["number"], "k3": "logical", "k4": {"k5": "string"}}'
+    '{"k0": "null", "k1": "null", "k1": "string", "k2": "null", "k2": ["number"], "k3": "logical", "k4": "null", "k4": {"k5": "string"}}'
   )
 
 })
@@ -57,25 +57,22 @@ test_that("works for complex nested types", {
 test_that("simple mixed type array", {
 
   expect_identical('["a", 1, true, null]' %>% json_schema,
-                   '["string", "number", "logical"]')
+                   '["string", "number", "logical", "null"]')
 
 })
 
 
 test_that("problem with mixed type arrays", {
 
-  '[[1,2], "a"]' %>% json_structure
-
   expect_identical('[[1,2], "a"]' %>% json_schema,
                    '[["number"], "string"]')
 
 })
 
-
 test_that("json_schema works for a very complex example", {
 
-  expect_success(
-    json_schema(companies[1])
-  )
+  expect_is(json_schema(companies[1]), "character")
+
+  expect_is(json_schema(companies[1:5]), "character")
 
 })

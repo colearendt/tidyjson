@@ -5,20 +5,51 @@ json_schema <- function(x) {
   x <- x %>% json_types
   json <- attr(x, "JSON")
 
-  schema <- character(nrow(x))
+  schema <- list_along(json)
 
   is_array <- x$type == "array"
   is_object <- x$type == "object"
   is_scalar <- !is_array & !is_object
 
-  if (any(is_array))
-    schema[is_array] <- json[is_array] %>% map_chr(json_schema_array)
+  if (any(is_array)) {
 
-  if (any(is_object))
-    schema[is_object] <- json[is_object] %>% map_chr(json_schema_object)
+    array_schema <- json[is_array] %>% map(json_schema_array)
 
-  if (any(is_scalar))
+    array_schema <- array_schema %>%
+      unlist(recursive = FALSE) %>%
+      unique
+
+    array_schema <- collapse_array(array_schema)
+
+    schema[is_array] <- array_schema
+
+  }
+
+  if (any(is_object)) {
+
+    object_schema <- json[is_object] %>% map(json_schema_object)
+
+    object_schema <- object_schema %>%
+      bind_rows %>%
+      tbl_df %>%
+      unique
+
+    object_schema <- collapse_object(object_schema)
+
+    schema[is_object] <- object_schema
+
+  }
+
+  if (any(is_scalar)) {
+
     schema[is_scalar] <- x$type %>% as.character %>% sprintf('"%s"', .)
+
+  }
+
+  schema <- schema %>% unique
+
+  if (length(schema) == 1)
+    schema <- schema[[1]]
 
   schema
 
@@ -38,7 +69,13 @@ json_schema_array <- function(json) {
 
   schemas <- schemas %>% unique
 
-  schemas %>% paste(collapse = ", ") %>% sprintf("[%s]", .)
+  schemas
+
+}
+
+collapse_array <- function(schema) {
+
+  schema %>% paste(collapse = ", ") %>% sprintf("[%s]", .)
 
 }
 
@@ -50,7 +87,14 @@ json_schema_object <- function(json) {
 
   schemas <- x %>% select(key, schemas) %>% unique
 
-  schemas %>%
+  schemas
+
+}
+
+collapse_object <- function(schema) {
+
+  schema %>%
+    arrange(key, schemas) %>%
     mutate(key = key %>% sprintf('"%s"', .)) %>%
     mutate(schemas = map2(key, schemas, paste, sep = ": ")) %>%
     `[[`("schemas") %>%
