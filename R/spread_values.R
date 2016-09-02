@@ -42,6 +42,9 @@ spread_values <- function(.x, ...) {
 #' @param map.function function to map to collapse
 jfactory <- function(map.function) {
 
+  replace_nulls_na <- function(x)
+    if (is.null(x)) NA else x
+
   function(..., recursive = FALSE) {
 
     if (recursive)  recursive.fun <- unlist
@@ -52,7 +55,7 @@ jfactory <- function(map.function) {
 
       json %>%
         map(list(...)) %>%
-        map(`%||%`, NA) %>%
+        map(replace_nulls_na) %>%
         map.function(recursive.fun)
 
     }

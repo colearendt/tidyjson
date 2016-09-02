@@ -91,8 +91,8 @@ should_json_structure_expand_more <- function(s, this.level) {
 
   s %>%
     filter(level == this.level) %>%
-    `[[`("type") %>%
-    `%in%`(c("object", "array")) %>%
+    extract2("type") %>%
+    is.element(c("object", "array")) %>%
     any
 
 }
