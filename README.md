@@ -1,3 +1,5 @@
+![tidyjson graphs](https://cloud.githubusercontent.com/assets/2284427/18217882/1b3b2db4-7114-11e6-8ba3-07938f1db9af.png)
+
 # tidyjson
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tidyjson)](http://cran.r-project.org/package=tidyjson)
