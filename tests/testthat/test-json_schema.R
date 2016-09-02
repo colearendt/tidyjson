@@ -11,17 +11,37 @@ test_that("json_schema works for simple examples", {
 
 })
 
-test_that("json_schema works for a more complex example", {
+test_that("json_schema works for a more complex object", {
 
   json <- c(
     '{"k0": null, "k1": "a",  "k2": [1, 2]}',
     '{"k0": null, "k1": null, "k2": [1, 2, 3], "k3": true, "k4": null}',
-    '{"k0": null,             "k2": null,                  "k4": {"k5": "a"}}'
+    '{"k0": null,             "k2": null,                  "k4": {"k5": "a"}}',
+    '{"k0": null,             "k2": [],        "k3": null, "k4": {}}'
   )
 
   expect_identical(
     json_schema(json),
-    '{"k0": "null", "k1": "null", "k1": "string", "k2": "null", "k2": ["number"], "k3": "logical", "k4": "null", "k4": {"k5": "string"}}'
+    '{"k0": "null", "k1": "string", "k2": ["number"], "k3": "logical", "k4": {"k5": "string"}}'
+  )
+
+})
+
+test_that("json_schema works for a more complex array", {
+
+  json <- c(
+    '[null]',
+    '[1]',
+    '["string"]',
+    '[true]',
+    '[{"key": "string"}]',
+    '[[1]]',
+    '[{"key": {"k1": 1, "k2": 2}}]'
+  )
+
+  expect_identical(
+    json_schema(json),
+    '[{"key": {"k1": "number", "k2": "number"}}]'
   )
 
 })
@@ -57,7 +77,7 @@ test_that("works for complex nested types", {
 test_that("simple mixed type array", {
 
   expect_identical('["a", 1, true, null]' %>% json_schema,
-                   '["string", "number", "logical", "null"]')
+                   '["string"]')
 
 })
 
@@ -65,7 +85,7 @@ test_that("simple mixed type array", {
 test_that("problem with mixed type arrays", {
 
   expect_identical('[[1,2], "a"]' %>% json_schema,
-                   '[["number"], "string"]')
+                   '[["number"]]')
 
 })
 
@@ -75,4 +95,16 @@ test_that("json_schema works for a very complex example", {
 
   expect_is(json_schema(companies[1:5]), "character")
 
+  schema <- json_schema(companies[1:2])
+  schema %>% (jsonlite::prettify)
+
 })
+
+# Need to implement
+# <anything> >> null
+# [<anyting>] >> []
+# {<anything>} >> {}
+
+# How to handle mixed root types?
+
+

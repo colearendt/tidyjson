@@ -75,7 +75,17 @@ json_schema_array <- function(json) {
 
 collapse_array <- function(schema) {
 
-  schema %>% paste(collapse = ", ") %>% sprintf("[%s]", .)
+  data_frame(schemas = schema) %>%
+    mutate(json = schemas) %>%
+    as.tbl_json(json.column = "json") %>%
+    json_types %>%
+    json_complexity %>%
+    tbl_df %>%
+    arrange(desc(complexity), type) %>%
+    slice(1) %>%
+    `[[`("schemas") %>%
+    paste(collapse = ", ") %>%
+    sprintf("[%s]", .)
 
 }
 
@@ -94,7 +104,15 @@ json_schema_object <- function(json) {
 collapse_object <- function(schema) {
 
   schema %>%
-    arrange(key, schemas) %>%
+    mutate(json = schemas) %>%
+    as.tbl_json(json.column = "json") %>%
+    json_types %>%
+    json_complexity %>%
+    tbl_df %>%
+    group_by(key) %>%
+    arrange(desc(complexity), type) %>%
+    slice(1) %>%
+    ungroup %>%
     mutate(key = key %>% sprintf('"%s"', .)) %>%
     mutate(schemas = map2(key, schemas, paste, sep = ": ")) %>%
     `[[`("schemas") %>%
