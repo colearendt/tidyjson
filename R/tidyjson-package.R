@@ -18,5 +18,6 @@ NULL
 if(getRversion() >= "2.15.1")  {
   utils::globalVariables(c("child.id", "document.id", "index", "key", "level",
                            "parent.id", "tail", "type",
-                           "..key", "..json", "setNames"))
+                           "..key", "..json", "setNames",
+                           ".", "schemas", "complexity"))
 }
