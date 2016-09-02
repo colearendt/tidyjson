@@ -1,158 +1,60 @@
-#' Summarize a collection of JSON documents into a single schema document
-#'
-#' @param x a json string or a tbl_json object
 json_schema <- function(x) {
 
-  # Compute the object structure
-  structure <- x %>% json_structure %>% tbl_df
+  if (!is.tbl_json(x)) x <- as.tbl_json(x)
 
-  # Change all array indices to 1L in sequence to unify arrays
-  structure <- structure %>%
-    mutate(seq = seq %>% at_depth(2, . %>% map_if(is.numeric, pmin, 1))) %>%
-    select(seq, key, type) %>%
-    unique
+  x <- x %>% json_types
+  json <- attr(x, "JSON")
 
-  # Also create an id that is the call to construct the seq
-  structure <- structure %>%
-    mutate(seq.id = seq %>% map_chr(compose(partial(paste0, collapse = ""), deparse))) %>%
-    mutate(order = 1:n())
+  schema <- character(nrow(x))
 
-  # Which seq.ids are entirely null?
-  all_nulls <- structure %>%
-    group_by(seq.id) %>%
-    summarize(all.null = all(type == "null")) %>%
-    filter(all.null)
+  is_array <- x$type == "array"
+  is_object <- x$type == "object"
+  is_scalar <- !is_array & !is_object
 
-  # Add nulls in with other non-nulls
-  structure <- structure %>%
-    filter(seq.id %in% all_nulls$seq.id) %>%
-    bind_rows(structure %>% filter(type != "null")) %>%
-    arrange(order)
+  if (any(is_array))
+    schema[is_array] <- json[is_array] %>% map_chr(json_schema_array)
 
-  # Iteratively create JSON
-  structure_to_json(structure)
+  if (any(is_object))
+    schema[is_object] <- json[is_object] %>% map_chr(json_schema_object)
+
+  if (any(is_scalar))
+    schema[is_scalar] <- x$type %>% as.character %>% sprintf('"%s"', .)
+
+  schema
 
 }
 
-structure_to_json <- function(generations) {
+list_to_tbl_json <- function(l) {
 
-  # First split parent from descendents
-  parent <- generations[1, ]
-  descendents <- get_descendents(generations)
-
-  if (parent$type == "array") {
-    json <- s2j_array(parent, descendents)
-  } else {
-    if (parent$type == "object") {
-      json <- s2j_object(parent, descendents)
-    } else {
-      json <- paste0('"', as.character(parent$type), '"')
-    }
-  }
-
-  json
+  tbl_json(data_frame(document.id = 1L), list(l))
 
 }
 
-s2j_array <- function(parent, descendents) {
+json_schema_array <- function(json) {
 
-  if (nrow(descendents) == 0) {
-    json <- '[]'
-  }
-  # Otherwise:
-  # 1) Identify first generations
-  # 2) Split descendents by that
-  # 3) Recursively call structure_to_json for each
-  # 4) Implement this for objects
-  # 5) Can we unify them?
+  x <- json %>% list_to_tbl_json %>% gather_array
+
+  schemas <- attr(x, "JSON") %>% map(list_to_tbl_json) %>% map_chr(json_schema)
+
+  schemas <- schemas %>% unique
+
+  schemas %>% paste(collapse = ", ") %>% sprintf("[%s]", .)
 
 }
 
-#' Gets all descendents of first row in a json structure data.frame
-get_descendents <- function(structure) {
+json_schema_object <- function(json) {
 
-  parent_grep <- "^%s" %>% sprintf(structure[1, ]$child.id)
+  x <- json %>% list_to_tbl_json %>% gather_keys
 
-  structure[-1, ] %>% filter(grepl(parent_grep, child.id))
+  x$schemas <- attr(x, "JSON") %>% map(list_to_tbl_json) %>% map_chr(json_schema)
 
-}
+  schemas <- x %>% select(key, schemas) %>% unique
 
-### This is old code
-if (FALSE) {
-
-  # Strucutre the descendents
-  if (nrow(descendents) > 0) {
-    descendents_json <- structure_to_json(descendents)
-  } else {
-    descendents_json <- ''
-  }
-
-  if (parent$type == "object") {
-
-
-  }
-
-
-
-  parent <- generations[1, ]
-
-  if (!(parent$type %in% c("object", "array")) && nrow(generations) > 1)
-    stop("must not have multiple generations for a scalar parent")
-
-  if (nrow(generations) == 1) {
-
-    if (parent$type == "object")
-      return("{}")
-    if (parent$type == "array")
-      return("[]")
-    return(paste0('"', as.character(parent$type), '"'))
-
-  }
-
-  descendents <- generations[-1, ]
-
-  first_gen <- (descendents$seq %>% map_int(length)) == 1
-  first_gen_group <- descendents$seq %>% map(`[[`, 1) %>% unlist(recursive = FALSE)
-
-
-  first_gen_type <- first_gen_group
-
-  if (parent$type == "object") {
-    lhs <- '{'
-    rhs <- '}'
-    descendents <- descendents %>% mutate(group = flatten_chr(first_gen_group))
-  }
-  if (parent$type == "array") {
-    lhs <- '['
-    rhs <- ']'
-    descendents <- descendents %>% mutate(group = flatten_dbl(first_gen_group))
-  }
-
-  descendents <- descendents %>%
-    mutate(seq = seq %>% at_depth(1, `[`, -1))
-
-  children <- descendents %>%
-    split(.$group) %>%
-    map(~ .x %>% split(.x$type)) %>%
-    map(keep, function(x) nrow(x) > 0) %>%
-    at_depth(2, structure_to_json) %>%
-    at_depth(1, flatten_chr)
-
-  if (parent$type == "object") {
-    keys <- paste0('"', names(children), '"')
-    children <- paste(keys, children, sep = ": ")
-  }
-  if (parent$type == "array") {
-    children <- map_chr(children, paste, collapse = ", ")
-  }
-
-  children <- paste(children, collapse = ", ")
-
-  paste0(lhs, children, rhs)
+  schemas %>%
+    mutate(key = key %>% sprintf('"%s"', .)) %>%
+    mutate(schemas = map2(key, schemas, paste, sep = ": ")) %>%
+    `[[`("schemas") %>%
+    paste(collapse = ", ") %>%
+    sprintf("{%s}", .)
 
 }
-
-
-
-
-
