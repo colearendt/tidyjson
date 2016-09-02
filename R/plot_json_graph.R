@@ -24,7 +24,7 @@
 #' Also note that this function sets the plot margins to zero in order to
 #' maximize the size of the graph on the page. the par() is reset afterwards.
 #'
-#' @param x a tbl_json object
+#' @param .x a json string or tbl_json object
 #' @param legend add a type color legend automatically
 #' @param vertex.size the size of the vertices (helpful to reduce this if the
 #'        json is very complex
@@ -53,16 +53,16 @@
 #' # a very complex real example
 #' companies[1] %>% plot_json_graph(show.labels = FALSE, vertex.size = 4)
 #'
-plot_json_graph <- function(x, legend = TRUE, vertex.size = 6,
+plot_json_graph <- function(.x, legend = TRUE, vertex.size = 6,
                             edge.color = 'grey70', edge.width = .5,
                             show.labels = TRUE, plot = TRUE,
                             ...) {
 
-  if (!is.tbl_json(x)) x <- as.tbl_json(x)
+  if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
-  assert_that(nrow(x) == 1)
+  assert_that(nrow(.x) == 1)
 
-  structure <- x %>% json_structure
+  structure <- .x %>% json_structure
 
   type_colors <- RColorBrewer::brewer.pal(6, "Accent")
 

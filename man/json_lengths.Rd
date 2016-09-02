@@ -4,10 +4,10 @@
 \alias{json_lengths}
 \title{Add a column that contains the length of the JSON data}
 \usage{
-json_lengths(x, column.name = "length")
+json_lengths(.x, column.name = "length")
 }
 \arguments{
-\item{x}{a tbl_json object}
+\item{.x}{a json string or tbl_json object}
 
 \item{column.name}{the name to specify for the length column}
 }

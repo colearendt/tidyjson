@@ -7,26 +7,26 @@
 #' object by recursively stripping away all objects or arrays, and the complexity
 #' is the count of these scalar values. Note that 'null' has complexity 0.
 #'
-#' @param x a tbl_json object
+#' @param .x a json string or tbl_json object
 #' @param column.name the name to specify for the length column
 #' @return a tbl_json object with column.name column that tells the length
 #' @export
 #' @examples
 #' c('[1, 2, [3, 4]]', '{"k1": 1, "k2": [2, [3, 4]]}', '1', {}) %>%
 #'   json_lengths %>% json_complexity
-json_complexity <- function(x, column.name = "complexity") {
+json_complexity <- function(.x, column.name = "complexity") {
 
-  if (!is.tbl_json(x)) x <- as.tbl_json(x)
+  if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
   # Extract json
-  json <- attr(x, "JSON")
+  json <- attr(.x, "JSON")
 
   # Determine lengths
   lengths <- json %>% map(unlist, recursive = TRUE) %>% map_int(length)
 
   # Add as a column to x
-  x[column.name] <- lengths
+  .x[column.name] <- lengths
 
-  tbl_json(x, json)
+  tbl_json(.x, json)
 
 }

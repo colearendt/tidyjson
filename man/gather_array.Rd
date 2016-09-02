@@ -4,10 +4,10 @@
 \alias{gather_array}
 \title{Stack a JSON array}
 \usage{
-gather_array(x, column.name = default.column.name)
+gather_array(.x, column.name = default.column.name)
 }
 \arguments{
-\item{x}{a tbl_json whose JSON attribute should always be an array}
+\item{.x}{a json string or tbl_json object whose JSON attribute should always be an array}
 
 \item{column.name}{the name to give to the array index column created}
 }

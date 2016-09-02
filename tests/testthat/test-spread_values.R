@@ -269,3 +269,13 @@ test_that("either throws an error when type converting", {
   )
 
 })
+
+test_that("works with x, json as input", {
+
+  expect_identical('{"x": 1}' %>% spread_values(x = jstring("x")),
+                   '{"x": 1}' %>% spread_values(y = jstring("x")) %>% rename(x = y))
+
+  expect_identical('{"json": 1}' %>% spread_values(json = jstring("json")),
+                   '{"json": 1}' %>% spread_values(y = jstring("json")) %>% rename(json = y))
+
+})

@@ -4,10 +4,10 @@
 \alias{json_types}
 \title{Add a column that tells the 'type' of the data in the root of the JSON}
 \usage{
-json_types(x, column.name = "type")
+json_types(.x, column.name = "type")
 }
 \arguments{
-\item{x}{a tbl_json object}
+\item{.x}{a json string or tbl_json object}
 
 \item{column.name}{the name to specify for the type column}
 }

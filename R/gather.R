@@ -10,19 +10,19 @@
 gather_factory <- function(default.column.name, default.column.empty,
                            expand.fun, required.type) {
 
-  function(x, column.name = default.column.name) {
+  function(.x, column.name = default.column.name) {
 
-    assert_that(!("..key" %in% names(x)))
-    assert_that(!("..json" %in% names(x)))
+    assert_that(!("..key" %in% names(.x)))
+    assert_that(!("..json" %in% names(.x)))
 
-    if (!is.tbl_json(x)) x <- as.tbl_json(x)
+    if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
     # Get JSON
-    json <- attr(x, "JSON")
+    json <- attr(.x, "JSON")
 
     # Handle the case where json is just an empty list
     if (identical(json, list())) {
-      y <- x[integer(0), , drop = FALSE]
+      y <- .x[integer(0), , drop = FALSE]
       y[column.name] <- default.column.empty
       return(tbl_json(y, list()))
     }
@@ -35,7 +35,7 @@ gather_factory <- function(default.column.name, default.column.empty,
     if (any(bad_type))
       stop(sprintf("%s records are not %ss", sum(bad_type), required.type))
 
-    y <- x %>%
+    y <- .x %>%
       tbl_df %>%
       mutate(
         ..key = json %>% map(expand.fun),
@@ -63,7 +63,7 @@ gather_factory <- function(default.column.name, default.column.empty,
 #' This allows you to *enter into* the keys of the objects just like `gather_array`
 #' let you enter elements of the array.
 #'
-#' @param x a tbl_json whose JSON attribute should always be an object
+#' @param .x a json string or tbl_json object whose JSON attribute should always be an object
 #' @param column.name the name to give to the column of key names created
 #' @return a tbl_json with a new column (column.name) that captures the keys
 #'   and JSON attribute of the associated value data
@@ -92,7 +92,7 @@ gather_keys <- gather_factory("key", character(0), names, "object")
 #' values are themselves objects or arrays), continue using other tidyjson
 #' functions to structure the data as needed.
 #'
-#' @param x a tbl_json whose JSON attribute should always be an array
+#' @param .x a json string or tbl_json object whose JSON attribute should always be an array
 #' @param column.name the name to give to the array index column created
 #' @return a tbl_json with a new column (column.name) that captures the array
 #'   index and JSON attribute extracted from the array

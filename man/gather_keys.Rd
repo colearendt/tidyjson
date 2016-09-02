@@ -4,10 +4,10 @@
 \alias{gather_keys}
 \title{Stack a JSON {"key": value} object}
 \usage{
-gather_keys(x, column.name = default.column.name)
+gather_keys(.x, column.name = default.column.name)
 }
 \arguments{
-\item{x}{a tbl_json whose JSON attribute should always be an object}
+\item{.x}{a json string or tbl_json object whose JSON attribute should always be an object}
 
 \item{column.name}{the name to give to the column of key names created}
 }

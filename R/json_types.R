@@ -9,26 +9,26 @@
 #' after gather_array() (or gather_keys()) to inspect the types of the elements
 #' (or values) in arrays (or objects).
 #'
-#' @param x a tbl_json object
+#' @param .x a json string or tbl_json object
 #' @param column.name the name to specify for the type column
 #' @return a tbl_json object with column.name column that tells the type
 #' @export
 #' @examples
 #' c('{"a": 1}', '[1, 2]', '"a"', '1', 'true', 'null') %>% json_types
-json_types <- function(x, column.name = "type") {
+json_types <- function(.x, column.name = "type") {
 
-  if (!is.tbl_json(x)) x <- as.tbl_json(x)
+  if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
   # Extract json
-  json <- attr(x, "JSON")
+  json <- attr(.x, "JSON")
 
   # Determine types
   types <- determine_types(json)
 
   # Add as a column to x
-  x[column.name] <- types
+  .x[column.name] <- types
 
-  tbl_json(x, json)
+  tbl_json(.x, json)
 
 }
 

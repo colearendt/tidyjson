@@ -7,25 +7,25 @@
 #' be equal to the number of keys. For arrays, this will be equal to the length
 #' of the array. All scalar values will be of length 1.
 #'
-#' @param x a tbl_json object
+#' @param .x a json string or tbl_json object
 #' @param column.name the name to specify for the length column
 #' @return a tbl_json object with column.name column that tells the length
 #' @export
 #' @examples
 #' c('[1, 2, 3]', '{"k1": 1, "k2": 2}', '1', {}) %>% json_lengths
-json_lengths <- function(x, column.name = "length") {
+json_lengths <- function(.x, column.name = "length") {
 
-  if (!is.tbl_json(x)) x <- as.tbl_json(x)
+  if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
   # Extract json
-  json <- attr(x, "JSON")
+  json <- attr(.x, "JSON")
 
   # Determine lengths
   lengths <- map_int(json, length)
 
   # Add as a column to x
-  x[column.name] <- lengths
+  .x[column.name] <- lengths
 
-  tbl_json(x, json)
+  tbl_json(.x, json)
 
 }

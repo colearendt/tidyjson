@@ -4,10 +4,10 @@
 \alias{json_complexity}
 \title{Add a column that contains the complexity (recursively unlisted length) of the JSON data}
 \usage{
-json_complexity(x, column.name = "complexity")
+json_complexity(.x, column.name = "complexity")
 }
 \arguments{
-\item{x}{a tbl_json object}
+\item{.x}{a json string or tbl_json object}
 
 \item{column.name}{the name to specify for the length column}
 }

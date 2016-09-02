@@ -9,7 +9,7 @@
 #' Note that jstring, jnumber and jlogical will fail if they encounter the
 #' incorrect type in any document
 #'
-#' @param x tbl_json object
+#' @param .x a json string or tbl_json object
 #' @param ... column=value list where 'column' will be the column name created
 #'   and 'value' must be a call to jstring(), jnumber() or jlogical() specifying
 #'   the path to get the value (and the type implicit in the function name)
@@ -20,18 +20,18 @@
 #'     first.name = jstring("name", "first"),
 #'     age = jnumber("age")
 #'   )
-spread_values <- function(x, ...) {
+spread_values <- function(.x, ...) {
 
-  if (!is.tbl_json(x)) x <- as.tbl_json(x)
+  if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
   # Get JSON
-  json <- attr(x, "JSON")
+  json <- attr(.x, "JSON")
 
   # Get new values
   new_values <- invoke_map(lst(...), .x = list(NULL), json)
 
   # Add on new values
-  y <- bind_cols(x, new_values)
+  y <- bind_cols(.x, new_values)
 
   tbl_json(y, json)
 

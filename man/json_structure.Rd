@@ -4,10 +4,10 @@
 \alias{json_structure}
 \title{Recursively structures arbitrary JSON data into a single data.frame}
 \usage{
-json_structure(x)
+json_structure(.x)
 }
 \arguments{
-\item{x}{a json string or a tbl_json object}
+\item{.x}{a json string or tbl_json object}
 }
 \value{
 a tbl_json object with the following columns:
