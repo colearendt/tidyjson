@@ -4,10 +4,14 @@
 \alias{json_schema}
 \title{Create a schema for a JSON document or collection}
 \usage{
-json_schema(x)
+json_schema(x, type = c("string", "value"))
 }
 \arguments{
 \item{x}{a json string or a tbl_json object}
+
+\item{type}{whether to capture scalar nodes using the string that defines
+their type (e.g., "logical") or as a representative value
+(e.g., "true"), useful in conjunction with plot_json_graph}
 }
 \value{
 a character string JSON document that represents the schema of
@@ -19,13 +23,15 @@ document(s) passed in, as a JSON string. The schema collapses complex
 JSON into a simple form using the following rules:
 }
 \details{
-string  -> "string",       e.g., "a sentence" -> "string"
-  number  -> "number",       e.g., 32000.1 -> "number"
-  true    -> "logical",      e.g., true -> "logical"
-  false   -> "logical",      e.g., false -> "logical"
-  null    -> "null",         e.g., null -> "null"
-  array   -> [<type>]        e.g., [1, 2] -> ["number"]
-  object  -> {"key": <type>} e.g., {"age": 32} -> {"age": "number"}
+\itemize{
+  \item string  -> "string",       e.g., "a sentence" -> "string"
+  \item number  -> "number",       e.g., 32000.1 -> "number"
+  \item true    -> "logical",      e.g., true -> "logical"
+  \item false   -> "logical",      e.g., false -> "logical"
+  \item null    -> "null",         e.g., null -> "null"
+  \item array   -> [<type>]        e.g., [1, 2] -> ["number"]
+  \item object  -> {"key": <type>} e.g., {"age": 32} -> {"age": "number"}
+}
 
 For more complex JSON objects, ties are broken by taking the most
 complex example (using \code{json_complexity}), and then by type
@@ -53,7 +59,8 @@ companies[1] \%>\% json_schema \%>\% plot_json_graph
 
 # Github issues
 issues_array <- issues \%>\% gather_array # issues are one large array
-issues_schema <- issues_array[1:5, ] \%>\% json_schema # analyze first 5
+# analyze first 5, and use type = "value" to ensure proper coloring of graph
+issues_schema <- issues_array[1:5, ] \%>\% json_schema(type = "value")
 issues_schema \%>\% plot_json_graph
 }
 

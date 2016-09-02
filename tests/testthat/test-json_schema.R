@@ -95,3 +95,14 @@ test_that("json_schema works for real examples", {
   expect_is(json_schema(companies[1]), "character")
 
 })
+
+test_that("types = 'value' works as intended", {
+
+  expect_identical('"string"' %>% json_schema("value"), '"string"')
+  expect_identical('2' %>% json_schema("value"), '1')
+  expect_identical('true' %>% json_schema("value"), 'true')
+  expect_identical('false' %>% json_schema("value"), 'true')
+  expect_identical('null' %>% json_schema("value"), 'null')
+  expect_identical('{"key": [2]}' %>% json_schema("value"), '{"key": [1]}')
+
+})

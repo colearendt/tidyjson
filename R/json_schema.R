@@ -4,13 +4,15 @@
 #' document(s) passed in, as a JSON string. The schema collapses complex
 #' JSON into a simple form using the following rules:
 #'
-#'   string  -> "string",       e.g., "a sentence" -> "string"
-#'   number  -> "number",       e.g., 32000.1 -> "number"
-#'   true    -> "logical",      e.g., true -> "logical"
-#'   false   -> "logical",      e.g., false -> "logical"
-#'   null    -> "null",         e.g., null -> "null"
-#'   array   -> [<type>]        e.g., [1, 2] -> ["number"]
-#'   object  -> {"key": <type>} e.g., {"age": 32} -> {"age": "number"}
+#' \itemize{
+#'   \item string  -> "string",       e.g., "a sentence" -> "string"
+#'   \item number  -> "number",       e.g., 32000.1 -> "number"
+#'   \item true    -> "logical",      e.g., true -> "logical"
+#'   \item false   -> "logical",      e.g., false -> "logical"
+#'   \item null    -> "null",         e.g., null -> "null"
+#'   \item array   -> [<type>]        e.g., [1, 2] -> ["number"]
+#'   \item object  -> {"key": <type>} e.g., {"age": 32} -> {"age": "number"}
+#' }
 #'
 #' For more complex JSON objects, ties are broken by taking the most
 #' complex example (using \code{json_complexity}), and then by type
@@ -23,6 +25,9 @@
 #' complex is chosen.
 #'
 #' @param x a json string or a tbl_json object
+#' @param type whether to capture scalar nodes using the string that defines
+#'        their type (e.g., "logical") or as a representative value
+#'        (e.g., "true"), useful in conjunction with plot_json_graph
 #' @return a character string JSON document that represents the schema of
 #'         the collection
 #'
@@ -43,9 +48,12 @@
 #'
 #' # Github issues
 #' issues_array <- issues %>% gather_array # issues are one large array
-#' issues_schema <- issues_array[1:5, ] %>% json_schema # analyze first 5
+#' # analyze first 5, and use type = "value" to ensure proper coloring of graph
+#' issues_schema <- issues_array[1:5, ] %>% json_schema(type = "value")
 #' issues_schema %>% plot_json_graph
-json_schema <- function(x) {
+json_schema <- function(x, type = c("string", "value")) {
+
+  type <- match.arg(type)
 
   if (!is.tbl_json(x)) x <- as.tbl_json(x)
 
@@ -60,7 +68,7 @@ json_schema <- function(x) {
 
   if (any(is_array)) {
 
-    array_schema <- json[is_array] %>% map(json_schema_array)
+    array_schema <- json[is_array] %>% map(json_schema_array, type)
 
     array_schema <- array_schema %>%
       unlist(recursive = FALSE) %>%
@@ -74,7 +82,7 @@ json_schema <- function(x) {
 
   if (any(is_object)) {
 
-    object_schema <- json[is_object] %>% map(json_schema_object)
+    object_schema <- json[is_object] %>% map(json_schema_object, type)
 
     object_schema <- object_schema %>%
       bind_rows %>%
@@ -89,7 +97,13 @@ json_schema <- function(x) {
 
   if (any(is_scalar)) {
 
-    schema[is_scalar] <- x$type %>% as.character %>% sprintf('"%s"', .)
+    if (type == "string")
+      schema[is_scalar] <- x$type %>% as.character %>% sprintf('"%s"', .)
+    if (type == "value") {
+      type_map <- list(string = '"string"', number = '1',
+                       logical = 'true', null = 'null')
+      schema[is_scalar] <- type_map[as.character(x$type)]
+    }
 
   }
 
@@ -108,11 +122,12 @@ list_to_tbl_json <- function(l) {
 
 }
 
-json_schema_array <- function(json) {
+json_schema_array <- function(json, type) {
 
   x <- json %>% list_to_tbl_json %>% gather_array
 
-  schemas <- attr(x, "JSON") %>% map(list_to_tbl_json) %>% map_chr(json_schema)
+  schemas <- attr(x, "JSON") %>% map(list_to_tbl_json) %>%
+    map_chr(json_schema, type)
 
   schemas <- schemas %>% unique
 
@@ -136,11 +151,12 @@ collapse_array <- function(schema) {
 
 }
 
-json_schema_object <- function(json) {
+json_schema_object <- function(json, type) {
 
   x <- json %>% list_to_tbl_json %>% gather_keys
 
-  x$schemas <- attr(x, "JSON") %>% map(list_to_tbl_json) %>% map_chr(json_schema)
+  x$schemas <- attr(x, "JSON") %>% map(list_to_tbl_json) %>%
+    map_chr(json_schema, type)
 
   schemas <- x %>% select(key, schemas) %>% unique
 
