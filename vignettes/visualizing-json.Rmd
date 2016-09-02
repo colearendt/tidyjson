@@ -18,7 +18,7 @@ library(tidyjson)
 JSON is a very simple data standard that, through nested data structures, can
 represent incredibly complex datasets. In some cases, a set of JSON data
 closely corresponds to a table in a SQL database. However, more commonly a
-JSON document more closely maps to an entire SQL databse.
+JSON document more closely maps to an entire SQL database.
 
 Understanding the structure of your JSON data is critical before you begin
 analyzing the data. In this vignette, we use `tidyjson` to inspect the
@@ -27,8 +27,8 @@ understand a complex JSON dataset.
 
 ## JSON Definition
 
-For a refrehser, see the [JSON specification](http://www.json.org/), which is
-a very concise summary of how JSON is formatted. In essence, there are
+For a refrehser on JSON, see the [JSON specification](http://www.json.org/), 
+which is a very concise summary of how JSON is formatted. In essence, there are
 three types of JSON data structures.
 
 Per the specification, an object is a name/value pair, like 
@@ -64,7 +64,8 @@ visualization libraries, and set a seed so we get consistent results.
 ```{r, message = FALSE}
 library(needs)
 needs(jsonlite, dplyr, purrr, magrittr, forcats,
-      ggplot2, igraph, RColorBrewer, wordcloud, viridis)
+      ggplot2, igraph, RColorBrewer, wordcloud, viridis,
+      listviewer)
 set.seed(1)
 ```
 
@@ -72,105 +73,87 @@ set.seed(1)
 
 Let's work with the `companies` dataset included in the `tidyjson` package, 
 originating at [jsonstudio](http://jsonstudio.com/resources). It is a 
-`r class(companies)` vector of 
-`r length(companies) %>% format(big.mark = ',')` 
+`r class(companies)` vector of `r length(companies) %>% format(big.mark = ',')` 
 JSON strings, each describing a startup company.
 
-First, let's convert the JSON to a nested list using `jsonlite::fromJSON`, where
-we use `simplifyVector = FALSE` to avoid any simplification (which, while handy
-can lead to inconsistent results across documents which may not have the same
-set of objects).
+We can start by finding out how complex each record is by using 
+`json_complexity`:
 
 ```{r}
-co_list <- companies %>% map(fromJSON, simplifyVector = FALSE)
+co_length <- companies %>% json_complexity
 ```
 
-We can then find out how complex each record is by recursively unlisting it
-and computing the length:
-
-```{r}
-co_length <- companies %>% json_complexity %>% extract2("complexity")
-```
-
-Then we can visualize the distribution of lengths on a log-scale:
+Then we can visualize the distribution of company documents by complexity on a 
+log-scale:
 
 ```{r}
 co_length %>%
-  data_frame(length = .) %>%
-  ggplot(aes(length)) +
+  ggplot(aes(complexity)) +
     geom_density() +
     scale_x_log10() +
     annotation_logticks(side = 'b')
 ```
 
 It appears that some companies have unlisted length less than 10, while others 
-are in the hundreds or even thousands. The median is `r median(co_length)`.
+are in the hundreds or even thousands. The median is 
+`r median(co_length$complexity)`.
 
 Let's pick an example that is particularly small to start with:
 
 ```{r}
-first_examp_index <- co_length %>% 
-  detect_index(equals, 20L)
+co_examp_index <- which(co_length$complexity == 20L)[1]
 
-co_examp <- companies[first_examp_index]
+co_examp <- companies[co_examp_index]
 
 co_examp
 ```
 
 Even for such a small example it's hard to understand the structure from the
-raw JSON. We can instead use `jsonlite::prettify` to print a prettier version:
+raw JSON. We can instead use `listviewer::jsonedit` to view it:
 
 ```{r}
-co_examp %>% 
-  prettify(indent = 2) %>% 
-  capture.output %>%
-  paste(collapse = "\n") %>%
-  gsub("\\[\n\n( )*\\]", "[ ]", .) %>%
-  writeLines
+co_examp %>% jsonedit(mode = "code")
 ```
-
-Where everything after `prettify` is done to collapse empty arrays from
-occupying multiple lines, of which there are many.
-
-Alternatively, we can visualize the same object after we converted it into
-an R list using `str`:
-
-```{r}
-str(co_list[first_examp_index])
-```
-
-Alternatively, we can compute the structure using `tidyjson::json_structure`
-
-```{r}
-co_examp %>% json_structure %>% select(-document.id)
-```
-
-This gives us a `data.frame` where each row corresponds to an object, array
-or scalar in the JSON document.
 
 ## Working with many companies
 
-```{r}
-structure <- companies %>% json_structure
+This is great for understanding a single JSON document. But many of the objects
+are empty arrays, and so give us very little insight into the structure of
+the collection as a whole.
 
-keys <- structure %>% 
+To start working with the entire collection, let's use the `json_structure`
+function in tidyjson which gives us a `data.frame` where each row corresponds 
+to an object, array or scalar in the JSON document.
+
+```{r}
+co_struct <- companies %>% json_structure
+
+co_struct %>% sample_n(5)
+```
+
+We can then aggregate all of the keys across the entire collection, excluding
+`null` values to count the number of documents with meaningful data under
+each key.
+
+```{r}
+co_keys <- co_struct %>% 
   filter(type != "null" & !is.na(key)) %>%
   group_by(level, key, type) %>%
   summarize(ndoc = n_distinct(document.id))
 
-keys
+co_keys
 ```
 
-As a word cloud
+We can get a quick overview of the most common keys using a `wordcloud`.
 
 ```{r}
-keys %$% wordcloud(key, ndoc, scale = c(1.5, .1), min.freq = 100)
+co_keys %$% wordcloud(key, ndoc, scale = c(1.5, .1), min.freq = 100)
 ```
 
-Alternatively in ggplot2
+Alternatively, we can visualize all the keys in ggplot2.
 
 ```{r, fig.height = 9}
-keys %>%
+co_keys %>%
   ungroup %>%
   group_by(type) %>%
   arrange(desc(ndoc), level) %>%
@@ -248,7 +231,7 @@ Clearly there is a huge amount of variety in the JSON documents!
 Let's look at the most complex example:
 
 ```{r}
-most_complex <- companies[which(co_length == max(co_length))]
+most_complex <- companies[which(co_length$complexity == max(co_length$complexity))]
 
 most_complex_name <- most_complex %>% 
   spread_values(name = jstring("name")) %>% 
@@ -261,43 +244,30 @@ The most complex company is `r most_complex_name`! Let's try to plot it:
 plot_json_graph(most_complex, show.labels = FALSE, vertex.size = 2)
 ```
 
-That is just too big, let's simplify things by just looking at the top level
-objects
+That is just too big. There are many arrays of complex objects that are
+repetitive in structure. Instead, we can simplify the structure by using
+`json_schema`.
 
 ```{r}
-objects <- most_complex %>%
-  gather_keys %>%
-  json_types %>%
-  filter(type == "object")
-
-objects %>% 
-  split(.$key) %>%
-  plot_json_graph_panel(2, 2, legend = FALSE)
+most_complex %>% json_schema %>% jsonedit(mode = "code")
 ```
 
-Now let's look at just the arrays, and take only the longest for each
+We can visualize this as a graph, and get more meaningful coloring of the
+terminal nodes by instructing `json_schema` to use `type = "value"`.
 
 ```{r}
-arrays <- most_complex %>%
-  gather_keys %>%
-  json_types %>%
-  filter(type == "array") %>%
-  gather_array
-
-arrays %>%
-  ggplot(aes(key)) +
-    geom_bar() +
-    coord_flip()
+most_complex %>% json_schema(type = "value") %>% plot_json_graph
 ```
 
-Many are very long, and likely have the similar structures (but no guarantees
-in JSON!), so let's just look at the first for each:
+This is overwhelmed by top level scalar objects. We can visualize the
+more complex objects only
 
-```{r, fig.height = 9}
-arrays %>%
-  filter(array.index == 1) %>%
+```{r}
+most_complex %>% gather_keys %>% json_types %>% json_complexity %>%
+  filter(type %in% c('array', 'object') & complexity >= 15) %>%
   split(.$key) %>%
-  plot_json_graph_panel(4, 3, legend = FALSE)
+  map(json_schema, type = "value") %>%
+  plot_json_graph_panel(3, 3, legend = FALSE)
 ```
 
 ## Working with funding data
