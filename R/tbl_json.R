@@ -146,3 +146,6 @@ arrange_.tbl_json <- wrap_dplyr_verb(dplyr::arrange_)
 
 #' @export
 mutate_.tbl_json <- wrap_dplyr_verb(dplyr::mutate_)
+
+#' @export
+slice_.tbl_json <- wrap_dplyr_verb(dplyr::slice_)
