@@ -12,7 +12,7 @@
 #' enter into. Keep in mind that any rows with JSON that do not contain the key
 #' will be discarded by this function.
 #'
-#' @param x a tbl_json object
+#' @param .x a json string or tbl_json object
 #' @param ... path to filter
 #' @export
 #' @examples
@@ -21,19 +21,19 @@
 #'   enter_object("children") %>%
 #'   gather_array %>%
 #'   append_values_string("children")
-enter_object <- function(x, ...) {
+enter_object <- function(.x, ...) {
 
-  if (!is.tbl_json(x)) x <- as.tbl_json(x)
+  if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
   # Prepare path
   path <- list(...)
 
   # Extract json
-  json <- attr(x, "JSON")
+  json <- attr(.x, "JSON")
 
   # Access path
   json <- map(json, path)
 
-  tbl_json(x, json, drop.null.json = TRUE)
+  tbl_json(.x, json, drop.null.json = TRUE)
 
 }

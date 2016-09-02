@@ -7,7 +7,7 @@
 #' an array, then subsequent rows will recursively correspond to the elements
 #' (and their children) of the object or array.
 #'
-#' @param x a json string or a tbl_json object
+#' @param .x a json string or tbl_json object
 #' @return a tbl_json object with the following columns:
 #'
 #'   \code{document.id} 1L if \code{x} is a single JSON string, otherwise the
@@ -48,12 +48,12 @@
 #'
 #' # A complex array
 #' '[{"a": 1}, [1, 2], "a", 1, true, null]' %>% json_structure
-json_structure <- function(x) {
+json_structure <- function(.x) {
 
-  if (!is.tbl_json(x)) x <- as.tbl_json(x)
+  if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
   # Create initial structure for top level
-  structure <- json_structure_init(x)
+  structure <- json_structure_init(.x)
 
   this_level <- 0L
   while(structure %>% should_json_structure_expand_more(this_level)) {

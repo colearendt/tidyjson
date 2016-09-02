@@ -4,11 +4,11 @@
 \alias{plot_json_graph}
 \title{Plots an igraph visualization of a single json document}
 \usage{
-plot_json_graph(x, legend = TRUE, vertex.size = 6, edge.color = "grey70",
+plot_json_graph(.x, legend = TRUE, vertex.size = 6, edge.color = "grey70",
   edge.width = 0.5, show.labels = TRUE, plot = TRUE, ...)
 }
 \arguments{
-\item{x}{a tbl_json object}
+\item{.x}{a json string or tbl_json object}
 
 \item{legend}{add a type color legend automatically}
 

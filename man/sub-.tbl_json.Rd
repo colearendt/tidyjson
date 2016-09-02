@@ -4,11 +4,11 @@
 \alias{[.tbl_json}
 \title{Extract subsets of a tbl_json object (not replace)}
 \usage{
-\method{[}{tbl_json}(x, i, j, drop = if (missing(i)) TRUE else length(cols) ==
-  1)
+\method{[}{tbl_json}(.x, i, j, drop = if (missing(i)) TRUE else length(cols)
+  == 1)
 }
 \arguments{
-\item{x}{a tbl_json object}
+\item{.x}{a tbl_json object}
 
 \item{i}{row elements to extract}
 

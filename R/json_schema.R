@@ -24,7 +24,7 @@
 #' chosen, and if arrays vary in schema across documents, the most
 #' complex is chosen.
 #'
-#' @param x a json string or a tbl_json object
+#' @param .x a json string or tbl_json object
 #' @param type whether to capture scalar nodes using the string that defines
 #'        their type (e.g., "logical") or as a representative value
 #'        (e.g., "true"), useful in conjunction with plot_json_graph
@@ -51,19 +51,19 @@
 #' # analyze first 5, and use type = "value" to ensure proper coloring of graph
 #' issues_schema <- issues_array[1:5, ] %>% json_schema(type = "value")
 #' issues_schema %>% plot_json_graph
-json_schema <- function(x, type = c("string", "value")) {
+json_schema <- function(.x, type = c("string", "value")) {
 
   type <- match.arg(type)
 
-  if (!is.tbl_json(x)) x <- as.tbl_json(x)
+  if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
-  x <- x %>% json_types
-  json <- attr(x, "JSON")
+  .x <- .x %>% json_types
+  json <- attr(.x, "JSON")
 
   schema <- list_along(json)
 
-  is_array <- x$type == "array"
-  is_object <- x$type == "object"
+  is_array <- .x$type == "array"
+  is_object <- .x$type == "object"
   is_scalar <- !is_array & !is_object
 
   if (any(is_array)) {
@@ -98,11 +98,11 @@ json_schema <- function(x, type = c("string", "value")) {
   if (any(is_scalar)) {
 
     if (type == "string")
-      schema[is_scalar] <- x$type %>% as.character %>% sprintf('"%s"', .)
+      schema[is_scalar] <- .x$type %>% as.character %>% sprintf('"%s"', .)
     if (type == "value") {
       type_map <- list(string = '"string"', number = '1',
                        logical = 'true', null = 'null')
-      schema[is_scalar] <- type_map[as.character(x$type)]
+      schema[is_scalar] <- type_map[as.character(.x$type)]
     }
 
   }

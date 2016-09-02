@@ -13,7 +13,7 @@ NULL
 #' @param df data.frame
 #' @param json.list list of json lists parsed with fromJSON
 #' @param drop.null.json drop NULL json entries from data.frame and json
-#' @param x an object to convert into a tbl_json object
+#' @param .x an object to convert into a tbl_json object
 #' @param json.column the name of the JSON column of data in x, if x is a data.frame
 #' @param ... other arguments
 #' @rdname tbl_json
@@ -40,18 +40,18 @@ tbl_json <- function(df, json.list, drop.null.json = FALSE) {
 
 #' @export
 #' @rdname tbl_json
-as.tbl_json <- function(x, ...) UseMethod("as.tbl_json")
+as.tbl_json <- function(.x, ...) UseMethod("as.tbl_json")
 
 #' @export
 #' @rdname tbl_json
-as.tbl_json.tbl_json <- function(x, ...) x
+as.tbl_json.tbl_json <- function(.x, ...) .x
 
 #' @export
 #' @rdname tbl_json
-as.tbl_json.character <- function(x, ...) {
+as.tbl_json.character <- function(.x, ...) {
 
   # Parse the json
-  json <- map(x, fromJSON, simplifyVector = FALSE)
+  json <- map(.x, fromJSON, simplifyVector = FALSE)
 
   # Setup document ids
   ids <- data.frame(document.id = seq_along(json))
@@ -62,37 +62,37 @@ as.tbl_json.character <- function(x, ...) {
 
 #' @export
 #' @rdname tbl_json
-as.tbl_json.data.frame <- function(x, json.column, ...) {
+as.tbl_json.data.frame <- function(.x, json.column, ...) {
 
   assert_that(is.character(json.column))
-  assert_that(json.column %in% names(x))
+  assert_that(json.column %in% names(.x))
 
   # Parse the json
-  json <- map(x[[json.column]], fromJSON, simplifyVector = FALSE)
+  json <- map(.x[[json.column]], fromJSON, simplifyVector = FALSE)
 
   # Remove json column
-  x <- x[, setdiff(names(x), json.column), drop = FALSE]
+  .x <- .x[, setdiff(names(.x), json.column), drop = FALSE]
 
   # Construct tbl_json
-  tbl_json(x, json)
+  tbl_json(.x, json)
 
 }
 
 #' @export
 #' @rdname tbl_json
-is.tbl_json <- function(x) inherits(x, "tbl_json")
+is.tbl_json <- function(.x) inherits(.x, "tbl_json")
 
 #' Extract subsets of a tbl_json object (not replace)
 #'
 #' Extends `[.data.frame` to work with tbl_json objects, so that row filtering
 #' of the underlying data.frame also filters the associated JSON.
 #'
-#' @param x a tbl_json object
+#' @param .x a tbl_json object
 #' @param i row elements to extract
 #' @param j column elements to extract
 #' @param drop whether or not to simplify results
 #' @export
-`[.tbl_json` <- function(x, i, j,
+`[.tbl_json` <- function(.x, i, j,
   drop = if (missing(i)) TRUE else length(cols) == 1) {
 
   # Same functionality as in `[.data.frame`
@@ -100,20 +100,20 @@ is.tbl_json <- function(x) inherits(x, "tbl_json")
   cols <- names(y)
 
   # Extract JSON to subset later
-  json <- attr(x, "JSON")
+  json <- attr(.x, "JSON")
 
   # Convert x back into a data.frame
-  x <- as.data.frame(x)
+  .x <- as.data.frame(.x)
 
   # Subset x
-  x <- `[.data.frame`(x, i, j, drop)
+  .x <- `[.data.frame`(.x, i, j, drop)
 
   # If i is not missing, subset json as well
   if (!missing(i)) {
     json <- json[i]
   }
 
-  tbl_json(x, json)
+  tbl_json(.x, json)
 }
 
 #' Wrapper for extending dplyr verbs to tbl_json objects

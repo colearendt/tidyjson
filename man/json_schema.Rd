@@ -4,10 +4,10 @@
 \alias{json_schema}
 \title{Create a schema for a JSON document or collection}
 \usage{
-json_schema(x, type = c("string", "value"))
+json_schema(.x, type = c("string", "value"))
 }
 \arguments{
-\item{x}{a json string or a tbl_json object}
+\item{.x}{a json string or tbl_json object}
 
 \item{type}{whether to capture scalar nodes using the string that defines
 their type (e.g., "logical") or as a representative value

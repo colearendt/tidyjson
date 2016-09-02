@@ -4,10 +4,10 @@
 \alias{spread_values}
 \title{Create new columns with JSON values}
 \usage{
-spread_values(x, ...)
+spread_values(.x, ...)
 }
 \arguments{
-\item{x}{tbl_json object}
+\item{.x}{a json string or tbl_json object}
 
 \item{...}{column=value list where 'column' will be the column name created
 and 'value' must be a call to jstring(), jnumber() or jlogical() specifying

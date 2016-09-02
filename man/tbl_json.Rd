@@ -11,15 +11,15 @@
 \usage{
 tbl_json(df, json.list, drop.null.json = FALSE)
 
-as.tbl_json(x, ...)
+as.tbl_json(.x, ...)
 
-\method{as.tbl_json}{tbl_json}(x, ...)
+\method{as.tbl_json}{tbl_json}(.x, ...)
 
-\method{as.tbl_json}{character}(x, ...)
+\method{as.tbl_json}{character}(.x, ...)
 
-\method{as.tbl_json}{data.frame}(x, json.column, ...)
+\method{as.tbl_json}{data.frame}(.x, json.column, ...)
 
-is.tbl_json(x)
+is.tbl_json(.x)
 }
 \arguments{
 \item{df}{data.frame}
@@ -28,7 +28,7 @@ is.tbl_json(x)
 
 \item{drop.null.json}{drop NULL json entries from data.frame and json}
 
-\item{x}{an object to convert into a tbl_json object}
+\item{.x}{an object to convert into a tbl_json object}
 
 \item{...}{other arguments}
 

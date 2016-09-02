@@ -4,10 +4,10 @@
 \alias{enter_object}
 \title{Dive into a specific object "key"}
 \usage{
-enter_object(x, ...)
+enter_object(.x, ...)
 }
 \arguments{
-\item{x}{a tbl_json object}
+\item{.x}{a json string or tbl_json object}
 
 \item{...}{path to filter}
 }
