@@ -57,14 +57,16 @@ test_that("works for complex nested types", {
 test_that("simple mixed type array", {
 
   expect_identical('["a", 1, true, null]' %>% json_schema,
-                   '["logical", "number", "string"]')
+                   '["string", "number", "logical"]')
 
 })
 
 
 test_that("problem with mixed type arrays", {
 
-  expect_identical('[[1,2], "a"] ' %>% json_schema,
+  '[[1,2], "a"]' %>% json_structure
+
+  expect_identical('[[1,2], "a"]' %>% json_schema,
                    '[["number"], "string"]')
 
 })
