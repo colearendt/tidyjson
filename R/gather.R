@@ -60,7 +60,7 @@ gather_factory <- function(default.column.name, default.column.empty,
 #' and then dives into the JSON values to enable further manipulation with
 #' downstream tidyjson functions.
 #'
-#' This allows you to *enter into* the keys of the objects just like `gather_array`
+#' This allows you to *enter into* the keys of the objects just like \code{gather_array}
 #' let you enter elements of the array.
 #'
 #' @param .x a json string or tbl_json object whose JSON attribute should always be an object

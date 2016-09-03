@@ -145,7 +145,7 @@ collapse_array <- function(schema) {
     tbl_df %>%
     arrange(desc(complexity), type) %>%
     slice(1) %>%
-    `[[`("schemas") %>%
+    extract2("schemas") %>%
     paste(collapse = ", ") %>%
     sprintf("[%s]", .)
 
@@ -178,7 +178,7 @@ collapse_object <- function(schema) {
     ungroup %>%
     mutate(key = key %>% sprintf('"%s"', .)) %>%
     mutate(schemas = map2(key, schemas, paste, sep = ": ")) %>%
-    `[[`("schemas") %>%
+    extract2("schemas") %>%
     paste(collapse = ", ") %>%
     sprintf("{%s}", .)
 

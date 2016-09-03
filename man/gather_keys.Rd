@@ -23,7 +23,7 @@ and then dives into the JSON values to enable further manipulation with
 downstream tidyjson functions.
 }
 \details{
-This allows you to *enter into* the keys of the objects just like `gather_array`
+This allows you to *enter into* the keys of the objects just like \code{gather_array}
 let you enter elements of the array.
 }
 \examples{
