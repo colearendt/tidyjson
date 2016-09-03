@@ -162,3 +162,39 @@ as.character.tbl_json <- function(.x) {
                    auto_unbox = TRUE)
 
 }
+
+#' Print a tbl_json object
+#'
+#' @param .x a tbl_json object
+#' @param ... other arguments into print.tbl_df
+#' @param json.n number of json records to add (...) otherwise
+#' @param json.width number of json characters to print
+#' @export
+print.tbl_json <- function(.x, ..., json.n = 10, json.width = 15) {
+
+  # Extract json
+  json <- .x %>% as.character
+  json <- json[seq_len(min(json.n, nrow(.x)))]
+
+  # Truncate json
+  lengths <- json %>% nchar
+  json <- json %>% strtrim(json.width)
+  json[lengths > json.width] <- paste0(json[lengths > json.width], "...")
+
+  # Add the json
+  .y <- tbl_df(.x)
+  json_name <- 'attr("JSON")'
+  .y[json_name] <- rep("...", nrow(.x))
+  .y[[json_name]][seq_len(length(json))] <- json
+
+  # Re-arrange columns
+  ncol_y <- ncol(.y)
+  .y <- .y[, c(ncol_y, seq_len(ncol_y - 1))]
+
+  # Print trunc_mat version
+  out <- capture.output(print(.y))
+  out <- gsub("^\\# A tibble:", "\\# A tbl_json:", out)
+  writeLines(out)
+
+  invisible(.x)
+}

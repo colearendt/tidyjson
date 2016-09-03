@@ -15,7 +15,8 @@ Imports:
     magrittr,
     tidyr,
     igraph,
-    RColorBrewer
+    RColorBrewer,
+    tibble
 URL: https://github.com/sailthru/tidyjson
 License: MIT + file LICENSE
 LazyData: true
@@ -26,7 +27,6 @@ Suggests:
     rmarkdown,
     needs,
     forcats,
-    tibble,
     wordcloud,
     viridis,
     listviewer
