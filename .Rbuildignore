@@ -3,3 +3,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^codecov\.yml$
+^README\.Rmd$
+^README-.*\.png$
