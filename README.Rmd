@@ -20,8 +20,8 @@ knitr::opts_chunk$set(
 
 ![tidyjson graphs](https://cloud.githubusercontent.com/assets/2284427/18217882/1b3b2db4-7114-11e6-8ba3-07938f1db9af.png)
 
-tidyjson provides tools for [tidying](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
-[json](http://www.json.org/).
+tidyjson provides tools for turning [json](http://www.json.org/) into [tidy](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
+data.
 
 ## Installation
 
@@ -34,7 +34,6 @@ install.packages("tidyjson")
 Or the development version from github with:
 
 ```R
-# install.packages("tidyjson")
 devtools::install_github("jeremystan/tidyjson")
 ```
 
@@ -47,7 +46,7 @@ columns
 
 ```{r}
 library(tidyjson)
-library(tibble)
+library(dplyr)
 
 worldbank %>% spread_all %>% tbl_df
 ```
@@ -84,7 +83,8 @@ new columns using the `jstring()`, `jnumber()` and `jlogical()` functions
 ### Object navigation
 
 * `enter_object()` for entering into an object by name, discarding all other
-JSON and allowing further operations on the object value
+JSON (and rows without the corresponding object key) and allowing further 
+operations on the object value
 
 * `gather_keys()` for stacking all object values by key name, expanding the
 rows of the `tbl_json` object accordingly

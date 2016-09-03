@@ -14,8 +14,8 @@ output: github_document
 
 ![tidyjson graphs](https://cloud.githubusercontent.com/assets/2284427/18217882/1b3b2db4-7114-11e6-8ba3-07938f1db9af.png)
 
-tidyjson provides tools for [tidying](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
-[json](http://www.json.org/).
+tidyjson provides tools for turning [json](http://www.json.org/) into [tidy](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
+data.
 
 ## Installation
 
@@ -28,7 +28,6 @@ install.packages("tidyjson")
 Or the development version from github with:
 
 ```R
-# install.packages("tidyjson")
 devtools::install_github("jeremystan/tidyjson")
 ```
 
@@ -42,10 +41,24 @@ columns
 
 ```r
 library(tidyjson)
-library(tibble)
+library(dplyr)
 
 worldbank %>% spread_all %>% tbl_df
-#> Error in function_list[[k]](value): could not find function "tbl_df"
+#> # A tibble: 500 × 8
+#>    document.id    boardapprovaldate          closingdate
+#> *        <int>                <chr>                <chr>
+#> 1            1 2013-11-12T00:00:00Z 2018-07-07T00:00:00Z
+#> 2            2 2013-11-04T00:00:00Z                 <NA>
+#> 3            3 2013-11-01T00:00:00Z                 <NA>
+#> 4            4 2013-10-31T00:00:00Z                 <NA>
+#> 5            5 2013-10-31T00:00:00Z 2019-04-30T00:00:00Z
+#> 6            6 2013-10-31T00:00:00Z                 <NA>
+#> 7            7 2013-10-29T00:00:00Z 2019-06-30T00:00:00Z
+#> 8            8 2013-10-29T00:00:00Z                 <NA>
+#> 9            9 2013-10-29T00:00:00Z 2018-12-31T00:00:00Z
+#> 10          10 2013-10-29T00:00:00Z 2014-12-31T00:00:00Z
+#> # ... with 490 more rows, and 5 more variables: countryshortname <chr>,
+#> #   project_name <chr>, regionname <chr>, totalamt <dbl>, `_id.$oid` <chr>
 ```
 
 However, some objects in `worldbank` are arrays, this example shows how
@@ -54,7 +67,19 @@ to quickly summarize the top level structure of a JSON collection
 
 ```r
 worldbank %>% gather_keys %>% json_types %>% count(key, type)
-#> Error in function_list[[k]](value): could not find function "count"
+#> Source: local data frame [8 x 3]
+#> Groups: key [?]
+#> 
+#>                   key   type     n
+#>                 <chr> <fctr> <int>
+#> 1                 _id object   500
+#> 2   boardapprovaldate string   500
+#> 3         closingdate string   370
+#> 4    countryshortname string   500
+#> 5 majorsector_percent  array   500
+#> 6        project_name string   500
+#> 7          regionname string   500
+#> 8            totalamt number   500
 ```
 
 In order to capture the data in `majorsector_percent` we can use `enter_object` 
@@ -68,7 +93,20 @@ worldbank %>%
   gather_array %>%
   spread_all %>%
   tbl_df
-#> Error in function_list[[k]](value): could not find function "tbl_df"
+#> # A tibble: 1,405 × 4
+#>    document.id array.index                                    Name Percent
+#> *        <int>       <int>                                   <chr>   <dbl>
+#> 1            1           1                               Education      46
+#> 2            1           2                               Education      26
+#> 3            1           3 Public Administration, Law, and Justice      16
+#> 4            1           4                               Education      12
+#> 5            2           1 Public Administration, Law, and Justice      70
+#> 6            2           2 Public Administration, Law, and Justice      30
+#> 7            3           1                          Transportation     100
+#> 8            4           1        Health and other social services     100
+#> 9            5           1                      Industry and trade      50
+#> 10           5           2                      Industry and trade      40
+#> # ... with 1,395 more rows
 ```
 
 ## API
@@ -84,7 +122,8 @@ new columns using the `jstring()`, `jnumber()` and `jlogical()` functions
 ### Object navigation
 
 * `enter_object()` for entering into an object by name, discarding all other
-JSON and allowing further operations on the object value
+JSON (and rows without the corresponding object key) and allowing further 
+operations on the object value
 
 * `gather_keys()` for stacking all object values by key name, expanding the
 rows of the `tbl_json` object accordingly
