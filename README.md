@@ -17,7 +17,7 @@ Get the released version from CRAN:
 install.packages("tidyjson")
 ```
 
-Or the development version from github with:
+or the development version from github:
 
 ``` r
 devtools::install_github("jeremystan/tidyjson")
@@ -69,7 +69,7 @@ worldbank %>% gather_keys %>% json_types %>% count(key, type)
 #> 8            totalamt number   500
 ```
 
-In order to capture the data in `majorsector_percent` we can use `enter_object` to drop into that object, `gather_array` to stack the array and `spread_all` to capture the object keys under the array.
+In order to capture the data in `majorsector_percent` we can use `enter_object` to enter into that object, `gather_array` to stack the array and `spread_all` to capture the object keys under the array.
 
 ``` r
 worldbank %>%
@@ -98,7 +98,7 @@ API
 
 ### Spreading objects into columns
 
--   `spread_all()` for spreading all object values into new columns, with nested objects having keys like `parent.child`
+-   `spread_all()` for spreading all object values into new columns, with nested objects having column names with concatenated keys
 
 -   `spread_values()` for specifying a subset of object values to spread into new columns using the `jstring()`, `jnumber()` and `jlogical()` functions
 
@@ -166,11 +166,11 @@ Related Work
 
 Tidyjson depends upon
 
--   `magrritr` for the `%>%` pipe operator
--   `jsonlite` for converting JSON strings into nested lists
--   `purrr` for list operators
--   `tidyr` for unnesting and spreading
+-   [magrritr](https://github.com/smbache/magrittr) for the `%>%` pipe operator
+-   [jsonlite](https://github.com/jeroenooms/jsonlite) for converting JSON strings into nested lists
+-   [purrr](https://github.com/hadley/purrr) for list operators
+-   [tidyr](https://github.com/hadley/tidyr) for unnesting and spreading
 
 Further, there are other R packages that can be used to better understand JSON data
 
--   `listviewer` for viewing JSON data interactively
+-   [listviewer](https://github.com/timelyportfolio/listviewer) for viewing JSON data interactively
