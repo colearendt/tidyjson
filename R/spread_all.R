@@ -10,6 +10,17 @@ spread_all <- function(.x, sep = ".") {
   reserved_cols <- c("..id", "..key", "..type", "..value")
   assert_that(!(any(reserved_cols %in% names(.x))))
 
+  # Return .x if no rows
+  if (nrow(.x) == 0)
+    return(.x)
+
+  # Check if any objects
+  unq_types <- .x %>% json_types("..type") %>% extract2("..type") %>% unique
+  if (!("object" %in% unq_types)) {
+    warning("no JSON records are objects, returning .x")
+    return(.x)
+  }
+
   # Get JSON
   json <- attr(.x, "JSON")
 

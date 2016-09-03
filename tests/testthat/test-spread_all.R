@@ -56,3 +56,41 @@ test_that("handles a more complex document", {
   )
 
 })
+
+test_that("correctly handles character(0), {}", {
+
+  expect_identical(
+    character(0) %>% spread_all,
+    character(0) %>% as.tbl_json
+  )
+
+  expect_identical(
+    '{}' %>% spread_all,
+    '{}' %>% as.tbl_json
+  )
+
+})
+
+test_that("correct behavior with array input", {
+
+  expect_identical(
+    suppressWarnings('[1, 2]' %>% spread_all),
+    '[1, 2]' %>% as.tbl_json
+  )
+
+  expect_warning('[1, 2]' %>% spread_all,
+                 "no JSON records are objects, returning .x")
+
+})
+
+test_that("correct behavior with scalar input", {
+
+  expect_identical(
+    suppressWarnings('1' %>% spread_all),
+    '1' %>% as.tbl_json
+  )
+
+  expect_warning('1' %>% spread_all,
+                 "no JSON records are objects, returning .x")
+
+})
