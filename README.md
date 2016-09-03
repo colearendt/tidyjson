@@ -138,6 +138,10 @@ API
 
 -   `read_json()` for reading JSON data from a file
 
+### Converting tbl\_json objects
+
+-   `as.character.tbl_json` for converting the JSON attribute of a `tbl_json` object back into a JSON character string
+
 ### Included JSON data
 
 -   `commits`: commit data for the dplyr repo from github API
