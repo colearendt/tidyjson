@@ -94,3 +94,50 @@ test_that("correct behavior with scalar input", {
                  "no JSON records are objects, returning .x")
 
 })
+
+test_that("recursive keys work", {
+
+  json <- '{"k1": 1, "k2": {"k3": 2, "k4": {"k5": 3}}, "k6": 4}'
+
+  expect_identical(
+    json %>% spread_all,
+    tbl_json(
+      data_frame(
+        document.id = 1L,
+        k1 = 1,
+        k6 = 4,
+        k2.k3 = 2,
+        k2.k4.k5 = 3
+      ),
+      json %>% map(fromJSON, simplifyVector = FALSE)
+    )
+  )
+
+})
+
+test_that("works with real examples", {
+
+  expect_identical(
+    worldbank %>% spread_all %>% names,
+    c("document.id", "boardapprovaldate", "closingdate", "countryshortname",
+      "project_name", "regionname", "totalamt", "_id.$oid")
+  )
+
+  expect_identical(
+    companies[1:10] %>% spread_all %>% names,
+    c("document.id", "name", "permalink", "crunchbase_url", "homepage_url",
+      "blog_url", "blog_feed_url", "twitter_username", "category_code",
+      "number_of_employees", "founded_year", "founded_month", "founded_day",
+      "deadpooled_year", "deadpooled_month", "deadpooled_day", "deadpooled_url",
+      "tag_list", "alias_list", "email_address", "phone_number", "description",
+      "created_at", "updated_at", "overview", "total_money_raised",
+      "acquisition", "ipo", "image", "_id.$oid", "image.attribution",
+      "acquisition.price_amount", "acquisition.price_currency_code",
+      "acquisition.term_code", "acquisition.source_url",
+      "acquisition.source_description", "acquisition.acquired_year",
+      "acquisition.acquired_month", "acquisition.acquired_day",
+      "acquisition.acquiring_company.name",
+      "acquisition.acquiring_company.permalink")
+  )
+
+})

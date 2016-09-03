@@ -1,13 +1,41 @@
-#' Spreads all non-array keys into new columns
+#' Spreads all object names into new columns
+#'
+#' Like the spread function in tidyr but for JSON, this function spreads out
+#' any JSON objects into new columns. If objects are nested, then the
+#' recursive flag will expand those objects out with a compound colum name
+#' based on the sequences of nested keys concatenated with the sep character.
+#'
+#' Note that arrays are ignored by this function, use gather_array to stack
+#' the array first, and then use spread_all if the array contains objects or
+#' use one of the append_vaues_string, append_values_number or
+#' append_values_logical to to capture the array values if they are scalars.
+#'
+#' Note that scalar JSON values (e.g., a JSON string like '1') are also
+#' ignored, as they have no keys to create column names with.
+#'
+#' The order of columns is determined by the order they are encountered in the
+#' JSON document, with nested objects placed at the end.
 #'
 #' @param .x a json string or tbl_json object
-#' @param sep what to separate nested object keys with
+#' @param recursive whether or not to recursively spread nested objects
+#' @param sep character used to separate nested object keys when resursive
+#'   is TRUE
 #' @export
-spread_all <- function(.x, sep = ".") {
+#' @examples
+#'
+#' # A simple example
+#' json <- c('{"a": "x", "b": 1, "c": true}',
+#'           '{"a": "y", "c": false}',
+#'           '{"a": null, "d": "z"}')
+#' json %>% spread_all
+#'
+#' # A more complex example
+#' worldbank %>% spread_all %>% head
+spread_all <- function(.x, recursive = TRUE, sep = ".") {
 
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
-  reserved_cols <- c("..id", "..key", "..type", "..value")
+  reserved_cols <- c("..id", "..key", "..key2", "..type", "..value")
   assert_that(!(any(reserved_cols %in% names(.x))))
 
   # Return .x if no rows
@@ -31,6 +59,13 @@ spread_all <- function(.x, sep = ".") {
   y <- .x %>%
     gather_keys("..key") %>%
     json_types("..type")
+
+  if (recursive)
+    while(any(y$..type == "object"))
+      y <- rbind_tbl_json(
+        y %>% filter(..type != "object"),
+        recursive_gather(y, sep)
+      )
 
   key_order <- y %>%
     filter(..type %in% c("string", "number", "logical", "null")) %>%
@@ -65,6 +100,20 @@ spread_all <- function(.x, sep = ".") {
 
 }
 
+#' Recursively gathers keys
+recursive_gather <- function(.x, sep) {
+
+  .x %>%
+    filter(..type == "object") %>%
+    rename(..key1 = ..key) %>%
+    gather_keys("..key2") %>%
+    mutate(..key = paste(..key1, ..key2, sep = sep)) %>%
+    select(-..type, -..key1, -..key2) %>%
+    json_types("..type")
+
+}
+
+#' Spreads keys of a specific type
 spread_type <- function(.x, this.type, append.fun) {
 
   any_type <- any(.x$..type == this.type)

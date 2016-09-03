@@ -2,16 +2,45 @@
 % Please edit documentation in R/spread_all.R
 \name{spread_all}
 \alias{spread_all}
-\title{Spreads all non-array keys into new columns}
+\title{Spreads all object names into new columns}
 \usage{
-spread_all(.x, sep = ".")
+spread_all(.x, recursive = TRUE, sep = ".")
 }
 \arguments{
 \item{.x}{a json string or tbl_json object}
 
-\item{sep}{what to separate nested object keys with}
+\item{recursive}{whether or not to recursively spread nested objects}
+
+\item{sep}{character used to separate nested object keys when resursive
+is TRUE}
 }
 \description{
-Spreads all non-array keys into new columns
+Like the spread function in tidyr but for JSON, this function spreads out
+any JSON objects into new columns. If objects are nested, then the
+recursive flag will expand those objects out with a compound colum name
+based on the sequences of nested keys concatenated with the sep character.
+}
+\details{
+Note that arrays are ignored by this function, use gather_array to stack
+the array first, and then use spread_all if the array contains objects or
+use one of the append_vaues_string, append_values_number or
+append_values_logical to to capture the array values if they are scalars.
+
+Note that scalar JSON values (e.g., a JSON string like '1') are also
+ignored, as they have no keys to create column names with.
+
+The order of columns is determined by the order they are encountered in the
+JSON document, with nested objects placed at the end.
+}
+\examples{
+
+# A simple example
+json <- c('{"a": "x", "b": 1, "c": true}',
+          '{"a": "y", "c": false}',
+          '{"a": null, "d": "z"}')
+json \%>\% spread_all
+
+# A more complex example
+worldbank \%>\% spread_all \%>\% head
 }
 
