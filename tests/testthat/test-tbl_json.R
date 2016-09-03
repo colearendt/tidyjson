@@ -68,6 +68,41 @@ test_that("throws error on invalid json", {
   }
 )
 
+context("tbl_json: as.character.tbl_json")
+
+inverts_json_test <- function(json) {
+  expect_identical(json, json %>% as.tbl_json %>% as.character)
+}
+
+test_that("works for simple cases", {
+
+  inverts_json_test('"a"')
+  inverts_json_test('1')
+  inverts_json_test('true')
+  inverts_json_test('false')
+  inverts_json_test('null')
+  inverts_json_test('{}')
+  inverts_json_test('[]')
+
+})
+
+test_that("works for more complex cases", {
+
+  inverts_json_test('{"key":"a"}')
+  inverts_json_test('{"key":1}')
+  inverts_json_test('{"key":[1]}')
+  inverts_json_test('{"key":[null]}')
+  inverts_json_test('{"key":null}')
+  inverts_json_test('[[1,2],1]')
+
+})
+
+test_that("works for worldbank data", {
+
+  inverts_json_test(worldbank[1:5])
+
+})
+
 context("tbl_json: as.tbl_json.data.frame")
 
 test_that("works for a data.frame and data_frame created objects", {
@@ -168,6 +203,8 @@ test_that("[ column filtering doesn't change the JSON", {
 
   }
 )
+
+context("tbl_json: dplyr verbs")
 
 test_that("dplyr::filter works with a simple example", {
 
@@ -292,3 +329,5 @@ test_that("dplyr::sample_n works", {
   expect_identical(new$array.index, attr(new, "JSON") %>% flatten_int)
 
 })
+
+
