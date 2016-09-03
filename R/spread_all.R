@@ -7,10 +7,8 @@ spread_all <- function(.x, sep = ".") {
 
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
-  assert_that(!("..id" %in% names(.x)))
-  assert_that(!("..key" %in% names(.x)))
-  assert_that(!("..type" %in% names(.x)))
-  assert_that(!("..value" %in% names(.x)))
+  reserved_cols <- c("..id", "..key", "..type", "..value")
+  assert_that(!(any(reserved_cols %in% names(.x))))
 
   # Get JSON
   json <- attr(.x, "JSON")
@@ -24,7 +22,7 @@ spread_all <- function(.x, sep = ".") {
     json_types("..type")
 
   key_order <- y %>%
-    filter(..type %in% c("string", "number", "logical")) %>%
+    filter(..type %in% c("string", "number", "logical", "null")) %>%
     extract2("..key") %>%
     unique
 
@@ -37,6 +35,16 @@ spread_all <- function(.x, sep = ".") {
     left_join(y_number,  by = "..id") %>%
     left_join(y_logical, by = "..id")
 
+  all_null <- y %>%
+    group_by(..key) %>%
+    summarize(all.null = all(..type == "null")) %>%
+    filter(all.null)
+
+  if (nrow(all_null) > 0) {
+    null_keys <- all_null %>% extract2("..key")
+    z[, null_keys] <- NA
+  }
+
   final_columns <- names(.x) %>%
     setdiff("..id") %>%
     c(key_order)
@@ -47,6 +55,11 @@ spread_all <- function(.x, sep = ".") {
 }
 
 spread_type <- function(.x, this.type, append.fun) {
+
+  any_type <- any(.x$..type == this.type)
+
+  if (!any_type)
+    return(data_frame(..id = integer(0)))
 
   .x %>%
     filter(..type == this.type) %>%
