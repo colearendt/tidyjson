@@ -96,7 +96,7 @@ worldbank %>%
 API
 ---
 
-### Spreading JSON objects into new columns
+### Spreading objects into columns
 
 -   `spread_all()` for spreading all object values into new columns, with nested objects having keys like `parent.child`
 
@@ -151,5 +151,26 @@ API
 Philosophy
 ----------
 
+The goal is to turn complex JSON data, which is often represented as nested lists, into tidy data frames that can be more easily manipulated.
+
+-   Work on a single JSON document, or on a collection of related documents (where the schema of each document may vary)
+-   Perform complex JSON manipulation using the pipe, `%>%`, producing code that can be read from left to right
+-   Guarantee the structure of the data produced, even if the input JSON structure changes (the exception being `spread_all`, which produces new columns based on the input JSON alone)
+-   Allow for structuring in tidy form arbitrarily nested (arrays or objects) JSON Naturally handle 'ragged' arrays and / or objects (varying lengths by document)
+-   Allow for extraction of data in values or key names
+-   Ensure edge cases are handled correctly (especially empty data)
+-   Integrate seamlessly with `dplyr`, allowing `tbl_json` objects to pipe into `dplyr` verbs, and (when reasonable) back into further `tidyjson` verbs
+
 Related Work
 ------------
+
+Tidyjson depends upon
+
+-   `magrritr` for the `%>%` pipe operator
+-   `jsonlite` for converting JSON strings into nested lists
+-   `purrr` for list operators
+-   `tidyr` for unnesting and spreading
+
+Further, there are other R packages that can be used to better understand JSON data
+
+-   `listviewer` for viewing JSON data interactively
