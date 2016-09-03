@@ -165,16 +165,16 @@ as.character.tbl_json <- function(.x) {
 
 #' Print a tbl_json object
 #'
-#' @param .x a tbl_json object
+#' @param x a tbl_json object
 #' @param ... other arguments into print.tbl_df
 #' @param json.n number of json records to add (...) otherwise
 #' @param json.width number of json characters to print
 #' @export
-print.tbl_json <- function(.x, ..., json.n = 10, json.width = 15) {
+print.tbl_json <- function(x, ..., json.n = 10, json.width = 15) {
 
   # Extract json
-  json <- .x %>% as.character
-  json <- json[seq_len(min(json.n, nrow(.x)))]
+  json <- x %>% as.character
+  json <- json[seq_len(min(json.n, nrow(x)))]
 
   # Truncate json
   lengths <- json %>% nchar
@@ -182,9 +182,9 @@ print.tbl_json <- function(.x, ..., json.n = 10, json.width = 15) {
   json[lengths > json.width] <- paste0(json[lengths > json.width], "...")
 
   # Add the json
-  .y <- tbl_df(.x)
-  json_name <- 'attr("JSON")'
-  .y[json_name] <- rep("...", nrow(.x))
+  .y <- tbl_df(x)
+  json_name <- 'attr(., "JSON")'
+  .y[json_name] <- rep("...", nrow(x))
   .y[[json_name]][seq_len(length(json))] <- json
 
   # Re-arrange columns
@@ -193,8 +193,12 @@ print.tbl_json <- function(.x, ..., json.n = 10, json.width = 15) {
 
   # Print trunc_mat version
   out <- capture.output(print(.y))
-  out <- gsub("^\\# A tibble:", "\\# A tbl_json:", out)
+  out <- gsub("^\\# A tibble:.*",
+              "\\# A tbl_json: %s x %s tibble with a \"JSON\" attribute" %>%
+                sprintf(nrow(x) %>% format(big.mark = ','),
+                        ncol(x) %>% format(big.mark = ',')),
+              out)
   writeLines(out)
 
-  invisible(.x)
+  invisible(x)
 }

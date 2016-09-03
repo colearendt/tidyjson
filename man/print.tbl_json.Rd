@@ -4,10 +4,10 @@
 \alias{print.tbl_json}
 \title{Print a tbl_json object}
 \usage{
-\method{print}{tbl_json}(.x, ..., json.n = 10, json.width = 15)
+\method{print}{tbl_json}(x, ..., json.n = 10, json.width = 15)
 }
 \arguments{
-\item{.x}{a tbl_json object}
+\item{x}{a tbl_json object}
 
 \item{...}{other arguments into print.tbl_df}
 

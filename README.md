@@ -33,8 +33,8 @@ library(tidyjson)
 library(dplyr)
 
 worldbank %>% spread_all
-#> # A tbl_json: 500 × 9
-#>        `attr("JSON")` document.id    boardapprovaldate
+#> # A tbl_json: 500 x 8 tibble with a "JSON" attribute
+#>     `attr(., "JSON")` document.id    boardapprovaldate
 #>                 <chr>       <int>                <chr>
 #> 1  {"_id":{"$oid":...           1 2013-11-12T00:00:00Z
 #> 2  {"_id":{"$oid":...           2 2013-11-04T00:00:00Z
@@ -78,8 +78,8 @@ worldbank %>%
   gather_array %>%
   spread_all %>%
   select(-document.id, -array.index)
-#> # A tbl_json: 1,405 × 3
-#>        `attr("JSON")`                                    Name Percent
+#> # A tbl_json: 1,405 x 2 tibble with a "JSON" attribute
+#>     `attr(., "JSON")`                                    Name Percent
 #>                 <chr>                                   <chr>   <dbl>
 #> 1  {"Name":"Educat...                               Education      46
 #> 2  {"Name":"Educat...                               Education      26
