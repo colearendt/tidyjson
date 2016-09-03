@@ -149,3 +149,16 @@ mutate_.tbl_json <- wrap_dplyr_verb(dplyr::mutate_)
 
 #' @export
 slice_.tbl_json <- wrap_dplyr_verb(dplyr::slice_)
+
+#' Convert the JSON in an tbl_json object back to a JSON string
+#'
+#' @param .x a tbl_json object
+#' @return a character vector of formatted JSON
+as.character.tbl_json <- function(.x) {
+
+  json <- attr(.x, "JSON")
+  json %>% map_chr(jsonlite::toJSON,
+                   null = "null",
+                   auto_unbox = TRUE)
+
+}
