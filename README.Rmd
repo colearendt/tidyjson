@@ -50,7 +50,7 @@ columns
 library(tidyjson)
 library(dplyr)
 
-worldbank %>% spread_all %>% tbl_df
+worldbank %>% spread_all
 ```
 
 However, some objects in `worldbank` are arrays, this example shows how
@@ -69,7 +69,7 @@ worldbank %>%
   enter_object("majorsector_percent") %>%
   gather_array %>%
   spread_all %>%
-  tbl_df
+  select(-document.id, -array.index)
 ```
 
 ## API

@@ -32,22 +32,23 @@ The following example takes a character vector of 500 documents in the `worldban
 library(tidyjson)
 library(dplyr)
 
-worldbank %>% spread_all %>% tbl_df
-#> # A tibble: 500 × 8
-#>    document.id    boardapprovaldate          closingdate
-#> *        <int>                <chr>                <chr>
-#> 1            1 2013-11-12T00:00:00Z 2018-07-07T00:00:00Z
-#> 2            2 2013-11-04T00:00:00Z                 <NA>
-#> 3            3 2013-11-01T00:00:00Z                 <NA>
-#> 4            4 2013-10-31T00:00:00Z                 <NA>
-#> 5            5 2013-10-31T00:00:00Z 2019-04-30T00:00:00Z
-#> 6            6 2013-10-31T00:00:00Z                 <NA>
-#> 7            7 2013-10-29T00:00:00Z 2019-06-30T00:00:00Z
-#> 8            8 2013-10-29T00:00:00Z                 <NA>
-#> 9            9 2013-10-29T00:00:00Z 2018-12-31T00:00:00Z
-#> 10          10 2013-10-29T00:00:00Z 2014-12-31T00:00:00Z
-#> # ... with 490 more rows, and 5 more variables: countryshortname <chr>,
-#> #   project_name <chr>, regionname <chr>, totalamt <dbl>, `_id.$oid` <chr>
+worldbank %>% spread_all
+#> # A tbl_json: 500 × 9
+#>        `attr("JSON")` document.id    boardapprovaldate
+#>                 <chr>       <int>                <chr>
+#> 1  {"_id":{"$oid":...           1 2013-11-12T00:00:00Z
+#> 2  {"_id":{"$oid":...           2 2013-11-04T00:00:00Z
+#> 3  {"_id":{"$oid":...           3 2013-11-01T00:00:00Z
+#> 4  {"_id":{"$oid":...           4 2013-10-31T00:00:00Z
+#> 5  {"_id":{"$oid":...           5 2013-10-31T00:00:00Z
+#> 6  {"_id":{"$oid":...           6 2013-10-31T00:00:00Z
+#> 7  {"_id":{"$oid":...           7 2013-10-29T00:00:00Z
+#> 8  {"_id":{"$oid":...           8 2013-10-29T00:00:00Z
+#> 9  {"_id":{"$oid":...           9 2013-10-29T00:00:00Z
+#> 10 {"_id":{"$oid":...          10 2013-10-29T00:00:00Z
+#> # ... with 490 more rows, and 6 more variables: closingdate <chr>,
+#> #   countryshortname <chr>, project_name <chr>, regionname <chr>,
+#> #   totalamt <dbl>, `_id.$oid` <chr>
 ```
 
 However, some objects in `worldbank` are arrays, this example shows how to quickly summarize the top level structure of a JSON collection
@@ -76,20 +77,20 @@ worldbank %>%
   enter_object("majorsector_percent") %>%
   gather_array %>%
   spread_all %>%
-  tbl_df
-#> # A tibble: 1,405 × 4
-#>    document.id array.index                                    Name Percent
-#> *        <int>       <int>                                   <chr>   <dbl>
-#> 1            1           1                               Education      46
-#> 2            1           2                               Education      26
-#> 3            1           3 Public Administration, Law, and Justice      16
-#> 4            1           4                               Education      12
-#> 5            2           1 Public Administration, Law, and Justice      70
-#> 6            2           2 Public Administration, Law, and Justice      30
-#> 7            3           1                          Transportation     100
-#> 8            4           1        Health and other social services     100
-#> 9            5           1                      Industry and trade      50
-#> 10           5           2                      Industry and trade      40
+  select(-document.id, -array.index)
+#> # A tbl_json: 1,405 × 3
+#>        `attr("JSON")`                                    Name Percent
+#>                 <chr>                                   <chr>   <dbl>
+#> 1  {"Name":"Educat...                               Education      46
+#> 2  {"Name":"Educat...                               Education      26
+#> 3  {"Name":"Public... Public Administration, Law, and Justice      16
+#> 4  {"Name":"Educat...                               Education      12
+#> 5  {"Name":"Public... Public Administration, Law, and Justice      70
+#> 6  {"Name":"Public... Public Administration, Law, and Justice      30
+#> 7  {"Name":"Transp...                          Transportation     100
+#> 8  {"Name":"Health...        Health and other social services     100
+#> 9  {"Name":"Indust...                      Industry and trade      50
+#> 10 {"Name":"Indust...                      Industry and trade      40
 #> # ... with 1,395 more rows
 ```
 
