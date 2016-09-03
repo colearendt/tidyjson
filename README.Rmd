@@ -1,7 +1,5 @@
 ---
-output:
-  md_document:
-    variant: markdown_github
+output: github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -42,7 +40,8 @@ devtools::install_github("jeremystan/tidyjson")
 
 ## Examples
 
-The following example takes a character vector of `r length(worldbank)` 
+The following example takes a character vector of 
+`r library(tidyjson);length(worldbank)` 
 documents in the `worldbank` dataset and spreads out all objects into new 
 columns
 
