@@ -9,6 +9,10 @@
 NULL
 
 #' Bind two tbl_json objects together and preserve JSON attribute
+#'
+#' @param x a tbl_json object
+#' @param y a tbl_json_object
+#' @return x and y row-binded together with appropriate JSON attribute
 rbind_tbl_json <- function(x, y) {
 
   tbl_json(

@@ -6,6 +6,14 @@
 \usage{
 rbind_tbl_json(x, y)
 }
+\arguments{
+\item{x}{a tbl_json object}
+
+\item{y}{a tbl_json_object}
+}
+\value{
+x and y row-binded together with appropriate JSON attribute
+}
 \description{
 Bind two tbl_json objects together and preserve JSON attribute
 }

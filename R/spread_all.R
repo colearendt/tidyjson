@@ -100,7 +100,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
 
 }
 
-#' Recursively gathers keys
+# Recursively gathers keys
 recursive_gather <- function(.x, sep) {
 
   .x %>%
@@ -113,7 +113,7 @@ recursive_gather <- function(.x, sep) {
 
 }
 
-#' Spreads keys of a specific type
+# Spreads keys of a specific type
 spread_type <- function(.x, this.type, append.fun) {
 
   any_type <- any(.x$..type == this.type)
