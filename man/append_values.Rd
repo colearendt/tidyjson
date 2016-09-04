@@ -5,7 +5,7 @@
 \alias{append_values_logical}
 \alias{append_values_number}
 \alias{append_values_string}
-\title{Appends all values with a specified type as a new column}
+\title{Appends all JSON values with a specified type as a new column}
 \usage{
 append_values_string(.x, column.name = type, force = TRUE,
   recursive = FALSE)
@@ -17,32 +17,52 @@ append_values_logical(.x, column.name = type, force = TRUE,
   recursive = FALSE)
 }
 \arguments{
-\item{.x}{a json string or tbl_json object}
+\item{.x}{a json string or \code{\link{tbl_json}} object}
 
-\item{column.name}{the column.name to append the values into the data.frame
-under}
+\item{column.name}{the name of the column to append values as}
 
-\item{force}{parameter that determines if the variable type should be computed or not
-if force is FALSE, then the function may take more memory}
+\item{force}{should values be coerced to the appropriate type
+when possible, otherwise, types are checked first (requires more
+memory)}
 
-\item{recursive}{logical indicating whether to extract a single value from a
-nested object.  Only used when force = TRUE.  If force = FALSE, and
-recursive=TRUE, throws an error.}
+\item{recursive}{logical indicating whether to recurisvely extract a single
+value from a nested object. Only used when \code{force = TRUE}. If
+\code{force = FALSE}, and \code{recursive = TRUE}, throws an error.}
 }
 \description{
-The append_values_X functions let you take any remaining JSON and add it as
-a column X (for X in "string", "number", "logical") insofar as it is of the
-JSON type specified.
+The \code{append_values} functions let you take any scalar JSON values
+of a given type ("string", "number", "logical") and add them as a new
+column named \code{column.name}. This is particularly useful after using
+\code{\link{gather_keys}} to stack many objects.
 }
 \details{
-Any values that do not conform to the type specified will be NA in the resulting
-column. This includes other scalar types (e.g., numbers or logicals if you are
-using append_values_string) and *also* any rows where the JSON is still an
-object or an array.
+Any values that can not be converted to the specified will be \code{NA} in
+the resulting column. This includes other scalar types (e.g., numbers or
+logicals if you are using \code{append_values_string}) and *also* any rows
+where the JSON is NULL or an object or array.
+
+Note that the \code{append_values} functions do not alter the JSON
+attribute of the \code{tbl_json} object in any way.
 }
 \examples{
+
+# Stack names
 '{"first": "bob", "last": "jones"}' \%>\%
-  gather_keys() \%>\%
-  append_values_string()
+  gather_keys \%>\%
+  append_values_string
+
+# This is most useful when data is stored in keys and values
+# For example, tags in recipes:
+recipes <- c('{"name": "pie", "tags": {"apple": 10, "pie": 2, "flour": 5}}',
+             '{"name": "cookie", "tags": {"chocolate": 2, "cookie": 1}}')
+recipes \%>\%
+  spread_values(name = jstring("name")) \%>\%
+  enter_object("tags") \%>\%
+  gather_keys("tag") \%>\%
+  append_values_number("count")
+}
+\seealso{
+\code{\link{gather_keys}} to gather all object keys first,
+   \code{\link{spread_all}} to spread values into new columns
 }
 
