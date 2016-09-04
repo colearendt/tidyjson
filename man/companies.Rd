@@ -13,31 +13,28 @@ From: http://jsonstudio.com/resources/
 }
 \examples{
 
-library(dplyr)
-library(jsonlite)
+# Companies is a long character vector
+companies \%>\% str
 
-# Print the first record (do not run automatically)
-# companies[[1]] \%>\% prettify
+# Work with a small sample
+co_samp <- companies[1:5]
 
-# Get the key employees data
-key_employees <- companies \%>\%
-  spread_values(
-    name = jstring("name")
-  ) \%>\%
-  mutate(
-    company.sort_order = rank(name)
-  ) \%>\%
+# Gather top level keys and glimpse
+co_samp \%>\% spread_all \%>\% glimpse
+
+# Get the key employees data for the first 100 companies
+key_employees <- companies[1:100] \%>\%
+  spread_all \%>\%
+  select(name) \%>\%
   enter_object("relationships") \%>\%
-  gather_array("relationship.index") \%>\%
-  spread_values(
-    is.past = jlogical("is_past"),
-    person.name = jstring("person", "permalink"),
-    title = jstring("title")
-  )
+  gather_array() \%>\%
+  spread_all
+
+key_employees \%>\% glimpse
 
 # Show the top 10 titles
 key_employees \%>\%
-  filter(!is.past) \%>\%
+  filter(!is_past) \%>\%
   count(title) \%>\%
   arrange(desc(n)) \%>\%
   top_n(10)
