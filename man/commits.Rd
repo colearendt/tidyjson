@@ -13,6 +13,8 @@ Commit data for the dplyr repo from github API
 }
 \examples{
 
+library(dplyr)
+
 # Commits is a long character string
 commits \%>\% nchar
 

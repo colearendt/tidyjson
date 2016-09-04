@@ -6,6 +6,8 @@
 #' @format JSON
 #' @examples
 #'
+#' library(dplyr)
+#'
 #' # Commits is a long character string
 #' commits %>% nchar
 #'
