@@ -13,6 +13,8 @@ From: http://jsonstudio.com/resources/
 }
 \examples{
 
+library(dplyr)
+
 # Companies is a long character vector
 companies \%>\% str
 

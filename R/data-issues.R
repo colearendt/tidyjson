@@ -1,48 +1,43 @@
 #' Issue data for the dplyr repo from github API
-#' 
+#'
 #' @docType data
 #' @name issues
 #' @usage issues
 #' @format JSON
 #' @examples
-#' 
+#'
 #' library(dplyr)
-#' 
-#' # Show first 200 characters of JSON
-#' issues %>% substr(1, 200) %>% writeLines
-#' 
-#' # Extract metadata for every issue
-#' issues %>%          # single json document of github issues from dplyr 
-#'   gather_array %>%  # stack as an array
-#'   spread_values(
-#'     id          = jnumber("id"),
-#'     number      = jnumber("number"),
-#'     title       = jstring("title"),
-#'     user.login  = jstring("user", "login"),
-#'     sate        = jstring("state"),
-#'     locked      = jlogical("locked"),
-#'     comments    = jnumber("comments")
-#'   ) %>% head
-#' 
-#' # Extract label content for issues with labels
-#' issues %>%          # single json document of github issues from dplyr 
-#'   gather_array %>%  # stack as an array
-#'   spread_values(id = jnumber("id")) %>% # capture issue id for relational purposes
+#'
+#' # issues is a long character string
+#' nchar(issues)
+#'
+#' # Let's make it a tbl_json object
+#' issues %>% as.tbl_json
+#'
+#' # It begins as an array, so let's gather that
+#' issues %>% gather_array
+#'
+#' # Now let's spread all the top level values
+#' issues %>% gather_array %>% spread_all %>% glimpse
+#'
+#' # Are there any top level objects or arrays?
+#' issues %>% gather_array %>% gather_keys %>% json_types %>%
+#'   count(key, type) %>%
+#'   filter(type %in% c("array", "object"))
+#'
+#' # Count issues labels by name
+#' labels <- issues %>%
+#'   gather_array %>%                      # stack issues as "issue.num"
+#'   spread_values(id = jnumber("id")) %>% # capture just issue id
 #'   enter_object("labels") %>%            # filter just those with labels
 #'   gather_array("label.index") %>%       # stack labels
-#'   spread_values(
-#'     url   = jstring("url"),
-#'     name  = jstring("name"),
-#'     color = jstring("color")
-#'   ) %>% head
-#' 
-#' # Get all URLs at the top level of the JSON
-#' issues %>% 
-#'   gather_array %>%
-#'   gather_keys %>%
-#'   append_values_string() %>%
-#'   filter(grepl("url", key)) %>%
-#'   head
+#'   spread_all
+#' labels %>% glimpse
+#'
+#' # Count number of distinct issues each label appears in
+#' labels %>%
+#'   group_by(name) %>%
+#'   summarize(num.issues = n_distinct(id))
 NULL
 
 
