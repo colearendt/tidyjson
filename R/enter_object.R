@@ -1,23 +1,25 @@
 #' Enter into a specific object and discard all other JSON data
 #'
-#' JSON can contain nested objects, such as
-#' \code{'{"key1": {"key2": [1, 2, 3]}}'}. \code{enter_object} can be used to
-#' access the array nested under \code{"key1"} and \code{"key2"}. After using
-#' \code{enter_object}, all further tidyjson calls happen inside the referenced
-#' object (all other JSON data outside the object is discarded). If the object
-#' doesn't exist for a given row / index, then that row will be discarded.
+#' When manipulating a JSON object, \code{enter_object} lets you navigate to
+#' a specific value of the object by referencing it's key. JSON can contain
+#' nested objects, and you can pass in more than one character string into
+#' \code{enter_object} to navigate through multiple objects simultaneously.
 #'
-#' This is useful when you want to limit your data to just information found in
-#' a specific key. In pipelines, \code{enter_object} is often preceded by
-#' \code{gather_keys} and followed by \code{gather_array}
-#' if the key contains an array, or \code{spread_all} if the key contains an
-#' object.
+#' After using \code{enter_object}, all further tidyjson calls happen inside the
+#' referenced object (all other JSON data outside the object is discarded).
+#' If the object doesn't exist for a given row / index, then that row will be
+#' discarded.
+#'
+#' In pipelines, \code{enter_object} is often preceded by \code{gather_keys} and
+#' followed by \code{gather_array} if the key contains an array, or
+#' \code{spread_all} if the key contains an object.
 #'
 #' @seealso \code{\link{gather_keys}} to access keys that could be entered
 #'    into, \code{\link{gather_array}} to gather an array in an object and
 #'    \code{\link{spread_all}} to spread values in an object.
 #' @param .x a json string or tbl_json object
-#' @param ... path to filter
+#' @param ... a sequence of character strings designating the object key or
+#'            sequences of keys you wish to enter
 #' @export
 #' @examples
 #'
