@@ -14,27 +14,30 @@ From: http://jsonstudio.com/resources/
 \examples{
 
 library(dplyr)
-library(jsonlite)
 
-# Print the first record
-worldbank[[1]] \%>\% prettify
+# worldbank is a 500 length character vector of JSON
+length(worldbank)
+
+# Let's look at top level keys
+worldbank \%>\% spread_all \%>\% glimpse
+
+# Are there any arrays?
+worldbank \%>\% gather_keys \%>\% json_types \%>\% count(key, type)
 
 # Get the top 10 sectors by funded project in Africa
 wb_sectors <- worldbank \%>\%   # 500 Projects funded by the world bank
-  spread_values(
-    name = jstring("project_name"), # Spread name 
-    region = jstring("regionname")  # Spread region
-  ) \%>\% 
-  enter_object("majorsector_percent") \%>\%              # Enter the 'sector' object
+  spread_all \%>\%
+  select(project_name, regionname) \%>\%
+  enter_object("majorsector_percent") \%>\% # Enter the 'sector' object
   gather_array("sector.index") \%>\%        # Gather the array
   spread_values(sector = jstring("Name")) # Spread the sector name
 
 # Examine the structured data
-wb_sectors \%>\% head
+wb_sectors \%>\% glimpse
 
 # Get the top 10 sectors by funded project in Africa
 wb_sectors \%>\%
-  filter(region == "Africa") \%>\% # Filter to just Africa
+  filter(regionname == "Africa") \%>\% # Filter to just Africa
   count(sector) \%>\%              # Count by sector
   arrange(desc(n)) \%>\%           # Arrange descending
   top_n(10)                      # Take the top 10

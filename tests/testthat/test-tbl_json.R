@@ -103,6 +103,45 @@ test_that("works for worldbank data", {
 
 })
 
+context("print.tbl_json")
+
+test_that("print.tbl_json works for a simple case", {
+
+  expect_identical(
+    capture.output(print(as.tbl_json('"a"'))),
+    c('# A tbl_json: 1 x 1 tibble with a \"JSON\" attribute',
+      '  `attr(., "JSON")` document.id',
+      '              <chr>       <int>',
+      '1               "a"           1')
+  )
+
+})
+
+test_that("print.tbl_json json.width works correctly", {
+
+  expect_identical(
+    capture.output(print(as.tbl_json('"12345"'), json.width = 4)),
+    c('# A tbl_json: 1 x 1 tibble with a \"JSON\" attribute',
+      '  `attr(., "JSON")` document.id',
+      '              <chr>       <int>',
+      '1           "123...           1')
+  )
+
+})
+
+test_that("print.tbl_json json.n works correctly", {
+
+  expect_identical(
+    capture.output(print(as.tbl_json(c('"a"', '"b"')), json.n = 1)),
+    c('# A tbl_json: 2 x 1 tibble with a \"JSON\" attribute',
+      '  `attr(., "JSON")` document.id',
+      '              <chr>       <int>',
+      '1               "a"           1',
+      '2               ...           2')
+  )
+
+})
+
 context("tbl_json: as.tbl_json.data.frame")
 
 test_that("works for a data.frame and data_frame created objects", {

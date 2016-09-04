@@ -13,6 +13,8 @@
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom graphics par
 #' @importFrom magrittr extract2
+#' @importFrom tibble trunc_mat
+#' @importFrom utils capture.output
 NULL
 
 # Quiet R CMD Check "no visible binding for global variable" when using dplyr
