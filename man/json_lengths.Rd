@@ -2,7 +2,7 @@
 % Please edit documentation in R/json_lengths.R
 \name{json_lengths}
 \alias{json_lengths}
-\title{Add a column that contains the length of the JSON data}
+\title{Compute the length of JSON data}
 \usage{
 json_lengths(.x, column.name = "length")
 }
@@ -16,13 +16,30 @@ a \code{\link{tbl_json}} object
 }
 \description{
 When investigating JSON data it can be helpful to identify the lengths of the
-JSON objects or arrays, especialy when they are 'ragged' across documents. The
-json_lengths() function adds a column (default name "length") that contains
-the 'length' of the JSON associated with each row. For objects, this will
-be equal to the number of keys. For arrays, this will be equal to the length
-of the array. All scalar values will be of length 1.
+JSON objects or arrays, especialy when they are 'ragged' across documents.
+The \code{json_lengths} function adds a column (default name \code{"length"})
+that contains the 'length' of the JSON associated with each row. For objects,
+this will be equal to the number of keys. For arrays, this will be equal to
+the length of the array. All scalar values will be of length 1, and null
+will have length 0.
 }
 \examples{
-c('[1, 2, 3]', '{"k1": 1, "k2": 2}', '1', {}) \%>\% json_lengths
+
+# A simple example
+json <- c('[1, 2, 3]', '{"k1": 1, "k2": 2}', '1', 'null')
+
+# Complexity is larger than length for nested objects
+json \%>\% json_lengths
+
+# Worldbank objcts are either length 7 or 8
+library(magrittr)
+worldbank \%>\% json_lengths \%$\% table(length)
+
+# All commits are length 8
+commits \%>\% gather_array \%>\% json_lengths \%$\% table(length)
+}
+\seealso{
+\code{\link{json_complexity}} to compute the recursive length of
+         each value
 }
 
