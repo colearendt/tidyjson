@@ -2,31 +2,68 @@
 % Please edit documentation in R/gather.R
 \name{gather_keys}
 \alias{gather_keys}
-\title{Stack a JSON {"key": value} object}
+\title{Gather a JSON object into key-value pairs}
 \usage{
 gather_keys(.x, column.name = default.column.name)
 }
 \arguments{
-\item{.x}{a json string or tbl_json object whose JSON attribute should always be an object}
+\item{.x}{a JSON string or \code{tbl_json} object whose JSON attribute should
+always be an object}
 
 \item{column.name}{the name to give to the column of key names created}
 }
 \value{
-a tbl_json with a new column (column.name) that captures the keys
-  and JSON attribute of the associated value data
+a \code{\link{tbl_json}} object
 }
 \description{
-Given a JSON key value structure, like {"key1": 1, "key2": 2}, the
-gather_keys() function duplicates the rows of the tbl_json data.frame for
-every key, adds a new column (default name "key") to capture the key names,
-and then dives into the JSON values to enable further manipulation with
-downstream tidyjson functions.
+\code{gather_keys} collapses a JSON object into key-value pairs, creating
+a new column \code{'key'} to store the object key names, and storing the
+values in the \code{'JSON'} attribute for further tidyjson manipulation.
+All other columns are duplicated as necessary. This allows you to access the
+keys of the objects just like \code{\link{gather_array}} lets you access the
+values of an array.
 }
 \details{
-This allows you to *enter into* the keys of the objects just like \code{gather_array}
-let you enter elements of the array.
+\code{gather_keys} is often followed by \code{\link{enter_object}} to enter
+into a value that is an object, by \code{\link{append_values}} to append all
+scalar values as a new column or \code{\link{json_types}} to determine the
+types of the keys.
 }
 \examples{
-'{"name": "bob", "age": 32}' \%>\% gather_keys \%>\% json_types
+
+# Let's start with a very simple example
+json <- '{"name": "bob", "age": 32, "gender": "male"}'
+
+# Check that this is an object
+json \%>\% json_types
+
+# Gather keys and check types
+json \%>\% gather_keys \%>\% json_types
+
+# Sometimes data is stored in key names
+json <- '{"2014": 32, "2015": 56, "2016": 14}'
+
+# Then we can use the column.name argument to change the name of the keys
+json \%>\% gather_keys("year")
+
+# We can also use append_values_number to capture the values, since they are
+# all of the same type
+json \%>\% gather_keys("year") \%>\% append_values_number("count")
+
+# This can even work with a more complex, nested example
+json <- '{"2015": {"1": 10, "3": 1, "11": 5}, "2016": {"2": 3, "5": 15}}'
+json \%>\% gather_keys("year") \%>\% gather_keys("month") \%>\%
+  append_values_number("count")
+
+# Most JSON starts out as an object (or an array of objects), and gather_keys
+# can be used to inspect the top level (or 2nd level) keys and their structure
+library(dplyr)
+worldbank \%>\% gather_keys \%>\% json_types \%>\% count(key, type)
+}
+\seealso{
+\code{\link{gather_array}} to gather a JSON array,
+         \code{\link{enter_object}} to enter into an object,
+         \code{\link[tidyr]{gather}} to gather key-value pairs in a data
+         frame
 }
 
