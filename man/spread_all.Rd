@@ -14,6 +14,9 @@ spread_all(.x, recursive = TRUE, sep = ".")
 \item{sep}{character used to separate nested object keys when resursive
 is TRUE}
 }
+\value{
+a \code{\link{tbl_json}} object
+}
 \description{
 Like the spread function in tidyr but for JSON, this function spreads out
 any JSON objects into new columns. If objects are nested, then the

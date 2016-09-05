@@ -5,7 +5,7 @@
 #'   If "json", process the data like one large JSON record.
 #'   If "jsonl", process the data one JSON record per line (json lines format)
 #'   If "infer", the format is the suffix of the given filepath.
-#' @return tbl_json instance
+#' @return a \code{\link{tbl_json}} object
 #' @export
 read_json <- function(path, format = c("json", "jsonl", "infer")) {
 

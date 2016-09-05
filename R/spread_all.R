@@ -20,6 +20,7 @@
 #' @param recursive whether or not to recursively spread nested objects
 #' @param sep character used to separate nested object keys when resursive
 #'   is TRUE
+#' @return a \code{\link{tbl_json}} object
 #' @export
 #' @examples
 #'

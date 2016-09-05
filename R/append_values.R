@@ -24,6 +24,7 @@
 #' @param recursive logical indicating whether to recurisvely extract a single
 #'        value from a nested object. Only used when \code{force = TRUE}. If
 #'        \code{force = FALSE}, and \code{recursive = TRUE}, throws an error.
+#' @return a \code{\link{tbl_json}} object
 #' @examples
 #'
 #' # Stack names

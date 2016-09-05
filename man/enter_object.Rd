@@ -12,6 +12,9 @@ enter_object(.x, ...)
 \item{...}{a sequence of character strings designating the object key or
 sequences of keys you wish to enter}
 }
+\value{
+a \code{\link{tbl_json}} object
+}
 \description{
 When manipulating a JSON object, \code{enter_object} lets you navigate to
 a specific value of the object by referencing it's key. JSON can contain

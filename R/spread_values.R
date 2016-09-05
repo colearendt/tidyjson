@@ -13,6 +13,7 @@
 #' @param ... column=value list where 'column' will be the column name created
 #'   and 'value' must be a call to jstring(), jnumber() or jlogical() specifying
 #'   the path to get the value (and the type implicit in the function name)
+#' @return a \code{\link{tbl_json}} object
 #' @export
 #' @examples
 #' '{"name": {"first": "bob", "last": "jones"}, "age": 32}' %>%

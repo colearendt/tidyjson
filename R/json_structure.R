@@ -8,7 +8,7 @@
 #' (and their children) of the object or array.
 #'
 #' @param .x a json string or tbl_json object
-#' @return a tbl_json object with the following columns:
+#' @return a \code{\link{tbl_json}} object with the following columns:
 #'
 #'   \code{document.id} 1L if \code{x} is a single JSON string, otherwise the
 #'   index of \code{x}.

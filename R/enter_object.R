@@ -20,6 +20,7 @@
 #' @param .x a json string or tbl_json object
 #' @param ... a sequence of character strings designating the object key or
 #'            sequences of keys you wish to enter
+#' @return a \code{\link{tbl_json}} object
 #' @export
 #' @examples
 #'

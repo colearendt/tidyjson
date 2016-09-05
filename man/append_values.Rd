@@ -29,6 +29,9 @@ memory)}
 value from a nested object. Only used when \code{force = TRUE}. If
 \code{force = FALSE}, and \code{recursive = TRUE}, throws an error.}
 }
+\value{
+a \code{\link{tbl_json}} object
+}
 \description{
 The \code{append_values} functions let you take any scalar JSON values
 of a given type ("string", "number", "logical") and add them as a new

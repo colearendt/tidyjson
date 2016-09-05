@@ -14,7 +14,7 @@ If "jsonl", process the data one JSON record per line (json lines format)
 If "infer", the format is the suffix of the given filepath.}
 }
 \value{
-tbl_json instance
+a \code{\link{tbl_json}} object
 }
 \description{
 Reads JSON from an input uri (file, url, ...) and returns a tbl_json

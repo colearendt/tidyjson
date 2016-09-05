@@ -34,6 +34,9 @@ is.tbl_json(.x)
 
 \item{json.column}{the name of the JSON column of data in x, if x is a data.frame}
 }
+\value{
+a \code{\link{tbl_json}} object
+}
 \description{
 Combines structured JSON (as a data.frame) with remaining JSON
 

@@ -16,6 +16,7 @@ NULL
 #' @param .x an object to convert into a tbl_json object
 #' @param json.column the name of the JSON column of data in x, if x is a data.frame
 #' @param ... other arguments
+#' @return a \code{\link{tbl_json}} object
 #' @rdname tbl_json
 #' @export
 tbl_json <- function(df, json.list, drop.null.json = FALSE) {
@@ -91,6 +92,7 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
 #' @param i row elements to extract
 #' @param j column elements to extract
 #' @param drop whether or not to simplify results
+#' @return a \code{\link{tbl_json}} object
 #' @export
 `[.tbl_json` <- function(.x, i, j,
   drop = if (missing(i)) TRUE else length(cols) == 1) {

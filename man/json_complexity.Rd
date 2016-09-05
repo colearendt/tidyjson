@@ -12,7 +12,7 @@ json_complexity(.x, column.name = "complexity")
 \item{column.name}{the name to specify for the length column}
 }
 \value{
-a tbl_json object with column.name column that tells the length
+a \code{\link{tbl_json}} object
 }
 \description{
 When investigating complex JSON data it can be helpful to identify the

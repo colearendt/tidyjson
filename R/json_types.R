@@ -11,7 +11,7 @@
 #'
 #' @param .x a json string or tbl_json object
 #' @param column.name the name to specify for the type column
-#' @return a tbl_json object with column.name column that tells the type
+#' @return a \code{\link{tbl_json}} object
 #' @export
 #' @examples
 #' c('{"a": 1}', '[1, 2]', '"a"', '1', 'true', 'null') %>% json_types

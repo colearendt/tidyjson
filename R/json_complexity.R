@@ -9,7 +9,7 @@
 #'
 #' @param .x a json string or tbl_json object
 #' @param column.name the name to specify for the length column
-#' @return a tbl_json object with column.name column that tells the length
+#' @return a \code{\link{tbl_json}} object
 #' @export
 #' @examples
 #' c('[1, 2, [3, 4]]', '{"k1": 1, "k2": [2, [3, 4]]}', '1', {}) %>%

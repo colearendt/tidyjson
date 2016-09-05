@@ -12,7 +12,7 @@ json_types(.x, column.name = "type")
 \item{column.name}{the name to specify for the type column}
 }
 \value{
-a tbl_json object with column.name column that tells the type
+a \code{\link{tbl_json}} object
 }
 \description{
 The function json_types() inspects the JSON associated with

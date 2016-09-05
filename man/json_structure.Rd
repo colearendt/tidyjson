@@ -10,7 +10,7 @@ json_structure(.x)
 \item{.x}{a json string or tbl_json object}
 }
 \value{
-a tbl_json object with the following columns:
+a \code{\link{tbl_json}} object with the following columns:
 
   \code{document.id} 1L if \code{x} is a single JSON string, otherwise the
   index of \code{x}.

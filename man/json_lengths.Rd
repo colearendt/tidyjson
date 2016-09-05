@@ -12,7 +12,7 @@ json_lengths(.x, column.name = "length")
 \item{column.name}{the name to specify for the length column}
 }
 \value{
-a tbl_json object with column.name column that tells the length
+a \code{\link{tbl_json}} object
 }
 \description{
 When investigating JSON data it can be helpful to identify the lengths of the

@@ -13,6 +13,9 @@ spread_values(.x, ...)
 and 'value' must be a call to jstring(), jnumber() or jlogical() specifying
 the path to get the value (and the type implicit in the function name)}
 }
+\value{
+a \code{\link{tbl_json}} object
+}
 \description{
 The spread_values() function lets you dive into (potentially nested) JSON
 objects and extract specific values. spread_values() takes jstring(),
