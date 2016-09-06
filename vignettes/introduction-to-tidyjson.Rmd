@@ -53,7 +53,7 @@ and the [magrittr](http://cran.r-project.org/web/packages/magrittr/index.html) `
 - Turn arbitrarily complex and nested JSON into tidy data.frames that can be joined later
 - Guarantee a deterministic data.frame column structure
 - Naturally handle 'ragged' arrays and / or objects (varying lengths by document)
-- Allow for extraction of data in values *or* key names
+- Allow for extraction of data in values *or* object names
 - Ensure edge cases are handled correctly (especially empty data)
 
 ## A simple example
@@ -224,7 +224,7 @@ string:
 
 ```{r}
 # Using a single character string
-x <- '{"key": "value"}' %>% as.tbl_json
+x <- '{"name": "value"}' %>% as.tbl_json
 x
 attr(x, "JSON")
 ```
@@ -241,7 +241,7 @@ object with the same number of rows:
 
 ```{r}
 # Using a vector of JSON strings
-y <- c('{"key1": "value1"}', '{"key2": "value2"}') %>% as.tbl_json
+y <- c('{"name1": "value1"}', '{"name2": "value2"}') %>% as.tbl_json
 y
 ```
 
@@ -261,7 +261,7 @@ to avoid turning the JSON into a factor.
 ```{r}
 df <- data.frame(
   x = 1:2,
-  JSON = c('{"key1": "value1"}', '{"key2": "value2"}'),
+  JSON = c('{"name1": "value1"}', '{"name2": "value2"}'),
   stringsAsFactors = FALSE
 ) 
 z <- df %>% as.tbl_json(json.column = "JSON")
@@ -299,15 +299,15 @@ The following table provides a reference of how each verb is used and what
 (if any) effect it has on the data.frame rows and columns and on the associated
 JSON.
 
-| Verb                | Use                            | Row Effect          | Column Effect    | JSON Effect  |
-|:--------------------|:-------------------------------|:--------------------|:-----------------|:-------------|
-| `json_types()`      | Identify JSON structure        | none                | type column      | none         |
-| `gather_array()`    | Stack JSON array               | Repeats rows        | index column     | enter array  |
-| `gather_keys()`     | Stack a {"key": value} object  | Repeats rows        | key column       | enter object |
-| `spread_values()`   | Create new columns from values | none                | N value columns  | none         |
-| `append_values_X()` | Append all values of a type    | none                | column of type X | none         |
-| `enter_object()`    | Dive into an object "key"      | Keeps rows with key | none             | enter object |
-| `json_lengths()`    | Identify JSON length           | none                | length column    | none         |
+| Verb                | Use                            | Row Effect           | Column Effect    | JSON Effect  |
+|:--------------------|:-------------------------------|:---------------------|:-----------------|:-------------|
+| `json_types()`      | Identify JSON structure        | none                 | type column      | none         |
+| `gather_array()`    | Stack JSON array               | Repeats rows         | index column     | enter array  |
+| `gather_object()`   | Stack a {"name": value} object | Repeats rows         | name column       | enter object |
+| `spread_values()`   | Create new columns from values | none                 | N value columns  | none         |
+| `append_values_X()` | Append all values of a type    | none                 | column of type X | none         |
+| `enter_object()`    | Enter into an object by name   | Keeps rows with name | none             | enter object |
+| `json_lengths()`    | Identify JSON length           | none                 | length column    | none         |
 
 ### Identify JSON structure with `json_types()`
 
@@ -321,7 +321,7 @@ c('{"a": 1}', '[1, 2]', '"a"', '1', 'true', 'null') %>% json_types
 ```
 
 This is particularly useful for inspecting your JSON data types, and can added
-after `gather_array()` (or `gather_keys()`) to inspect the types of the elements
+after `gather_array()` (or `gather_object()`) to inspect the types of the elements
 (or values) in arrays (or objects).
 
 ### Stack a JSON array with `gather_array()`
@@ -342,17 +342,17 @@ This allows you to *enter into* an array and begin processing it's elements
 with other tidyjson functions. It retains the array.index in case the relative
 position of elements in the array is useful information.
 
-### Stack a {"key": value} object with `gather_keys()`
+### Stack a {"name": value} object with `gather_object()`
 
-Similar to `gather_array()`, `gather_keys()` takes JSON objects and duplicates 
-the rows in the data.frame to correspond to the keys of the object, and puts the 
+Similar to `gather_array()`, `gather_object()` takes JSON objects and duplicates 
+the rows in the data.frame to correspond to the names of the object, and puts the 
 values of the object into the JSON attribute.
 
 ```{r}
-'{"name": "bob", "age": 32}' %>% gather_keys %>% json_types
+'{"name": "bob", "age": 32}' %>% gather_object %>% json_types
 ```
 
-This allows you to *enter into* the keys of the objects just like `gather_array`
+This allows you to *enter into* the names of the objects just like `gather_array`
 let you enter elements of the array.
 
 ### Create new columns with JSON values with `spread_values()`
@@ -361,7 +361,7 @@ Adding new columns to your `data.frame` is accomplished with `spread_values()`,
 which lets you dive into (potentially nested) JSON objects and extract specific 
 values. `spread_values()` takes `jstring()`, `jnumber()` or `jlogical()` 
 function calls as arguments in order to specify the type of the data that should 
-be captured at each desired key location
+be captured
 
 These values can be of varying types at varying depths, e.g.,
 
@@ -381,7 +381,7 @@ JSON type specified. For example:
 
 ```{r}
 '{"first": "bob", "last": "jones"}' %>% 
-  gather_keys() %>%
+  gather_object() %>%
   append_values_string()
 ```
 
@@ -390,11 +390,11 @@ column. This includes other scalar types (e.g., numbers or logicals if you are
 using `append_values_string()`) and *also* any rows where the JSON is still an
 object or an array.
 
-### Dive into a specific object "key" with `enter_object()`
+### Dive into a specific object "name" with `enter_object()`
 
 For complex JSON structures, you will often need to navigate into nested objects
 in order to continue structuring your data. The function `enter_object()` lets 
-you dive into a specific object key in the JSON attribute, so that all further 
+you dive into a specific object name in the JSON attribute, so that all further 
 tidyjson calls happen inside that object (all other JSON data outside the object 
 is discarded). If the object doesn't exist for a given row / index, then that 
 data.frame row will be discarded.
@@ -408,7 +408,7 @@ c('{"name": "bob", "children": ["sally", "george"]}', '{"name": "anne"}') %>%
 ```
 
 This is useful when you want to limit your data to just information found in
-a specific key.
+a specific name.
 
 ### Identify length of JSON objects with `json_lengths()`
 
@@ -430,15 +430,15 @@ Thus, the first step is to understand the structure of the JSON. Begin by
 visually inspecting a single record with `jsonlite::prettify()`.
 
 ```{r}
-'{"key": "value", "array": [1, 2, 3]}' %>% prettify
+'{"name": "value", "array": [1, 2, 3]}' %>% prettify
 ```
 
 However, for complex data or large JSON structures this can be tedious. Instead,
-use `gather_keys`, `json_types` and `json_lengths` to summarize the data:
+use `gather_object`, `json_types` and `json_lengths` to summarize the data:
 
 ```{r}
-'{"key": "value", "array": [1, 2, 3]}' %>% 
-  gather_keys %>% json_types %>% json_lengths
+'{"name": "value", "array": [1, 2, 3]}' %>% 
+  gather_object %>% json_types %>% json_lengths
 ```
 
 You can repeat this as you move through the JSON data using `enter_object()` to
@@ -447,15 +447,15 @@ summarize nested structures as well.
 Once you have an understanding of how you'd like the data to be assembled, begin
 creating your tidyjson pipeline. Use `enter_objects()` and `gather_array()` to
 navigate the JSON and stack any arrays, and use `spread_values()` to get at 
-(potentially nested) key-value pairs along the way.
+(potentially nested) name-value pairs along the way.
 
 Before entering any objects, make sure you first use `spread_values()` to 
 capture any top level identifiers you might need for analytics, summarization or
 relational uses downstream. If an identifier doesn't exist, then you can always
 fall back on the `as.tbl_json` generated document.id column.
 
-If you encounter data where information is encoded in both keys and values,
-then consider using `gather_keys()` and `append_values_X()` where `X` is the type
+If you encounter data where information is encoded in both names and values,
+then consider using `gather_object()` and `append_values_X()` where `X` is the type
 of JSON scalar data you expect in the values.
 
 Note that there are often situations where there are multiple arrays or objects
@@ -547,15 +547,15 @@ Also included in the tidyjson package is a `r length(companies)` record sample,
 `companies`, which contains a subset of the JSON data describing startups from 
 [jsonstudio](http://jsonstudio.com/resources/).
 
-Instead of using `jsonlite::prettify`, let's quickly summarize the keys using 
+Instead of using `jsonlite::prettify`, let's quickly summarize the names using 
 tidyjson and visualize the results:
 
 ```{r, fig.width = 7, fig.height = 6}
 library(ggplot2)
-key_stats <- companies %>% 
-  gather_keys %>% json_types %>% group_by(key, type) %>% tally
-key_stats
-ggplot(key_stats, aes(key, n, fill = type)) +
+object_stats <- companies %>% 
+  gather_object %>% json_types %>% count(name, type)
+object_stats
+ggplot(object_stats, aes(name, n, fill = type)) +
   geom_bar(stat = "identity", position = "stack") +
   coord_flip()
 ```
@@ -567,8 +567,8 @@ it's structure:
 companies %>%
   enter_object("funding_rounds") %>%
   gather_array %>% 
-  gather_keys %>% json_types %>% group_by(key, type) %>% tally %>%
-  ggplot(aes(key, n, fill = type)) +
+  gather_object %>% json_types %>% count(name, type) %>%
+  ggplot(aes(name, n, fill = type)) +
     geom_bar(stat = "identity", position = "stack") +
     coord_flip()
 ```
