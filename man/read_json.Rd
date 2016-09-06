@@ -12,7 +12,7 @@ read_json(path, format = c("json", "jsonl", "infer"))
 
 \item{format}{If \code{"json"}, process the data like one large JSON record.
 If \code{"jsonl"}, process the data one JSON record per line (json lines
-format)
+format).
 If \code{"infer"}, the format is the suffix of the given filepath.}
 }
 \value{
