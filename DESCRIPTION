@@ -1,6 +1,6 @@
 Package: tidyjson
 Title: A Grammar for Turning 'JSON' into Tidy Tables
-Version: 0.2.1
+Version: 0.2.1.9000
 Author: Jeremy Stanley <jeremy.stanley@gmail.com>
 Maintainer: Jeremy Stanley <jeremy.stanley@gmail.com>
 Description: An easy and consistent way to turn 'JSON' into tidy data frames
