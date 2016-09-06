@@ -2,7 +2,7 @@
 % Please edit documentation in R/json_types.R
 \name{json_types}
 \alias{json_types}
-\title{Add a column that tells the 'type' of the data in the root of the JSON}
+\title{Add a column that tells the 'type' of the JSON data}
 \usage{
 json_types(.x, column.name = "type")
 }
@@ -12,20 +12,27 @@ json_types(.x, column.name = "type")
 \item{column.name}{the name to specify for the type column}
 }
 \value{
-a tbl_json object with column.name column that tells the type
+a \code{\link{tbl_json}} object
 }
 \description{
-The function json_types() inspects the JSON associated with
-each row of the tbl_json data.frame, and adds a new column ("type" by
-default) that identifies the type according to the
-JSON standard at http://json.org/.
+The function \code{json_types} inspects the JSON associated with
+each row of the \code{\link{tbl_json}} object, and adds a new column
+(\code{"type"} by default) that identifies the type according to the
+JSON standard at \url{http://json.org/}.
 }
 \details{
-This is particularly useful for inspecting your JSON data types, and can added
-after gather_array() (or gather_keys()) to inspect the types of the elements
-(or values) in arrays (or objects).
+This is particularly useful for inspecting your JSON data types, and can
+often follows after \code{\link{gather_array}}, \code{\link{gather_keys}}
+or \code{\link{enter_object}} to inspect the types of the elements of
+JSON objects or arrays.
 }
 \examples{
+
+# A simple example
 c('{"a": 1}', '[1, 2]', '"a"', '1', 'true', 'null') \%>\% json_types
+
+# Type distribution in the first 10 companies
+library(dplyr)
+companies[1:10] \%>\% gather_keys \%>\% json_types \%>\% count(type)
 }
 

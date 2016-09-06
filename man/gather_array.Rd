@@ -2,40 +2,79 @@
 % Please edit documentation in R/gather.R
 \name{gather_array}
 \alias{gather_array}
-\title{Stack a JSON array}
+\title{Gather a JSON array into index-value pairs}
 \usage{
 gather_array(.x, column.name = default.column.name)
 }
 \arguments{
-\item{.x}{a json string or tbl_json object whose JSON attribute should always be an array}
+\item{.x}{a json string or tbl_json object whose JSON attribute should always
+be an array}
 
 \item{column.name}{the name to give to the array index column created}
 }
 \value{
-a tbl_json with a new column (column.name) that captures the array
-  index and JSON attribute extracted from the array
+a \code{\link{tbl_json}} object
 }
 \description{
-Given a JSON array, such as [1, 2, 3], gather_array will "stack" the array in
-the tbl_json data.frame, by replicating each row of the data.frame by the
-length of the corresponding JSON array. A new column (by default called
-"array.index") will be added to keep track of the referenced position in the
-array for each row of the resuling data.frame.
+\code{gather_array} collapses a JSON array into index-value pairs, creating
+a new column \code{'array.index'} to store the index of the array, and
+storing values in the \code{'JSON'} attribute for further tidyjson
+manipulation. All other columns are duplicated as necessary. This allows you
+to access the values of the array just like \code{\link{gather_keys}} lets
+you access the values of an object.
 }
 \details{
-JSON can contain arrays of data, which can be simple vectors (fixed or varying
-length integer, character or logical vectors). But they also often contain
-lists of other objects (like a list of purchases for a user). The function
-gather_array() takes JSON arrays and duplicates the rows in the data.frame to
-correspond to the indices of the array, and puts the elements of
-the array into the JSON attribute. This is equivalent to "stacking" the array
-in the data.frame, and lets you continue to manipulate the remaining JSON
-in the elements of the array. For simple arrays, use append_values_* to
-capture all of the values of the array. For more complex arrays (where the
-values are themselves objects or arrays), continue using other tidyjson
-functions to structure the data as needed.
+JSON arrays can be simple vectors (fixed or varying length number, string
+or logical vectors with or without null values). But they also often contain
+lists of other objects (like a list of purchases for a user). Thus, the
+best analogy in R for a JSON array is an unnamed list.
+
+\code{gather_array} is often preceded by \code{\link{enter_object}} when the
+array is nested under a JSON object, and is often followed by
+\code{\link{gather_keys}} or \code{\link{enter_object}} if the array values
+are objects, or by \code{\link{append_values}} to append all scalar values
+as a new column or \code{\link{json_types}} to determine the types of the
+array elements (JSON does not guarantee they are the same type).
 }
 \examples{
-'[1, "a", {"k": "v"}]' \%>\% gather_array \%>\% json_types
+
+# A simple character array example
+json <- '["a", "b", "c"]'
+
+# Check that this is an array
+json \%>\% json_types
+
+# Gather array and check types
+json \%>\% gather_array \%>\% json_types
+
+# Extract string values
+json \%>\% gather_array \%>\% append_values_string
+
+# A more complex mixed type example
+json <- '["a", 1, true, null, {"key": "value"}]'
+
+# Then we can use the column.name argument to change the name of the keys
+json \%>\% gather_array \%>\% json_types
+
+# A nested array
+json <- '[["a", "b", "c"], ["a", "d"], ["b", "c"]]'
+
+# Extract both levels
+json \%>\% gather_array("index.1") \%>\% gather_array("index.2") \%>\%
+  append_values_string
+
+# Some JSON begins as an array
+commits \%>\% gather_array
+
+# We can use spread_all to capture all keys (where recursive = FALSE is used
+# to limit the dept to just top level keys
+library(dplyr)
+commits \%>\% gather_array \%>\% spread_all(recursive = FALSE) \%>\% glimpse
+}
+\seealso{
+\code{\link{gather_keys}} to gather a JSON object,
+         \code{\link{enter_object}} to enter into an object,
+         \code{\link[tidyr]{gather}} to gather key-value pairs in a data
+         frame
 }
 

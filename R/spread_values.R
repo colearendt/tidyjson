@@ -1,25 +1,61 @@
-#' Create new columns with JSON values
+#' Spreads specific scalar values of a JSON object into new columns
 #'
-#' The spread_values() function lets you dive into (potentially nested) JSON
-#' objects and extract specific values. spread_values() takes jstring(),
-#' jnumber() or jlogical() named function calls as arguments in order to specify
-#' the type of the data that should be captured at each desired key location.
-#' These values can be of varying types at varying depths.
+#' The \code{spread_values} function lets you extract extract specific values
+#' from (potentiall nested) JSON objects. \code{spread_values} takes
+#' \code{\link{jstring}}, \code{\link{jnumber}} or \code{\link{jlogical}} named
+#' function calls as arguments in order to specify the type of the data that
+#' should be captured at each desired key location. These values can be of
+#' varying types at varying depths.
 #'
-#' Note that jstring, jnumber and jlogical will fail if they encounter the
-#' incorrect type in any document
+#' Note that \code{\link{jstring}}, \code{\link{jnumber}} and
+#' \code{\link{jlogical}} will fail if they encounter the incorrect type in any
+#' document.
 #'
-#' @param .x a json string or tbl_json object
-#' @param ... column=value list where 'column' will be the column name created
-#'   and 'value' must be a call to jstring(), jnumber() or jlogical() specifying
-#'   the path to get the value (and the type implicit in the function name)
+#' The advantage of \code{spread_values} over \code{\link{spread_all}} is that
+#' you are guaranteed to get a consistent data frame structure (columns and
+#' types) out of any \code{spread_values} call. \code{\link{spread_all}}
+#' requires less typing, but because it infers the columns and their types from
+#' the JSON, it is less suitable when programming.
+#'
+#' @seealso \code{\link{spread_all}} for spreading all values,
+#'          \code{\link[tidyr]{spread}} for spreading data frames,
+#'          \code{\link{jstring}}, \code{\link{jnumber}},
+#'          \code{\link{jlogical}} for accessing specific keys
+#' @param .x a json string or \code{\link{tbl_json}} object
+#' @param ... \code{column = value} pairs where \code{column} will be the
+#'            column name created and \code{value} must be a call to
+#'            \code{\link{jstring}}, \code{\link{jnumber}} or
+#'            \code{\link{jlogical}} specifying the path to get the value (and
+#'            the type implicit in the function name)
+#' @return a \code{\link{tbl_json}} object
 #' @export
 #' @examples
-#' '{"name": {"first": "bob", "last": "jones"}, "age": 32}' %>%
+#'
+#' # A simple example
+#' json <- '{"name": {"first": "Bob", "last": "Jones"}, "age": 32}'
+#'
+#' # Using spread_values
+#' json %>%
 #'   spread_values(
 #'     first.name = jstring("name", "first"),
-#'     age = jnumber("age")
+#'     last.name  = jstring("name", "last"),
+#'     age        = jnumber("age")
 #'   )
+#'
+#' # Another document, this time with a middle name (and no age)
+#' json2 <- '{"name": {"first": "Ann", "middle": "A", "last": "Smith"}, "age": 23}'
+#'
+#' # spread_values still gives the same column structure
+#' c(json, json2) %>%
+#'   spread_values(
+#'     first.name = jstring("name", "first"),
+#'     last.name  = jstring("name", "last"),
+#'     age        = jnumber("age")
+#'   )
+#'
+#' # whereas spread_all adds a new column
+#' json %>% spread_all
+#' c(json, json2) %>% spread_all
 spread_values <- function(.x, ...) {
 
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
@@ -65,10 +101,12 @@ jfactory <- function(map.function) {
 }
 
 #' Navigates nested objects to get at keys of a specific type, to be used as
-#' arguments to spread_values
+#' arguments to \code{\link{spread_values}}
 #'
 #' Note that these functions fail if they encounter the incorrect type.
 #'
+#' @seealso \code{\link{spread_values}} for using these functions to spread
+#'          the values of a JSON object into new columns
 #' @name jfunctions
 #' @param ... the path to follow
 #' @param recursive logical indicating whether second level and beyond objects

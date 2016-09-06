@@ -1,42 +1,50 @@
 #' Recursively structures arbitrary JSON data into a single data.frame
 #'
-#' Returns a \code{tbl_json} object where each row corresponds to a leaf in
-#' the JSON structure. The first row corresponds to the json document as
+#' Returns a \code{\link{tbl_json}} object where each row corresponds to a leaf
+#' in the JSON structure. The first row corresponds to the JSON document as
 #' a whole. If the document is a scalar value (JSON string, number, logical
 #' or null), then there will only be 1 row. If instead it is an object or
 #' an array, then subsequent rows will recursively correspond to the elements
 #' (and their children) of the object or array.
 #'
+#' The columns in the \code{\link{tbl_json}} returend are defined as
+#'
+#' \itemize{
+#'   \item \code{document.id} 1L if \code{.x} is a single JSON string, otherwise
+#'         the index of \code{.x}.
+#'
+#'   \item \code{parent.id} the string identifier of the parent node for this
+#'         child.
+#'
+#'   \item \code{level} what level of the hierarchy this child resides at,
+#'         starting at \code{0L} for the root and incrementing for each level
+#'         of nested array or object.
+#'
+#'   \item \code{index} what index of the parent object / array this child
+#'         resides at (from \code{gather_array} for arrays).
+#'
+#'   \item \code{child.id} a unique ID for this leaf in this document,
+#'         represented as <parent>.<index> where <parent> is the ID for the
+#'         parent and <index> is this index.
+#'
+#'   \item \code{seq} the sequence of keys / indices that led to this child
+#'         (parents that are arrays are excluded) as a list, where character
+#'         strings denote objects and integers denote array positions
+#'
+#'   \item \code{key} if this is the value of an object, what was the key that
+#'         it is listed under (from \code{\link{gather_keys}}).
+#'
+#'   \item \code{type} the type of this object (from \code{\link{json_types}}).
+#'
+#'   \item \code{length} the length of this object (from
+#'         \code{\link{json_lengths}}).
+#' }
+#'
+#' @seealso \code{\link{json_schema}} to create a schema for a JSON document or
+#'          collection, \code{\link{plot_json_graph}} to plot the structure
+#'          of a JSON object as a graph
 #' @param .x a json string or tbl_json object
-#' @return a tbl_json object with the following columns:
-#'
-#'   \code{document.id} 1L if \code{x} is a single JSON string, otherwise the
-#'   index of \code{x}.
-#'
-#'   \code{parent.id} the string identifier of the parent node for this child.
-#'
-#'   \code{level} what level of the hierarchy this child resides at, starting
-#'   at \code{0L} for the root and incrementing for each level of nested
-#'   array or object.
-#'
-#'   \code{index} what index of the parent object / array this child resides
-#'   at (from \code{gather_array} for arrays).
-#'
-#'   \code{child.id} a unique ID for this leaf in this document, represented
-#'   as <parent>.<index> where <parent> is the ID for the parent and <index>
-#'   is this index.
-#'
-#'   \code{seq} the sequence of keys / indices that led to this child
-#'   (parents that are arrays are excluded) as a list, where character strings
-#'   denote objects and integers denote array positions
-#'
-#'   \code{key} if this is the value of an object, what was the key that it
-#'   is listed under (from \code{gather_keys}).
-#'
-#'   \code{type} the type of this object (from \code{json_types}).
-#'
-#'   \code{length} the length of this object (from \code{json_lengths}).
-#'
+#' @return a \code{\link{tbl_json}} object
 #' @export
 #' @examples
 #'
@@ -48,6 +56,10 @@
 #'
 #' # A complex array
 #' '[{"a": 1}, [1, 2], "a", 1, true, null]' %>% json_structure
+#'
+#' # A sample of structure rows from a company
+#' library(dplyr)
+#' companies[1] %>% json_structure %>% sample_n(5)
 json_structure <- function(.x) {
 
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)

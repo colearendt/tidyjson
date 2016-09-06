@@ -2,35 +2,42 @@
 % Please edit documentation in R/spread_all.R
 \name{spread_all}
 \alias{spread_all}
-\title{Spreads all object names into new columns}
+\title{Spreads all scalar values of a JSON object into new columns}
 \usage{
 spread_all(.x, recursive = TRUE, sep = ".")
 }
 \arguments{
-\item{.x}{a json string or tbl_json object}
+\item{.x}{a json string or \code{\link{tbl_json}} object}
 
 \item{recursive}{whether or not to recursively spread nested objects}
 
 \item{sep}{character used to separate nested object keys when resursive
-is TRUE}
+is \code{TRUE}}
+}
+\value{
+a \code{\link{tbl_json}} object
 }
 \description{
-Like the spread function in tidyr but for JSON, this function spreads out
-any JSON objects into new columns. If objects are nested, then the
-recursive flag will expand those objects out with a compound colum name
-based on the sequences of nested keys concatenated with the sep character.
+Like the \code{\link[tidyr]{spread}} function in \code{tidyr} but for JSON,
+this function spreads out any JSON objects that are scalars into new columns.
+If objects are nested, then the recursive flag will expand scalar values of
+nested objects out with a compound column name based on the sequences of
+nested keys concatenated with the \code{sep} character.
 }
 \details{
-Note that arrays are ignored by this function, use gather_array to stack
-the array first, and then use spread_all if the array contains objects or
-use one of the append_vaues_string, append_values_number or
-append_values_logical to to capture the array values if they are scalars.
+Note that arrays are ignored by this function, use \code{\link{gather_array}}
+to gather the array first, and then use \code{spread_all} if the array
+contains objects or use one of the \code{\link{append_values}} functions to
+capture the array values if they are scalars.
 
 Note that scalar JSON values (e.g., a JSON string like '1') are also
 ignored, as they have no keys to create column names with.
 
 The order of columns is determined by the order they are encountered in the
 JSON document, with nested objects placed at the end.
+
+This function does not change the value of the JSON attribute of the
+\code{\link{tbl_json}} object in any way.
 }
 \examples{
 
@@ -41,6 +48,11 @@ json <- c('{"a": "x", "b": 1, "c": true}',
 json \%>\% spread_all
 
 # A more complex example
-worldbank \%>\% spread_all \%>\% head
+worldbank \%>\% spread_all
+}
+\seealso{
+\code{\link{spread_values}} to specific which specific values
+         to spread along with their types,
+         \code{\link[tidyr]{spread}} for spreading data frames
 }
 

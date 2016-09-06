@@ -1,14 +1,15 @@
-#' Spreads all object names into new columns
+#' Spreads all scalar values of a JSON object into new columns
 #'
-#' Like the spread function in tidyr but for JSON, this function spreads out
-#' any JSON objects into new columns. If objects are nested, then the
-#' recursive flag will expand those objects out with a compound colum name
-#' based on the sequences of nested keys concatenated with the sep character.
+#' Like the \code{\link[tidyr]{spread}} function in \code{tidyr} but for JSON,
+#' this function spreads out any JSON objects that are scalars into new columns.
+#' If objects are nested, then the recursive flag will expand scalar values of
+#' nested objects out with a compound column name based on the sequences of
+#' nested keys concatenated with the \code{sep} character.
 #'
-#' Note that arrays are ignored by this function, use gather_array to stack
-#' the array first, and then use spread_all if the array contains objects or
-#' use one of the append_vaues_string, append_values_number or
-#' append_values_logical to to capture the array values if they are scalars.
+#' Note that arrays are ignored by this function, use \code{\link{gather_array}}
+#' to gather the array first, and then use \code{spread_all} if the array
+#' contains objects or use one of the \code{\link{append_values}} functions to
+#' capture the array values if they are scalars.
 #'
 #' Note that scalar JSON values (e.g., a JSON string like '1') are also
 #' ignored, as they have no keys to create column names with.
@@ -16,10 +17,17 @@
 #' The order of columns is determined by the order they are encountered in the
 #' JSON document, with nested objects placed at the end.
 #'
-#' @param .x a json string or tbl_json object
+#' This function does not change the value of the JSON attribute of the
+#' \code{\link{tbl_json}} object in any way.
+#'
+#' @seealso \code{\link{spread_values}} to specific which specific values
+#'          to spread along with their types,
+#'          \code{\link[tidyr]{spread}} for spreading data frames
+#' @param .x a json string or \code{\link{tbl_json}} object
 #' @param recursive whether or not to recursively spread nested objects
 #' @param sep character used to separate nested object keys when resursive
-#'   is TRUE
+#'   is \code{TRUE}
+#' @return a \code{\link{tbl_json}} object
 #' @export
 #' @examples
 #'
@@ -30,7 +38,7 @@
 #' json %>% spread_all
 #'
 #' # A more complex example
-#' worldbank %>% spread_all %>% head
+#' worldbank %>% spread_all
 spread_all <- function(.x, recursive = TRUE, sep = ".") {
 
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)

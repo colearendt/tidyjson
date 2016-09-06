@@ -2,21 +2,24 @@
 % Please edit documentation in R/read_json.R
 \name{read_json}
 \alias{read_json}
-\title{Reads JSON from an input uri (file, url, ...) and returns a tbl_json}
+\title{Reads JSON from an input uri (file, url, ...) and returns a
+\code{\link{tbl_json}} object}
 \usage{
 read_json(path, format = c("json", "jsonl", "infer"))
 }
 \arguments{
 \item{path}{to some json data}
 
-\item{format}{If "json", process the data like one large JSON record.
-If "jsonl", process the data one JSON record per line (json lines format)
-If "infer", the format is the suffix of the given filepath.}
+\item{format}{If \code{"json"}, process the data like one large JSON record.
+If \code{"jsonl"}, process the data one JSON record per line (json lines
+format).
+If \code{"infer"}, the format is the suffix of the given filepath.}
 }
 \value{
-tbl_json instance
+a \code{\link{tbl_json}} object
 }
 \description{
-Reads JSON from an input uri (file, url, ...) and returns a tbl_json
+Reads JSON from an input uri (file, url, ...) and returns a
+\code{\link{tbl_json}} object
 }
 

@@ -15,8 +15,8 @@
 #' }
 #'
 #' For more complex JSON objects, ties are broken by taking the most
-#' complex example (using \code{json_complexity}), and then by type
-#' (using \code{json_types}).
+#' complex example (using \code{\link{json_complexity}}), and then by type
+#' (using \code{\link{json_types}}).
 #'
 #' This means that if a key has varying schema across documents, the
 #' most complex schema will be chosen as being representative. Similarly,
@@ -24,33 +24,44 @@
 #' chosen, and if arrays vary in schema across documents, the most
 #' complex is chosen.
 #'
-#' @param .x a json string or tbl_json object
+#' Note that \code{json_schema} can be slow for large JSON document collections,
+#' you may want to sample your JSON collection first.
+#'
+#' @seealso \code{\link{json_structure}} to recursively structure all
+#'          documents into a single data frame,
+#'          \code{\link{plot_json_graph}} to plot JSON (including results
+#'          of \code{json_schema} as a graph
+#' @param .x a json string or \code{\link{tbl_json}} object
 #' @param type whether to capture scalar nodes using the string that defines
 #'        their type (e.g., "logical") or as a representative value
 #'        (e.g., "true"), useful in conjunction with plot_json_graph
 #' @return a character string JSON document that represents the schema of
 #'         the collection
-#'
 #' @export
 #' @examples
 #'
 #' # A simple string
-#' '"string"' %>% json_schema
+#' '"string"' %>% json_schema %>% writeLines
 #'
 #' # A simple object
-#' '{"key": "value"}' %>% json_schema
+#' '{"key": "value"}' %>% json_schema %>% writeLines
 #'
-#' # A complex array is represented by the most complex example
-#' '[{"a": 1}, [1, 2], "a", 1, true, null]' %>% json_schema
+#' # A more complex JSON array
+#' json <- '[{"a": 1}, [1, 2], "a", 1, true, null]'
 #'
-#' # Companies example
-#' companies[1] %>% json_schema %>% plot_json_graph
+#' # Using type = 'string' (default)
+#' json %>% json_schema %>% writeLines
 #'
-#' # Github issues
-#' issues_array <- issues %>% gather_array # issues are one large array
-#' # analyze first 5, and use type = "value" to ensure proper coloring of graph
-#' issues_schema <- issues_array[1:5, ] %>% json_schema(type = "value")
-#' issues_schema %>% plot_json_graph
+#' # Using type = 'value' to show a representative value
+#' json %>% json_schema(type = "value") %>% writeLines
+#'
+#' # Plotting the schema of a company example
+#' companies[1] %>% json_schema(type = "value") %>% plot_json_graph
+#'
+#' # Schema of the first 5 github issues
+#' library(dplyr)
+#' issues %>% gather_array %>% slice(1:10) %>%
+#'   json_schema(type = "value") %>% plot_json_graph
 json_schema <- function(.x, type = c("string", "value")) {
 
   type <- match.arg(type)

@@ -16,6 +16,9 @@
 
 \item{drop}{whether or not to simplify results}
 }
+\value{
+a \code{\link{tbl_json}} object
+}
 \description{
 Extends `[.data.frame` to work with tbl_json objects, so that row filtering
 of the underlying data.frame also filters the associated JSON.
