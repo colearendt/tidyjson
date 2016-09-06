@@ -2,7 +2,7 @@
 % Please edit documentation in R/json_structure.R
 \name{json_structure}
 \alias{json_structure}
-\title{Recursively structures arbitrary JSON data into a single data.frame}
+\title{Recursively structures arbitrary JSON data into a single data frame}
 \usage{
 json_structure(.x)
 }

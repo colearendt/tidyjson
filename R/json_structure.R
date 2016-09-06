@@ -1,4 +1,4 @@
-#' Recursively structures arbitrary JSON data into a single data.frame
+#' Recursively structures arbitrary JSON data into a single data frame
 #'
 #' Returns a \code{\link{tbl_json}} object where each row corresponds to a leaf
 #' in the JSON structure. The first row corresponds to the JSON document as
