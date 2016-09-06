@@ -27,7 +27,7 @@ nested keys concatenated with the \code{sep} character.
 \details{
 Note that arrays are ignored by this function, use \code{\link{gather_array}}
 to gather the array first, and then use \code{spread_all} if the array
-contains objects or use one of the \code{\link{append_vaues}} functions to
+contains objects or use one of the \code{\link{append_values}} functions to
 capture the array values if they are scalars.
 
 Note that scalar JSON values (e.g., a JSON string like '1') are also
