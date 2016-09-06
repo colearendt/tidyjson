@@ -105,7 +105,16 @@ gather_factory <- function(default.column.name, default.column.empty,
 #' # can be used to inspect the top level (or 2nd level) keys and their structure
 #' library(dplyr)
 #' worldbank %>% gather_keys %>% json_types %>% count(key, type)
-gather_keys <- gather_factory("key", character(0), names, "object")
+gather_object <- gather_factory("name", character(0), names, "object")
+
+#' @rdname gather_object
+#' @export
+#' @usage NULL
+gather_keys <- function(.x, column.name = "key") {
+  .Deprecated("gather_object")
+  f <- gather_factory("key", character(0), names, "object")
+  f(.x, column.name)
+}
 
 #' Gather a JSON array into index-value pairs
 #'
