@@ -40,6 +40,8 @@
 
 * Fixed `spread_values()` to not coerce types (#24)
 
+* `gather_array()` and `gather_object()` can be called repeatedly in the same pipeline with the same `column.name` argument, and will simply append an integer identifer to the new columns (#38)
+
 ## Other changes
 
 * Migrated development to [jeremystan](https://github.com/jeremystan/tidyjson) from [sailthru](https://github.com/sailthru/tidyjson)
