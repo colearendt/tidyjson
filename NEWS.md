@@ -16,6 +16,8 @@
 
 * `as.character.tbl_json()` converts `tbl_json` objects back into JSON character strings (#62)
 
+* `gather_object()` replaces `gather_keys()`, with default `column.name` of `name` instead of `key` (#66). This more closely matches the [JSON standard](http://www.json.org/), which refers to objects as name-value pairs, and is now consistent with `gather_array()`.
+
 ## Documentation changes
 
 * "Visualizing JSON" vignette for visualizing the structure of complex JSON data, like the `companies` example (#4)
@@ -41,3 +43,7 @@
 ## Other changes
 
 * Migrated development to [jeremystan](https://github.com/jeremystan/tidyjson) from [sailthru](https://github.com/sailthru/tidyjson)
+
+## Deprecated functions
+
+* `gather_keys()` -> use `gather_object()` instead
