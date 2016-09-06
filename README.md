@@ -30,7 +30,7 @@ The following example takes a character vector of 500 documents in the `worldban
 
 ``` r
 library(tidyjson)
-library(dplyr)
+suppressMessages(library(dplyr))
 
 worldbank %>% spread_all
 #> # A tbl_json: 500 x 8 tibble with a "JSON" attribute
@@ -120,6 +120,8 @@ API
 -   `json_length()` for computing the length of JSON data (can be larger than `1` for objects and arrays)
 
 -   `json_complexity()` for computing the length of the unnested JSON, i.e., how many terminal leaves there are in a complex JSON structure
+
+-   `is_json` family of functions for testing the type of JSON data
 
 ### JSON summarization
 

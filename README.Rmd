@@ -48,7 +48,7 @@ columns
 
 ```{r}
 library(tidyjson)
-library(dplyr)
+suppressMessages(library(dplyr))
 
 worldbank %>% spread_all
 ```
@@ -105,6 +105,8 @@ rows of the `tbl_json` object accordingly
 
 * `json_complexity()` for computing the length of the unnested JSON, i.e.,
 how many terminal leaves there are in a complex JSON structure
+
+* `is_json` family of functions for testing the type of JSON data
 
 ### JSON summarization
 
