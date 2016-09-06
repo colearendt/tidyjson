@@ -25,7 +25,7 @@ test_that("simple string works", {
 test_that("simple object works", {
 
   expect_identical(
-    '{"key": "value"}' %>% json_structure,
+    '{"name": "value"}' %>% json_structure,
     tbl_json(
       data_frame(
         document.id = c(1L, 1L),
@@ -33,12 +33,12 @@ test_that("simple object works", {
         level = c(0L, 1L),
         index = c(1L, 1L),
         child.id = c("1", "1.1"),
-        seq = list(list(), list("key")),
-        name = c(NA_character_, "key"),
+        seq = list(list(), list("name")),
+        name = c(NA_character_, "name"),
         type = c("object", "string") %>% factor(levels = allowed_json_types),
         length = c(1L, 1L)
       ),
-      list(list("key" = "value"), "value")
+      list(list("name" = "value"), "value")
     )
   )
 

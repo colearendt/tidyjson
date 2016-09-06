@@ -125,7 +125,7 @@ test_that("correctly handles character(0)", {
       list())
 
     expect_identical(
-      character(0) %>% spread_values(value = jstring("key")),
+      character(0) %>% spread_values(value = jstring("name")),
       empty)
   }
 )
@@ -141,7 +141,7 @@ test_that("correctly handles {}", {
         stringsAsFactors = FALSE),
       list(nl))
 
-    expect_identical('{}' %>% spread_values(value = jstring("key")), empty)
+    expect_identical('{}' %>% spread_values(value = jstring("name")), empty)
   }
 )
 
@@ -155,7 +155,7 @@ test_that("correctly handles []", {
         stringsAsFactors = FALSE),
       list(list()))
 
-    expect_identical('[]' %>% spread_values(value = jstring("key")), empty)
+    expect_identical('[]' %>% spread_values(value = jstring("name")), empty)
   }
 )
 
@@ -260,7 +260,7 @@ test_that("either throws an error when type converting", {
 
   # Regular
   expect_error(
-    '{"key": "1"}' %>% spread_values(num = jnumber("key"))
+    '{"name": "1"}' %>% spread_values(num = jnumber("name"))
   )
 
   # Recursive

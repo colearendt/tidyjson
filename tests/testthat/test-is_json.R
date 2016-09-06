@@ -2,7 +2,7 @@ context("is_json")
 
 test_that("works for a simple example", {
 
-  json <- '[1, "string", true, [1, 2], {"key": "value"}, null]' %>%
+  json <- '[1, "string", true, [1, 2], {"name": "value"}, null]' %>%
     gather_array
 
   expect_identical(json %>% is_json_number  %>% which, 1L)
@@ -17,7 +17,7 @@ test_that("works for a simple example", {
 
 test_that("works with filter", {
 
-  json <- '[1, "string", true, [1, 2], {"key": "value"}, null]' %>%
+  json <- '[1, "string", true, [1, 2], {"name": "value"}, null]' %>%
     gather_array
 
   expect_identical(

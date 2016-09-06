@@ -2,14 +2,14 @@ context("gather_object")
 
 test_that("works in a simple case", {
 
-    json <- '{"key1": 1, "key2": 2}'
+    json <- '{"name1": 1, "name2": 2}'
 
     expect_identical(
       json %>% gather_object,
       tbl_json(
         data.frame(
           document.id = c(1L, 1L),
-          name = c("key1", "key2"),
+          name = c("name1", "name2"),
           stringsAsFactors = FALSE
         ),
         list(1L, 2L)
@@ -22,10 +22,10 @@ test_that("works in a simple case", {
 test_that("works with compound values", {
 
     json <- '{
-		  "key1": 1,
-      "key2": {"sub": "a"},
-      "key3": [true, false],
-      "key4": null
+		  "name1": 1,
+      "name2": {"sub": "a"},
+      "name3": [true, false],
+      "name4": null
 		}'
 
     expect_identical(
@@ -33,7 +33,7 @@ test_that("works with compound values", {
       tbl_json(
         data.frame(
           document.id = c(1L, 1L, 1L, 1L),
-          name = c("key1", "key2", "key3", "key4"),
+          name = c("name1", "name2", "name3", "name4"),
           stringsAsFactors = FALSE
         ),
         list(1L, list(sub = "a"), list(TRUE, FALSE), NULL)
@@ -75,10 +75,10 @@ test_that("correctly handles character(0), {}, []", {
   }
 )
 
-test_that("column.name works and doesn't clobber existing key", {
+test_that("column.name works and doesn't clobber existing name", {
 
   expect_identical(
-    '{"key1": 1, "key2": 2}' %>%
+    '{"name1": 1, "name2": 2}' %>%
       as.tbl_json %>%
       mutate(name = 1L) %>%
       gather_object("new"),
@@ -86,7 +86,7 @@ test_that("column.name works and doesn't clobber existing key", {
       data_frame(
         document.id = rep(1L, 2),
         name = rep(1L, 2),
-        new = c("key1", "key2")
+        new = c("name1", "name2")
       ),
       list(1L, 2L)
     )
@@ -98,7 +98,7 @@ test_that("column.name works and doesn't clobber existing key", {
 test_that("preserves a NULL column", {
 
   expect_identical(
-    '{"key1": 1, "key2": 2}' %>%
+    '{"name1": 1, "name2": 2}' %>%
       as.tbl_json %>%
       mutate(col = list(NULL)) %>%
       gather_object,
@@ -106,7 +106,7 @@ test_that("preserves a NULL column", {
       data_frame(
         document.id = rep(1L, 2),
         col = rep(list(NULL), 2),
-        name = c("key1", "key2")
+        name = c("name1", "name2")
       ),
       list(1L, 2L)
     )

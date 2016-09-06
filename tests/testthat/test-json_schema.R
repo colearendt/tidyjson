@@ -7,7 +7,7 @@ test_that("json_schema works for simple examples", {
   expect_identical(json_schema('true'), '"logical"')
   expect_identical(json_schema('null'), '"null"')
   expect_identical(json_schema('[1, 2, 3]'), '["number"]')
-  expect_identical(json_schema('{"key": "value"}'), '{"key": "string"}')
+  expect_identical(json_schema('{"name": "value"}'), '{"name": "string"}')
 
 })
 
@@ -34,14 +34,14 @@ test_that("json_schema works for a more complex array", {
     '[1]',
     '["string"]',
     '[true]',
-    '[{"key": "string"}]',
+    '[{"name": "string"}]',
     '[[1]]',
-    '[{"key": {"k1": 1, "k2": 2}}]'
+    '[{"name": {"k1": 1, "k2": 2}}]'
   )
 
   expect_identical(
     json_schema(json),
-    '[{"key": {"k1": "number", "k2": "number"}}]'
+    '[{"name": {"k1": "number", "k2": "number"}}]'
   )
 
 })
@@ -49,7 +49,7 @@ test_that("json_schema works for a more complex array", {
 test_that("works for empty arrays", {
 
   expect_identical(json_schema('[]'), '[]')
-  expect_identical(json_schema('{"key": []}'), '{"key": []}')
+  expect_identical(json_schema('{"name": []}'), '{"name": []}')
 
 })
 
@@ -103,6 +103,6 @@ test_that("types = 'value' works as intended", {
   expect_identical('true' %>% json_schema("value"), 'true')
   expect_identical('false' %>% json_schema("value"), 'true')
   expect_identical('null' %>% json_schema("value"), 'null')
-  expect_identical('{"key": [2]}' %>% json_schema("value"), '{"key": [1]}')
+  expect_identical('{"name": [2]}' %>% json_schema("value"), '{"name": [1]}')
 
 })

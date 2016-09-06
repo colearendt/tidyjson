@@ -52,8 +52,8 @@ test_that("works for emtpy objects", {
 
 test_that("works for nested JSON", {
 
-  json <- c('{"key": [1, 2]}', '{"key1": [1], "key2": [1, 2]}',
-            '{"key1": [1, 2], "key2": true, "key3": false}')
+  json <- c('{"name": [1, 2]}', '{"name1": [1], "name2": [1, 2]}',
+            '{"name1": [1, 2], "name2": true, "name3": false}')
   expect_identical(
     json %>% json_complexity %>% `$`(complexity),
     c(2L, 3L, 4L),
