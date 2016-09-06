@@ -6,7 +6,7 @@
 \alias{jnumber}
 \alias{jstring}
 \title{Navigates nested objects to get at keys of a specific type, to be used as
-arguments to spread_values}
+arguments to \code{\link{spread_values}}}
 \usage{
 jstring(..., recursive = FALSE)
 
@@ -26,5 +26,9 @@ a function that can operate on parsed JSON data
 }
 \description{
 Note that these functions fail if they encounter the incorrect type.
+}
+\seealso{
+\code{\link{spread_values}} for using these functions to spread
+         the values of a JSON object into new columns
 }
 

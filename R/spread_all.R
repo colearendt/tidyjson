@@ -21,7 +21,8 @@
 #' \code{\link{tbl_json}} object in any way.
 #'
 #' @seealso \code{\link{spread_values}} to specific which specific values
-#'          to spread along with their types
+#'          to spread along with their types,
+#'          \code{\link[tidyr]{spread}} for spreading data frames
 #' @param .x a json string or \code{\link{tbl_json}} object
 #' @param recursive whether or not to recursively spread nested objects
 #' @param sep character used to separate nested object keys when resursive

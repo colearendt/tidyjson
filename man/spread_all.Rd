@@ -52,6 +52,7 @@ worldbank \%>\% spread_all
 }
 \seealso{
 \code{\link{spread_values}} to specific which specific values
-         to spread along with their types
+         to spread along with their types,
+         \code{\link[tidyr]{spread}} for spreading data frames
 }
 
