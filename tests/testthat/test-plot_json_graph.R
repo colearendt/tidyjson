@@ -40,8 +40,8 @@ test_that("works with empty JSON", {
 
   expect_silent('null' %>% plot_json_graph)
   expect_silent('[]' %>% plot_json_graph)
-  #expect_silent('{}' %>% plot_json_graph)
-  #expect_silent(character(0) %>% plot_json_graph)
+  expect_silent('{}' %>% plot_json_graph)
+  expect_error(character(0) %>% plot_json_graph)
 
 })
 
