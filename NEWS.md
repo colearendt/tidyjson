@@ -30,7 +30,7 @@
 
 * Use [purrr](https://github.com/jeremystan/purrr) for most list based internal operations (#1)
 
-* Use [tidyr](https://github.com/hadley/tidyr) for `gather_array` and `gather_keys` functions (#28)
+* Use [tidyr](https://github.com/hadley/tidyr) for `gather_array` and `gather_object` functions (#28)
 
 * Imported the magrittr `%>%` operator (#17)
 
