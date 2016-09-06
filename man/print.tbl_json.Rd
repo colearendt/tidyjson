@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{a \code{\link{tbl_json}} object}
 
-\item{...}{other arguments into \code{\link{[tibble]print.tbl_df}}}
+\item{...}{other arguments into \code{\link[tibble]{print.tbl_df}}}
 
 \item{json.n}{number of json records to add (...) otherwise}
 
