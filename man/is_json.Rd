@@ -33,13 +33,13 @@ a logical vector
 }
 \description{
 These functions are often useful with \code{\link[dplyr]{filter}} to
-filter complex JSON by type before applying \code{\link{gather_keys}} or
+filter complex JSON by type before applying \code{\link{gather_object}} or
 \code{\link{gather_array}}.
 }
 \examples{
 
 # Test a simple example
-json <- '[1, "string", true, [1, 2], {"key": "value"}, null]' \%>\% gather_array
+json <- '[1, "string", true, [1, 2], {"name": "value"}, null]' \%>\% gather_array
 json \%>\% is_json_number
 json \%>\% is_json_array
 json \%>\% is_json_scalar
@@ -49,12 +49,14 @@ library(dplyr)
 json \%>\% filter(is_json_object(.))
 
 # Combine with filter in advance of using gather_array
-companies[1:5] \%>\% gather_keys \%>\% filter(is_json_array(.))
-companies[1:5] \%>\% gather_keys \%>\% filter(is_json_array(.)) \%>\% gather_array
+companies[1:5] \%>\% gather_object \%>\% filter(is_json_array(.))
+companies[1:5] \%>\% gather_object \%>\% filter(is_json_array(.)) \%>\%
+  gather_array
 
-# Combine with filter in advance of using gather_keys
-companies[1:5] \%>\% gather_keys \%>\% filter(is_json_object(.))
-companies[1:5] \%>\% gather_keys \%>\% filter(is_json_object(.)) \%>\% gather_keys("key2")
+# Combine with filter in advance of using gather_object
+companies[1:5] \%>\% gather_object \%>\% filter(is_json_object(.))
+companies[1:5] \%>\% gather_object \%>\% filter(is_json_object(.)) \%>\%
+  gather_object("name2")
 }
 \seealso{
 \code{\link{json_types}} for creating a new column to identify the

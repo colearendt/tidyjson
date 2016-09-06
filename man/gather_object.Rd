@@ -53,7 +53,7 @@ json \%>\% gather_object("year") \%>\% append_values_number("count")
 
 # This can even work with a more complex, nested example
 json <- '{"2015": {"1": 10, "3": 1, "11": 5}, "2016": {"2": 3, "5": 15}}'
-json \%>\% gather_object("year") \%>\% gather_keys("month") \%>\%
+json \%>\% gather_object("year") \%>\% gather_object("month") \%>\%
   append_values_number("count")
 
 # Most JSON starts out as an object (or an array of objects), and

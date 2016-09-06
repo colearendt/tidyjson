@@ -19,10 +19,10 @@ NULL
 
 # Quiet R CMD Check "no visible binding for global variable" when using dplyr
 if(getRversion() >= "2.15.1")  {
-  utils::globalVariables(c("child.id", "document.id", "index", "key", "level",
+  utils::globalVariables(c("child.id", "document.id", "index", "name", "level",
                            "parent.id", "tail", "type",
-                           "..key", "..json", "setNames",
+                           "..name", "..json", "setNames",
                            ".", "schemas", "complexity",
-                           "..id", "..key1", "..key2", "..type",
+                           "..id", "..name1", "..name2", "..type",
                            "..value", "all.null"))
 }

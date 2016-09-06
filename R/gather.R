@@ -12,7 +12,7 @@ gather_factory <- function(default.column.name, default.column.empty,
 
   function(.x, column.name = default.column.name) {
 
-    assert_that(!("..key" %in% names(.x)))
+    assert_that(!("..name" %in% names(.x)))
     assert_that(!("..json" %in% names(.x)))
 
     if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
@@ -38,12 +38,12 @@ gather_factory <- function(default.column.name, default.column.empty,
     y <- .x %>%
       tbl_df %>%
       mutate(
-        ..key = json %>% map(expand.fun),
+        ..name = json %>% map(expand.fun),
         ..json = json %>%
           map(~data_frame(..json = as.list(.)))
       ) %>%
-      unnest(..key, ..json, .drop = FALSE) %>%
-      rename_(.dots = setNames("..key", column.name))
+      unnest(..name, ..json, .drop = FALSE) %>%
+      rename_(.dots = setNames("..name", column.name))
 
     # Construct tbl_json
     tbl_json(y %>% select(-..json), y$..json)
@@ -98,7 +98,7 @@ gather_factory <- function(default.column.name, default.column.empty,
 #'
 #' # This can even work with a more complex, nested example
 #' json <- '{"2015": {"1": 10, "3": 1, "11": 5}, "2016": {"2": 3, "5": 15}}'
-#' json %>% gather_object("year") %>% gather_keys("month") %>%
+#' json %>% gather_object("year") %>% gather_object("month") %>%
 #'   append_values_number("count")
 #'
 #' # Most JSON starts out as an object (or an array of objects), and
@@ -122,7 +122,7 @@ gather_keys <- function(.x, column.name = "key") {
 #' a new column \code{'array.index'} to store the index of the array, and
 #' storing values in the \code{'JSON'} attribute for further tidyjson
 #' manipulation. All other columns are duplicated as necessary. This allows you
-#' to access the values of the array just like \code{\link{gather_keys}} lets
+#' to access the values of the array just like \code{\link{gather_object}} lets
 #' you access the values of an object.
 #'
 #' JSON arrays can be simple vectors (fixed or varying length number, string
@@ -132,14 +132,14 @@ gather_keys <- function(.x, column.name = "key") {
 #'
 #' \code{gather_array} is often preceded by \code{\link{enter_object}} when the
 #' array is nested under a JSON object, and is often followed by
-#' \code{\link{gather_keys}} or \code{\link{enter_object}} if the array values
+#' \code{\link{gather_object}} or \code{\link{enter_object}} if the array values
 #' are objects, or by \code{\link{append_values}} to append all scalar values
 #' as a new column or \code{\link{json_types}} to determine the types of the
 #' array elements (JSON does not guarantee they are the same type).
 #'
-#' @seealso \code{\link{gather_keys}} to gather a JSON object,
+#' @seealso \code{\link{gather_object}} to gather a JSON object,
 #'          \code{\link{enter_object}} to enter into an object,
-#'          \code{\link[tidyr]{gather}} to gather key-value pairs in a data
+#'          \code{\link[tidyr]{gather}} to gather name-value pairs in a data
 #'          frame
 #' @param .x a json string or tbl_json object whose JSON attribute should always
 #'        be an array
@@ -161,9 +161,9 @@ gather_keys <- function(.x, column.name = "key") {
 #' json %>% gather_array %>% append_values_string
 #'
 #' # A more complex mixed type example
-#' json <- '["a", 1, true, null, {"key": "value"}]'
+#' json <- '["a", 1, true, null, {"name": "value"}]'
 #'
-#' # Then we can use the column.name argument to change the name of the keys
+#' # Then we can use the column.name argument to change the name column
 #' json %>% gather_array %>% json_types
 #'
 #' # A nested array
@@ -176,8 +176,8 @@ gather_keys <- function(.x, column.name = "key") {
 #' # Some JSON begins as an array
 #' commits %>% gather_array
 #'
-#' # We can use spread_all to capture all keys (where recursive = FALSE is used
-#' # to limit the dept to just top level keys
+#' # We can use spread_all to capture all values
+#' # (recursive = FALSE to limit to the top level object)
 #' library(dplyr)
 #' commits %>% gather_array %>% spread_all(recursive = FALSE) %>% glimpse
 gather_array <- gather_factory("array.index", integer(0), seq_along, "array")

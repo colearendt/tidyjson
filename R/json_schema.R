@@ -5,20 +5,20 @@
 #' JSON into a simple form using the following rules:
 #'
 #' \itemize{
-#'   \item string  -> "string",       e.g., "a sentence" -> "string"
-#'   \item number  -> "number",       e.g., 32000.1 -> "number"
-#'   \item true    -> "logical",      e.g., true -> "logical"
-#'   \item false   -> "logical",      e.g., false -> "logical"
-#'   \item null    -> "null",         e.g., null -> "null"
-#'   \item array   -> [<type>]        e.g., [1, 2] -> ["number"]
-#'   \item object  -> {"key": <type>} e.g., {"age": 32} -> {"age": "number"}
+#'   \item string  -> "string",        e.g., "a sentence" -> "string"
+#'   \item number  -> "number",        e.g., 32000.1 -> "number"
+#'   \item true    -> "logical",       e.g., true -> "logical"
+#'   \item false   -> "logical",       e.g., false -> "logical"
+#'   \item null    -> "null",          e.g., null -> "null"
+#'   \item array   -> [<type>]         e.g., [1, 2] -> ["number"]
+#'   \item object  -> {"name": <type>} e.g., {"age": 32} -> {"age": "number"}
 #' }
 #'
 #' For more complex JSON objects, ties are broken by taking the most
 #' complex example (using \code{\link{json_complexity}}), and then by type
 #' (using \code{\link{json_types}}).
 #'
-#' This means that if a key has varying schema across documents, the
+#' This means that if a name has varying schema across documents, the
 #' most complex schema will be chosen as being representative. Similarly,
 #' if the elements of an array vary in schema, the most complex element is
 #' chosen, and if arrays vary in schema across documents, the most
@@ -44,7 +44,7 @@
 #' '"string"' %>% json_schema %>% writeLines
 #'
 #' # A simple object
-#' '{"key": "value"}' %>% json_schema %>% writeLines
+#' '{"name": "value"}' %>% json_schema %>% writeLines
 #'
 #' # A more complex JSON array
 #' json <- '[{"a": 1}, [1, 2], "a", 1, true, null]'
@@ -164,12 +164,12 @@ collapse_array <- function(schema) {
 
 json_schema_object <- function(json, type) {
 
-  x <- json %>% list_to_tbl_json %>% gather_keys
+  x <- json %>% list_to_tbl_json %>% gather_object
 
   x$schemas <- attr(x, "JSON") %>% map(list_to_tbl_json) %>%
     map_chr(json_schema, type)
 
-  schemas <- x %>% select(key, schemas) %>% unique
+  schemas <- x %>% select(name, schemas) %>% unique
 
   schemas
 
@@ -183,12 +183,12 @@ collapse_object <- function(schema) {
     json_types %>%
     json_complexity %>%
     tbl_df %>%
-    group_by(key) %>%
+    group_by(name) %>%
     arrange(desc(complexity), type) %>%
     slice(1) %>%
     ungroup %>%
-    mutate(key = key %>% sprintf('"%s"', .)) %>%
-    mutate(schemas = map2(key, schemas, paste, sep = ": ")) %>%
+    mutate(name = name %>% sprintf('"%s"', .)) %>%
+    mutate(schemas = map2(name, schemas, paste, sep = ": ")) %>%
     extract2("schemas") %>%
     paste(collapse = ", ") %>%
     sprintf("{%s}", .)

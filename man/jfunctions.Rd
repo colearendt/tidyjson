@@ -5,7 +5,7 @@
 \alias{jlogical}
 \alias{jnumber}
 \alias{jstring}
-\title{Navigates nested objects to get at keys of a specific type, to be used as
+\title{Navigates nested objects to get at names of a specific type, to be used as
 arguments to \code{\link{spread_values}}}
 \usage{
 jstring(..., recursive = FALSE)

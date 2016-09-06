@@ -19,9 +19,9 @@ When investigating JSON data it can be helpful to identify the lengths of the
 JSON objects or arrays, especialy when they are 'ragged' across documents.
 The \code{json_lengths} function adds a column (default name \code{"length"})
 that contains the 'length' of the JSON associated with each row. For objects,
-this will be equal to the number of keys. For arrays, this will be equal to
-the length of the array. All scalar values will be of length 1, and null
-will have length 0.
+this will be equal to the number of name-value pairs. For arrays, this will
+be equal to the length of the array. All scalar values will be of length 1,
+and null will have length 0.
 }
 \examples{
 
