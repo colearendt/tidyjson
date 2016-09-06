@@ -7,7 +7,7 @@
 json_lengths(.x, column.name = "length")
 }
 \arguments{
-\item{.x}{a json string or tbl_json object}
+\item{.x}{a json string or \code{\link{tbl_json}} object}
 
 \item{column.name}{the name to specify for the length column}
 }
