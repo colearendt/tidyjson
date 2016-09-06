@@ -71,6 +71,7 @@ companies[1] \%>\% json_structure \%>\% sample_n(5)
 }
 \seealso{
 \code{\link{json_schema}} to create a schema for a JSON document or
-         collection
+         collection, \code{\link{plot_json_graph}} to plot the structure
+         of a JSON object as a graph
 }
 

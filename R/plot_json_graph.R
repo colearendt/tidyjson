@@ -1,7 +1,7 @@
-#' Plots an igraph visualization of a single json document
+#' Plots an \code{\link[igraph]{igraph}} visualization of a JSON document
 #'
-#' This function first calls json_structure, and then uses that data to create
-#' an igraph object, and then plots that object.
+#' This function first calls \code{\link{json_structure}}, and then uses that
+#' data to create an igraph object, and then plots that object.
 #'
 #' Each dot on the plot corresponds to a node in the JSON document, which
 #' could include an object or an array (which will have children nodes) or
@@ -9,32 +9,34 @@
 #' graph connects parent nodes to child nodes, and the vertices are colored
 #' based on json_types.
 #'
-#' If show.labels is TRUE, then the names for object values are plotted on
-#' the value node.
+#' If \code{show.labels} is \code{TRUE}, then the names for object values are
+#' plotted on the value node.
 #'
-#' If you have a very large document (json_complexity larger than a few
-#' hundred), you should consider setting show.labels to FALSE, and reducing
-#' the vertex.size and edge.width. Documents that are even more complex may
-#' need to be broken into smaller chunks to be visualized effectively.
+#' If you have a very large document (\code{\link{json_complexity}} larger than
+#' a few hundred), you should consider setting \code{show.labels} to
+#' \code{FALSE}, and reducing the \code{vertex.size} and \code{edge.width}
+#' parameters. Documents that are even more complex may need to be broken into
+#' smaller chunks to be visualized effectively.
 #'
 #' Note that the legend is plotted automatically, but may not be scaled
-#' correctly. Set legend to FALSE and manually create your own legend if
-#' you wish to reposition it.
+#' correctly. Set \code{legend} to \code{FALSE} and manually create your own
+#' legend if you wish to reposition it.
 #'
 #' Also note that this function sets the plot margins to zero in order to
-#' maximize the size of the graph on the page. the par() is reset afterwards.
+#' maximize the size of the graph on the page. the \code{par} is reset
+#' afterwards.
 #'
-#' @param .x a json string or tbl_json object
+#' @param .x a JSON string or \code{\link{tbl_json}} object
 #' @param legend add a type color legend automatically
 #' @param vertex.size the size of the vertices (helpful to reduce this if the
-#'        json is very complex
+#'        JSON is very complex
 #' @param edge.color the color for the edges
 #' @param edge.width the width of the edge lines, helpful to reduce this if
-#'        the json is very complex
+#'        the JSON is very complex
 #' @param show.labels should object names be shown
 #' @param plot should the plot be rendered?
-#' @param ... further arguments to igraph::plot.igraph
-#' @return the igraph object
+#' @param ... further arguments to \code{\link[igraph]{plot.igraph}}
+#' @return an \code{\link[igraph]{igraph}} object
 #' @export
 #' @examples
 #'
@@ -52,7 +54,6 @@
 #'
 #' # a very complex real example
 #' companies[1] %>% plot_json_graph(show.labels = FALSE, vertex.size = 4)
-#'
 plot_json_graph <- function(.x, legend = TRUE, vertex.size = 6,
                             edge.color = 'grey70', edge.width = .5,
                             show.labels = TRUE, plot = TRUE,
