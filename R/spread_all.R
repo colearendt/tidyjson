@@ -43,7 +43,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
 
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
-  reserved_cols <- c("..id", "..name", "..name2", "..type", "..value")
+  reserved_cols <- c("..id", "..name1", "..name2", "..type", "..value")
   assert_that(!(any(reserved_cols %in% names(.x))))
 
   # Return .x if no rows
@@ -65,7 +65,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
 
   # gather types
   y <- .x %>%
-    gather_object("..name") %>%
+    gather_object("..name1") %>%
     json_types("..type")
 
   if (recursive)
@@ -77,7 +77,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
 
   name_order <- y %>%
     filter(..type %in% c("string", "number", "logical", "null")) %>%
-    extract2("..name") %>%
+    extract2("..name1") %>%
     unique
 
   y_string  <- spread_type(y, "string",  append_values_string)
@@ -90,12 +90,12 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
     left_join(y_logical, by = "..id")
 
   all_null <- y %>%
-    group_by(..name) %>%
+    group_by(..name1) %>%
     summarize(all.null = all(..type == "null")) %>%
     filter(all.null)
 
   if (nrow(all_null) > 0) {
-    null_names <- all_null %>% extract2("..name")
+    null_names <- all_null %>% extract2("..name1")
     z[, null_names] <- NA
   }
 
@@ -113,10 +113,9 @@ recursive_gather <- function(.x, sep) {
 
   .x %>%
     filter(..type == "object") %>%
-    rename(..name1 = ..name) %>%
     gather_object("..name2") %>%
-    mutate(..name = paste(..name1, ..name2, sep = sep)) %>%
-    select(-..type, -..name1, -..name2) %>%
+    mutate(..name1 = paste(..name1, ..name2, sep = sep)) %>%
+    select(-..type, -..name2) %>%
     json_types("..type")
 
 }
@@ -133,7 +132,7 @@ spread_type <- function(.x, this.type, append.fun) {
     filter(..type == this.type) %>%
     append.fun("..value") %>%
     tbl_df %>%
-    select(..id, ..name, ..value) %>%
-    spread(..name, ..value)
+    select(..id, ..name1, ..value) %>%
+    spread(..name1, ..value)
 
 }
