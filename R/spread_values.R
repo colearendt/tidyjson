@@ -4,8 +4,8 @@
 #' from (potentiall nested) JSON objects. \code{spread_values} takes
 #' \code{\link{jstring}}, \code{\link{jnumber}} or \code{\link{jlogical}} named
 #' function calls as arguments in order to specify the type of the data that
-#' should be captured at each desired key location. These values can be of
-#' varying types at varying depths.
+#' should be captured at each desired name-value pair location. These values can
+#' be of varying types at varying depths.
 #'
 #' Note that \code{\link{jstring}}, \code{\link{jnumber}} and
 #' \code{\link{jlogical}} will fail if they encounter the incorrect type in any
@@ -20,7 +20,7 @@
 #' @seealso \code{\link{spread_all}} for spreading all values,
 #'          \code{\link[tidyr]{spread}} for spreading data frames,
 #'          \code{\link{jstring}}, \code{\link{jnumber}},
-#'          \code{\link{jlogical}} for accessing specific keys
+#'          \code{\link{jlogical}} for accessing specific names
 #' @param .x a json string or \code{\link{tbl_json}} object
 #' @param ... \code{column = value} pairs where \code{column} will be the
 #'            column name created and \code{value} must be a call to
@@ -100,7 +100,7 @@ jfactory <- function(map.function) {
 
 }
 
-#' Navigates nested objects to get at keys of a specific type, to be used as
+#' Navigates nested objects to get at names of a specific type, to be used as
 #' arguments to \code{\link{spread_values}}
 #'
 #' Note that these functions fail if they encounter the incorrect type.

@@ -41,7 +41,7 @@
 #' @examples
 #'
 #' # An illustrative example
-#' '{"object" : {"key": 1},
+#' '{"object" : {"name": 1},
 #'   "array"  : ["a", "b"],
 #'   "string" : "value",
 #'   "number" : 1,
@@ -74,7 +74,7 @@ plot_json_graph <- function(.x, legend = TRUE, vertex.size = 6,
   graph_vertices <- structure %>%
     transmute(child.id,
               vertex.color = type_colors[as.integer(type)],
-              vertex.label = key)
+              vertex.label = name)
 
   if (!show.labels)
     graph_vertices$vertex.label <- rep(NA_character_, nrow(graph_vertices))

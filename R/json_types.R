@@ -6,7 +6,7 @@
 #' JSON standard at \url{http://json.org/}.
 #'
 #' This is particularly useful for inspecting your JSON data types, and can
-#' often follows after \code{\link{gather_array}}, \code{\link{gather_keys}}
+#' often follows after \code{\link{gather_array}}, \code{\link{gather_object}}
 #' or \code{\link{enter_object}} to inspect the types of the elements of
 #' JSON objects or arrays.
 #'
@@ -21,7 +21,7 @@
 #'
 #' # Type distribution in the first 10 companies
 #' library(dplyr)
-#' companies[1:10] %>% gather_keys %>% json_types %>% count(type)
+#' companies[1:10] %>% gather_object %>% json_types %>% count(type)
 json_types <- function(.x, column.name = "type") {
 
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)

@@ -18,11 +18,11 @@ library(dplyr)
 # worldbank is a 500 length character vector of JSON
 length(worldbank)
 
-# Let's look at top level keys
+# Let's look at top level values
 worldbank \%>\% spread_all \%>\% glimpse
 
 # Are there any arrays?
-worldbank \%>\% gather_keys \%>\% json_types \%>\% count(key, type)
+worldbank \%>\% gather_object \%>\% json_types \%>\% count(name, type)
 
 # Get the top 10 sectors by funded project in Africa
 wb_sectors <- worldbank \%>\%   # 500 Projects funded by the world bank

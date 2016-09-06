@@ -23,8 +23,8 @@ The \code{spread_values} function lets you extract extract specific values
 from (potentiall nested) JSON objects. \code{spread_values} takes
 \code{\link{jstring}}, \code{\link{jnumber}} or \code{\link{jlogical}} named
 function calls as arguments in order to specify the type of the data that
-should be captured at each desired key location. These values can be of
-varying types at varying depths.
+should be captured at each desired name-value pair location. These values can
+be of varying types at varying depths.
 }
 \details{
 Note that \code{\link{jstring}}, \code{\link{jnumber}} and
@@ -69,6 +69,6 @@ c(json, json2) \%>\% spread_all
 \code{\link{spread_all}} for spreading all values,
          \code{\link[tidyr]{spread}} for spreading data frames,
          \code{\link{jstring}}, \code{\link{jnumber}},
-         \code{\link{jlogical}} for accessing specific keys
+         \code{\link{jlogical}} for accessing specific names
 }
 

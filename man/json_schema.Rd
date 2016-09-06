@@ -24,20 +24,20 @@ JSON into a simple form using the following rules:
 }
 \details{
 \itemize{
-  \item string  -> "string",       e.g., "a sentence" -> "string"
-  \item number  -> "number",       e.g., 32000.1 -> "number"
-  \item true    -> "logical",      e.g., true -> "logical"
-  \item false   -> "logical",      e.g., false -> "logical"
-  \item null    -> "null",         e.g., null -> "null"
-  \item array   -> [<type>]        e.g., [1, 2] -> ["number"]
-  \item object  -> {"key": <type>} e.g., {"age": 32} -> {"age": "number"}
+  \item string  -> "string",        e.g., "a sentence" -> "string"
+  \item number  -> "number",        e.g., 32000.1 -> "number"
+  \item true    -> "logical",       e.g., true -> "logical"
+  \item false   -> "logical",       e.g., false -> "logical"
+  \item null    -> "null",          e.g., null -> "null"
+  \item array   -> [<type>]         e.g., [1, 2] -> ["number"]
+  \item object  -> {"name": <type>} e.g., {"age": 32} -> {"age": "number"}
 }
 
 For more complex JSON objects, ties are broken by taking the most
 complex example (using \code{\link{json_complexity}}), and then by type
 (using \code{\link{json_types}}).
 
-This means that if a key has varying schema across documents, the
+This means that if a name has varying schema across documents, the
 most complex schema will be chosen as being representative. Similarly,
 if the elements of an array vary in schema, the most complex element is
 chosen, and if arrays vary in schema across documents, the most
@@ -52,7 +52,7 @@ you may want to sample your JSON collection first.
 '"string"' \%>\% json_schema \%>\% writeLines
 
 # A simple object
-'{"key": "value"}' \%>\% json_schema \%>\% writeLines
+'{"name": "value"}' \%>\% json_schema \%>\% writeLines
 
 # A more complex JSON array
 json <- '[{"a": 1}, [1, 2], "a", 1, true, null]'

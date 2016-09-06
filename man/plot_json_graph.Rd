@@ -60,7 +60,7 @@ afterwards.
 \examples{
 
 # An illustrative example
-'{"object" : {"key": 1},
+'{"object" : {"name": 1},
   "array"  : ["a", "b"],
   "string" : "value",
   "number" : 1,

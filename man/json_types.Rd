@@ -22,7 +22,7 @@ JSON standard at \url{http://json.org/}.
 }
 \details{
 This is particularly useful for inspecting your JSON data types, and can
-often follows after \code{\link{gather_array}}, \code{\link{gather_keys}}
+often follows after \code{\link{gather_array}}, \code{\link{gather_object}}
 or \code{\link{enter_object}} to inspect the types of the elements of
 JSON objects or arrays.
 }
@@ -33,6 +33,6 @@ c('{"a": 1}', '[1, 2]', '"a"', '1', 'true', 'null') \%>\% json_types
 
 # Type distribution in the first 10 companies
 library(dplyr)
-companies[1:10] \%>\% gather_keys \%>\% json_types \%>\% count(type)
+companies[1:10] \%>\% gather_object \%>\% json_types \%>\% count(type)
 }
 

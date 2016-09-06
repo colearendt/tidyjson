@@ -12,7 +12,7 @@ gather_factory <- function(default.column.name, default.column.empty,
 
   function(.x, column.name = default.column.name) {
 
-    assert_that(!("..key" %in% names(.x)))
+    assert_that(!("..name" %in% names(.x)))
     assert_that(!("..json" %in% names(.x)))
 
     if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
@@ -38,12 +38,12 @@ gather_factory <- function(default.column.name, default.column.empty,
     y <- .x %>%
       tbl_df %>%
       mutate(
-        ..key = json %>% map(expand.fun),
+        ..name = json %>% map(expand.fun),
         ..json = json %>%
           map(~data_frame(..json = as.list(.)))
       ) %>%
-      unnest(..key, ..json, .drop = FALSE) %>%
-      rename_(.dots = setNames("..key", column.name))
+      unnest(..name, ..json, .drop = FALSE) %>%
+      rename_(.dots = setNames("..name", column.name))
 
     # Construct tbl_json
     tbl_json(y %>% select(-..json), y$..json)
@@ -52,27 +52,27 @@ gather_factory <- function(default.column.name, default.column.empty,
 
 }
 
-#' Gather a JSON object into key-value pairs
+#' Gather a JSON object into name-value pairs
 #'
-#' \code{gather_keys} collapses a JSON object into key-value pairs, creating
-#' a new column \code{'key'} to store the object key names, and storing the
+#' \code{gather_object} collapses a JSON object into name-value pairs, creating
+#' a new column \code{'name'} to store the pair names, and storing the
 #' values in the \code{'JSON'} attribute for further tidyjson manipulation.
 #' All other columns are duplicated as necessary. This allows you to access the
-#' keys of the objects just like \code{\link{gather_array}} lets you access the
-#' values of an array.
+#' names of the object pairs just like \code{\link{gather_array}} lets you
+#' access the values of an array.
 #'
-#' \code{gather_keys} is often followed by \code{\link{enter_object}} to enter
+#' \code{gather_object} is often followed by \code{\link{enter_object}} to enter
 #' into a value that is an object, by \code{\link{append_values}} to append all
 #' scalar values as a new column or \code{\link{json_types}} to determine the
-#' types of the keys.
+#' types of the values.
 #'
 #' @seealso \code{\link{gather_array}} to gather a JSON array,
 #'          \code{\link{enter_object}} to enter into an object,
-#'          \code{\link[tidyr]{gather}} to gather key-value pairs in a data
+#'          \code{\link[tidyr]{gather}} to gather name-value pairs in a data
 #'          frame
-#' @param .x a JSON string or \code{tbl_json} object whose JSON attribute should
-#'        always be an object
-#' @param column.name the name to give to the column of key names created
+#' @param .x a JSON string or \code{\link{tbl_json}} object whose JSON attribute
+#'        should always be an object
+#' @param column.name the name to give to the column of pair names created
 #' @return a \code{\link{tbl_json}} object
 #' @export
 #' @examples
@@ -83,29 +83,38 @@ gather_factory <- function(default.column.name, default.column.empty,
 #' # Check that this is an object
 #' json %>% json_types
 #'
-#' # Gather keys and check types
-#' json %>% gather_keys %>% json_types
+#' # Gather object and check types
+#' json %>% gather_object %>% json_types
 #'
-#' # Sometimes data is stored in key names
+#' # Sometimes data is stored in object pair names
 #' json <- '{"2014": 32, "2015": 56, "2016": 14}'
 #'
-#' # Then we can use the column.name argument to change the name of the keys
-#' json %>% gather_keys("year")
+#' # Then we can use the column.name argument to change the column name
+#' json %>% gather_object("year")
 #'
 #' # We can also use append_values_number to capture the values, since they are
 #' # all of the same type
-#' json %>% gather_keys("year") %>% append_values_number("count")
+#' json %>% gather_object("year") %>% append_values_number("count")
 #'
 #' # This can even work with a more complex, nested example
 #' json <- '{"2015": {"1": 10, "3": 1, "11": 5}, "2016": {"2": 3, "5": 15}}'
-#' json %>% gather_keys("year") %>% gather_keys("month") %>%
+#' json %>% gather_object("year") %>% gather_object("month") %>%
 #'   append_values_number("count")
 #'
-#' # Most JSON starts out as an object (or an array of objects), and gather_keys
-#' # can be used to inspect the top level (or 2nd level) keys and their structure
+#' # Most JSON starts out as an object (or an array of objects), and
+#' # gather_object can be used to inspect the top level (or 2nd level) objects
 #' library(dplyr)
-#' worldbank %>% gather_keys %>% json_types %>% count(key, type)
-gather_keys <- gather_factory("key", character(0), names, "object")
+#' worldbank %>% gather_object %>% json_types %>% count(name, type)
+gather_object <- gather_factory("name", character(0), names, "object")
+
+#' @rdname gather_object
+#' @export
+#' @usage NULL
+gather_keys <- function(.x, column.name = "key") {
+  .Deprecated("gather_object")
+  f <- gather_factory("key", character(0), names, "object")
+  f(.x, column.name)
+}
 
 #' Gather a JSON array into index-value pairs
 #'
@@ -113,7 +122,7 @@ gather_keys <- gather_factory("key", character(0), names, "object")
 #' a new column \code{'array.index'} to store the index of the array, and
 #' storing values in the \code{'JSON'} attribute for further tidyjson
 #' manipulation. All other columns are duplicated as necessary. This allows you
-#' to access the values of the array just like \code{\link{gather_keys}} lets
+#' to access the values of the array just like \code{\link{gather_object}} lets
 #' you access the values of an object.
 #'
 #' JSON arrays can be simple vectors (fixed or varying length number, string
@@ -123,14 +132,14 @@ gather_keys <- gather_factory("key", character(0), names, "object")
 #'
 #' \code{gather_array} is often preceded by \code{\link{enter_object}} when the
 #' array is nested under a JSON object, and is often followed by
-#' \code{\link{gather_keys}} or \code{\link{enter_object}} if the array values
+#' \code{\link{gather_object}} or \code{\link{enter_object}} if the array values
 #' are objects, or by \code{\link{append_values}} to append all scalar values
 #' as a new column or \code{\link{json_types}} to determine the types of the
 #' array elements (JSON does not guarantee they are the same type).
 #'
-#' @seealso \code{\link{gather_keys}} to gather a JSON object,
+#' @seealso \code{\link{gather_object}} to gather a JSON object,
 #'          \code{\link{enter_object}} to enter into an object,
-#'          \code{\link[tidyr]{gather}} to gather key-value pairs in a data
+#'          \code{\link[tidyr]{gather}} to gather name-value pairs in a data
 #'          frame
 #' @param .x a json string or tbl_json object whose JSON attribute should always
 #'        be an array
@@ -152,9 +161,9 @@ gather_keys <- gather_factory("key", character(0), names, "object")
 #' json %>% gather_array %>% append_values_string
 #'
 #' # A more complex mixed type example
-#' json <- '["a", 1, true, null, {"key": "value"}]'
+#' json <- '["a", 1, true, null, {"name": "value"}]'
 #'
-#' # Then we can use the column.name argument to change the name of the keys
+#' # Then we can use the column.name argument to change the name column
 #' json %>% gather_array %>% json_types
 #'
 #' # A nested array
@@ -167,8 +176,8 @@ gather_keys <- gather_factory("key", character(0), names, "object")
 #' # Some JSON begins as an array
 #' commits %>% gather_array
 #'
-#' # We can use spread_all to capture all keys (where recursive = FALSE is used
-#' # to limit the dept to just top level keys
+#' # We can use spread_all to capture all values
+#' # (recursive = FALSE to limit to the top level object)
 #' library(dplyr)
 #' commits %>% gather_array %>% spread_all(recursive = FALSE) %>% glimpse
 gather_array <- gather_factory("array.index", integer(0), seq_along, "array")

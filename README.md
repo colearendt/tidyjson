@@ -54,11 +54,11 @@ worldbank %>% spread_all
 However, some objects in `worldbank` are arrays, this example shows how to quickly summarize the top level structure of a JSON collection
 
 ``` r
-worldbank %>% gather_keys %>% json_types %>% count(key, type)
+worldbank %>% gather_object %>% json_types %>% count(name, type)
 #> Source: local data frame [8 x 3]
-#> Groups: key [?]
+#> Groups: name [?]
 #> 
-#>                   key   type     n
+#>                  name   type     n
 #>                 <chr> <fctr> <int>
 #> 1                 _id object   500
 #> 2   boardapprovaldate string   500
@@ -70,7 +70,7 @@ worldbank %>% gather_keys %>% json_types %>% count(key, type)
 #> 8            totalamt number   500
 ```
 
-In order to capture the data in `majorsector_percent` we can use `enter_object` to enter into that object, `gather_array` to stack the array and `spread_all` to capture the object keys under the array.
+In order to capture the data in `majorsector_percent` we can use `enter_object` to enter into that object, `gather_array` to stack the array and `spread_all` to capture the object names under the array.
 
 ``` r
 worldbank %>%
@@ -99,15 +99,15 @@ API
 
 ### Spreading objects into columns
 
--   `spread_all()` for spreading all object values into new columns, with nested objects having column names with concatenated keys
+-   `spread_all()` for spreading all object values into new columns, with nested objects having concatenated names
 
 -   `spread_values()` for specifying a subset of object values to spread into new columns using the `jstring()`, `jnumber()` and `jlogical()` functions
 
 ### Object navigation
 
--   `enter_object()` for entering into an object by name, discarding all other JSON (and rows without the corresponding object key) and allowing further operations on the object value
+-   `enter_object()` for entering into an object by name, discarding all other JSON (and rows without the corresponding object name) and allowing further operations on the object value
 
--   `gather_keys()` for stacking all object values by key name, expanding the rows of the `tbl_json` object accordingly
+-   `gather_object()` for stacking all object name-value pairs by name, expanding the rows of the `tbl_json` object accordingly
 
 ### Array navigation
 
@@ -164,7 +164,7 @@ The goal is to turn complex JSON data, which is often represented as nested list
 -   Perform complex JSON manipulation using the pipe, `%>%`, producing code that can be read from left to right
 -   Guarantee the structure of the data produced, even if the input JSON structure changes (the exception being `spread_all`, which produces new columns based on the input JSON alone)
 -   Allow for structuring in tidy form arbitrarily nested (arrays or objects) JSON Naturally handle 'ragged' arrays and / or objects (varying lengths by document)
--   Allow for extraction of data in values or key names
+-   Allow for extraction of data in values or object names
 -   Ensure edge cases are handled correctly (especially empty data)
 -   Integrate seamlessly with `dplyr`, allowing `tbl_json` objects to pipe into `dplyr` verbs, and (when reasonable) back into further `tidyjson` verbs
 

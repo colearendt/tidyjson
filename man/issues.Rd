@@ -28,8 +28,8 @@ issues \%>\% gather_array
 issues \%>\% gather_array \%>\% spread_all \%>\% glimpse
 
 # Are there any top level objects or arrays?
-issues \%>\% gather_array \%>\% gather_keys \%>\% json_types \%>\%
-  count(key, type) \%>\%
+issues \%>\% gather_array \%>\% gather_object \%>\% json_types \%>\%
+  count(name, type) \%>\%
   filter(type \%in\% c("array", "object"))
 
 # Count issues labels by name

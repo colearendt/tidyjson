@@ -28,8 +28,8 @@ commits \%>\% gather_array
 commits \%>\% gather_array \%>\% spread_all \%>\% glimpse
 
 # Are there any top level objects or arrays?
-commits \%>\% gather_array \%>\% gather_keys \%>\% json_types \%>\%
-  count(key, type)
+commits \%>\% gather_array \%>\% gather_object \%>\% json_types \%>\%
+  count(name, type)
 
 # Let's look at the parents array
 commits \%>\% gather_array("commit") \%>\%

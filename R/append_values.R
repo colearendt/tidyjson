@@ -3,7 +3,7 @@
 #' The \code{append_values} functions let you take any scalar JSON values
 #' of a given type ("string", "number", "logical") and add them as a new
 #' column named \code{column.name}. This is particularly useful after using
-#' \code{\link{gather_keys}} to stack many objects.
+#' \code{\link{gather_object}} to gather an object.
 #'
 #' Any values that can not be converted to the specified will be \code{NA} in
 #' the resulting column. This includes other scalar types (e.g., numbers or
@@ -14,7 +14,7 @@
 #' attribute of the \code{tbl_json} object in any way.
 #'
 #' @name append_values
-#' @seealso \code{\link{gather_keys}} to gather all object keys first,
+#' @seealso \code{\link{gather_object}} to gather an object first,
 #'    \code{\link{spread_all}} to spread values into new columns
 #' @param .x a json string or \code{\link{tbl_json}} object
 #' @param column.name the name of the column to append values as
@@ -29,17 +29,17 @@
 #'
 #' # Stack names
 #' '{"first": "bob", "last": "jones"}' %>%
-#'   gather_keys %>%
+#'   gather_object %>%
 #'   append_values_string
 #'
-#' # This is most useful when data is stored in keys and values
+#' # This is most useful when data is stored in name-value pairs
 #' # For example, tags in recipes:
 #' recipes <- c('{"name": "pie", "tags": {"apple": 10, "pie": 2, "flour": 5}}',
 #'              '{"name": "cookie", "tags": {"chocolate": 2, "cookie": 1}}')
 #' recipes %>%
 #'   spread_values(name = jstring("name")) %>%
 #'   enter_object("tags") %>%
-#'   gather_keys("tag") %>%
+#'   gather_object("tag") %>%
 #'   append_values_number("count")
 NULL
 

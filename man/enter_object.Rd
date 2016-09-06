@@ -9,15 +9,15 @@ enter_object(.x, ...)
 \arguments{
 \item{.x}{a json string or tbl_json object}
 
-\item{...}{a sequence of character strings designating the object key or
-sequences of keys you wish to enter}
+\item{...}{a sequence of character strings designating the object name or
+sequences of names you wish to enter}
 }
 \value{
 a \code{\link{tbl_json}} object
 }
 \description{
 When manipulating a JSON object, \code{enter_object} lets you navigate to
-a specific value of the object by referencing it's key. JSON can contain
+a specific value of the object by referencing it's name. JSON can contain
 nested objects, and you can pass in more than one character string into
 \code{enter_object} to navigate through multiple objects simultaneously.
 }
@@ -27,9 +27,9 @@ referenced object (all other JSON data outside the object is discarded).
 If the object doesn't exist for a given row / index, then that row will be
 discarded.
 
-In pipelines, \code{enter_object} is often preceded by \code{gather_keys} and
-followed by \code{gather_array} if the key contains an array, or
-\code{spread_all} if the key contains an object.
+In pipelines, \code{enter_object} is often preceded by \code{gather_object}
+and followed by \code{gather_array} if the value is an array, or
+\code{spread_all} if the value is an object.
 }
 \examples{
 
@@ -38,8 +38,8 @@ json <- c('{"parent": "bob",  "children": ["sally", "george"]}',
           '{"parent": "fred", "children": ["billy"]}',
           '{"parent": "anne"}')
 
-# We can see the keys and types in each
-json \%>\% gather_keys \%>\% json_types
+# We can see the names and types in each
+json \%>\% gather_object \%>\% json_types
 
 # Let's capture the parent first and then enter in the children object
 json \%>\% spread_all \%>\% enter_object("children")
@@ -64,8 +64,8 @@ companies \%>\%
   glimpse
 }
 \seealso{
-\code{\link{gather_keys}} to access keys that could be entered
-   into, \code{\link{gather_array}} to gather an array in an object and
-   \code{\link{spread_all}} to spread values in an object.
+\code{\link{gather_object}} to find sub-objects that could be
+   entered into, \code{\link{gather_array}} to gather an array in an object
+   and \code{\link{spread_all}} to spread values in an object.
 }
 

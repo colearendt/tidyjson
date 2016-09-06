@@ -2,7 +2,7 @@ context("json_types")
 
 test_that("works with simple input", {
     
-    json <- '[{"key":"value"}, [1, 2], "string", 1, true, false, null]'
+    json <- '[{"name":"value"}, [1, 2], "string", 1, true, false, null]'
 
     expect_identical(
       json %>% gather_array %>% json_types,
@@ -15,7 +15,7 @@ test_that("works with simple input", {
               "null"),
             levels = allowed_json_types)
         ),
-        list(list(key = "value"), list(1L, 2L), "string", 1L, TRUE, FALSE, NULL)
+        list(list(name = "value"), list(1L, 2L), "string", 1L, TRUE, FALSE, NULL)
       )
     )
 
@@ -24,7 +24,7 @@ test_that("works with simple input", {
 
 test_that("works with varying array types", {
     
-    json <- '[[1, 2], [1, null], [{"key":"value"}], [null]]'
+    json <- '[[1, 2], [1, null], [{"name":"value"}], [null]]'
 
     expect_identical(
       (json %>% gather_array %>% json_types)$type,

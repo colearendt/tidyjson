@@ -11,7 +11,7 @@ spread_all(.x, recursive = TRUE, sep = ".")
 
 \item{recursive}{whether or not to recursively spread nested objects}
 
-\item{sep}{character used to separate nested object keys when resursive
+\item{sep}{character used to separate nested object names when resursive
 is \code{TRUE}}
 }
 \value{
@@ -22,7 +22,7 @@ Like the \code{\link[tidyr]{spread}} function in \code{tidyr} but for JSON,
 this function spreads out any JSON objects that are scalars into new columns.
 If objects are nested, then the recursive flag will expand scalar values of
 nested objects out with a compound column name based on the sequences of
-nested keys concatenated with the \code{sep} character.
+nested object names concatenated with the \code{sep} character.
 }
 \details{
 Note that arrays are ignored by this function, use \code{\link{gather_array}}
@@ -31,7 +31,7 @@ contains objects or use one of the \code{\link{append_values}} functions to
 capture the array values if they are scalars.
 
 Note that scalar JSON values (e.g., a JSON string like '1') are also
-ignored, as they have no keys to create column names with.
+ignored, as they have no names to create column names with.
 
 The order of columns is determined by the order they are encountered in the
 JSON document, with nested objects placed at the end.

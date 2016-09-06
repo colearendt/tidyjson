@@ -12,7 +12,7 @@ test_that("simple string works", {
         index = 1L,
         child.id = "1",
         seq = list(list()),
-        key = NA_character_,
+        name = NA_character_,
         type = "string" %>% factor(levels = allowed_json_types),
         length = 1L
       ),
@@ -25,7 +25,7 @@ test_that("simple string works", {
 test_that("simple object works", {
 
   expect_identical(
-    '{"key": "value"}' %>% json_structure,
+    '{"name": "value"}' %>% json_structure,
     tbl_json(
       data_frame(
         document.id = c(1L, 1L),
@@ -33,12 +33,12 @@ test_that("simple object works", {
         level = c(0L, 1L),
         index = c(1L, 1L),
         child.id = c("1", "1.1"),
-        seq = list(list(), list("key")),
-        key = c(NA_character_, "key"),
+        seq = list(list(), list("name")),
+        name = c(NA_character_, "name"),
         type = c("object", "string") %>% factor(levels = allowed_json_types),
         length = c(1L, 1L)
       ),
-      list(list("key" = "value"), "value")
+      list(list("name" = "value"), "value")
     )
   )
 
@@ -56,7 +56,7 @@ test_that("simple array works", {
         index = c(1L, 1L, 2L),
         child.id = c("1", "1.1", "1.2"),
         seq = list(list(), list(1L), list(2L)),
-        key = rep(NA_character_, 3),
+        name = rep(NA_character_, 3),
         type = c("array", "number", "number") %>% factor(levels = allowed_json_types),
         length = c(2L, 1L, 1L)
       ),
@@ -78,7 +78,7 @@ test_that("nested object works", {
         index = c(1L, 1L, 1L),
         child.id = c("1", "1.1", "1.1.1"),
         seq = list(list(), list("k1"), list("k1", "k2")),
-        key = c(NA_character_, "k1", "k2"),
+        name = c(NA_character_, "k1", "k2"),
         type = c("object", "object", "string") %>% factor(levels = allowed_json_types),
         length = c(1L, 1L, 1L)
       ),
@@ -102,7 +102,7 @@ test_that("works with empty values appropriately", {
         index = 1L,
         child.id = "1",
         seq = list(list()),
-        key = NA_character_,
+        name = NA_character_,
         type = "null" %>% factor(levels = allowed_json_types),
         length = 0L
       ),
@@ -124,7 +124,7 @@ test_that("works with tbl_json already", {
         index = rep(1L, 2),
         child.id = rep("1", 2),
         seq = list(list(), list()),
-        key = rep(NA_character_, 2),
+        name = rep(NA_character_, 2),
         type = rep("string", 2) %>% factor(levels = allowed_json_types),
         length = rep(1L, 2)
       ),

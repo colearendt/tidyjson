@@ -88,11 +88,11 @@ test_that("works for simple cases", {
 
 test_that("works for more complex cases", {
 
-  inverts_json_test('{"key":"a"}')
-  inverts_json_test('{"key":1}')
-  inverts_json_test('{"key":[1]}')
-  inverts_json_test('{"key":[null]}')
-  inverts_json_test('{"key":null}')
+  inverts_json_test('{"name":"a"}')
+  inverts_json_test('{"name":1}')
+  inverts_json_test('{"name":[1]}')
+  inverts_json_test('{"name":[null]}')
+  inverts_json_test('{"name":null}')
   inverts_json_test('[[1,2],1]')
 
 })

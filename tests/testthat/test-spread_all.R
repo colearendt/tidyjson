@@ -95,7 +95,7 @@ test_that("correct behavior with scalar input", {
 
 })
 
-test_that("recursive keys work", {
+test_that("recursive names work", {
 
   json <- '{"k1": 1, "k2": {"k3": 2, "k4": {"k5": 3}}, "k6": 4}'
 

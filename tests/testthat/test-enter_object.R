@@ -80,15 +80,15 @@ test_that("correctly handles character(0), {}, []", {
       list())
     
     expect_identical(
-      character(0) %>% enter_object("key"),
+      character(0) %>% enter_object("name"),
       empty)
     
     expect_identical(
-      '{}' %>% enter_object("key"),
+      '{}' %>% enter_object("name"),
       empty)
     
     expect_identical(
-      '[]' %>% enter_object("key"),
+      '[]' %>% enter_object("name"),
       empty)
 
   }

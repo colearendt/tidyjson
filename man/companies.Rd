@@ -21,7 +21,7 @@ companies \%>\% str
 # Work with a small sample
 co_samp <- companies[1:5]
 
-# Gather top level keys and glimpse
+# Gather top level values and glimpse
 co_samp \%>\% spread_all \%>\% glimpse
 
 # Get the key employees data for the first 100 companies

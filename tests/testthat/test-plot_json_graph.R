@@ -5,9 +5,9 @@ names(colors) <- allowed_json_types
 
 test_that("works with a simple object", {
 
-  expect_silent(g <- '{"key": "value"}' %>% plot_json_graph)
+  expect_silent(g <- '{"name": "value"}' %>% plot_json_graph)
   expect_is(g, "igraph")
-  expect_identical(V(g)$vertex.label, c(NA_character_, "key"))
+  expect_identical(V(g)$vertex.label, c(NA_character_, "name"))
   expect_identical(V(g)$vertex.color, unname(colors[c("object", "string")]))
 
 })

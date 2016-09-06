@@ -41,12 +41,12 @@ The columns in the \code{\link{tbl_json}} returend are defined as
         represented as <parent>.<index> where <parent> is the ID for the
         parent and <index> is this index.
 
-\item \code{seq} the sequence of keys / indices that led to this child
+\item \code{seq} the sequence of names / indices that led to this child
         (parents that are arrays are excluded) as a list, where character
         strings denote objects and integers denote array positions
 
-\item \code{key} if this is the value of an object, what was the key that
-        it is listed under (from \code{\link{gather_keys}}).
+\item \code{name} if this is the value of an object, what was the name that
+        it is listed under (from \code{\link{gather_object}}).
 
 \item \code{type} the type of this object (from \code{\link{json_types}}).
 
@@ -60,7 +60,7 @@ The columns in the \code{\link{tbl_json}} returend are defined as
 '"string"' \%>\% json_structure
 
 # A simple object
-'{"key": "value"}' \%>\% json_structure
+'{"name": "value"}' \%>\% json_structure
 
 # A complex array
 '[{"a": 1}, [1, 2], "a", 1, true, null]' \%>\% json_structure
