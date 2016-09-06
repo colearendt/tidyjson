@@ -18,7 +18,7 @@ is_json_factory <- function(desired.types) {
 #'
 #' @seealso \code{\link{json_types}} for creating a new column to identify the
 #'          type of every JSON document
-#' @name is-json
+#' @name is_json
 #' @param .x a json string or \code{\link{tbl_json}} object
 #' @return a logical vector
 #' @examples
@@ -42,30 +42,30 @@ is_json_factory <- function(desired.types) {
 #' companies[1:5] %>% gather_keys %>% filter(is_json_object(.)) %>% gather_keys("key2")
 NULL
 
-#' @rdname is-json
+#' @rdname is_json
 #' @export
 is_json_string  <- is_json_factory("string")
 
-#' @rdname is-json
+#' @rdname is_json
 #' @export
 is_json_number  <- is_json_factory("number")
 
-#' @rdname is-json
+#' @rdname is_json
 #' @export
 is_json_logical <- is_json_factory("logical")
 
-#' @rdname is-json
+#' @rdname is_json
 #' @export
 is_json_null    <- is_json_factory("null")
 
-#' @rdname is-json
+#' @rdname is_json
 #' @export
 is_json_array   <- is_json_factory("array")
 
-#' @rdname is-json
+#' @rdname is_json
 #' @export
 is_json_object  <- is_json_factory("object")
 
-#' @rdname is-json
+#' @rdname is_json
 #' @export
 is_json_scalar  <- is_json_factory(c("string", "number", "logical"))
