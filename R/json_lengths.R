@@ -10,7 +10,7 @@
 #'
 #' @seealso \code{\link{json_complexity}} to compute the recursive length of
 #'          each value
-#' @param .x a json string or tbl_json object
+#' @param .x a json string or \code{\link{tbl_json}} object
 #' @param column.name the name to specify for the length column
 #' @return a \code{\link{tbl_json}} object
 #' @export
