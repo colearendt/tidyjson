@@ -212,12 +212,12 @@ as.character.tbl_json <- function(.x) {
 
 #' Print a tbl_json object
 #'
-#' @param x a tbl_json object
-#' @param ... other arguments into print.tbl_df
+#' @param x a \code{\link{tbl_json}} object
+#' @param ... other arguments into \code{\link{[tibble]print.tbl_df}}
 #' @param json.n number of json records to add (...) otherwise
 #' @param json.width number of json characters to print
 #' @export
-print.tbl_json <- function(x, ..., json.n = 10, json.width = 15) {
+print.tbl_json <- function(x, ..., json.n = 20, json.width = 15) {
 
   # Extract json
   json <- x %>% as.character

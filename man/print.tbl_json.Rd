@@ -4,12 +4,12 @@
 \alias{print.tbl_json}
 \title{Print a tbl_json object}
 \usage{
-\method{print}{tbl_json}(x, ..., json.n = 10, json.width = 15)
+\method{print}{tbl_json}(x, ..., json.n = 20, json.width = 15)
 }
 \arguments{
-\item{x}{a tbl_json object}
+\item{x}{a \code{\link{tbl_json}} object}
 
-\item{...}{other arguments into print.tbl_df}
+\item{...}{other arguments into \code{\link{[tibble]print.tbl_df}}}
 
 \item{json.n}{number of json records to add (...) otherwise}
 
