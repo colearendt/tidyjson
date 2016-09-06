@@ -3,22 +3,67 @@
 #' @name tbl_json
 NULL
 
-#' tbl_json constructor
+#' \code{tbl_json} constructor
 #'
-#' Note that json.list must have the same length as nrow(df), and if json.list
-#' has any NULL elements, the corresponding rows will be removed from df. Also
-#' note that "..JSON" is a reserved column name used internally for filtering
-#' tbl_json objects, and so is not allowed in the data.frame names.
+#' Constructs a \code{tbl_json} object, for further downstream manipulation
+#' by other tidyjson functions. Methods exist to convert JSON stored in
+#' character strings without any other associated data, as a separate
+#' character string and associated data frame, or as a single data frame
+#' with a specified character string JSON column.
 #'
+#' Most tidyjson functions accept a \code{tbl_json} object as the first
+#' argument, and return a \code{tbl_json} object unless otherwise specified.
+#' tidyjson functions will attempt to convert an object that isn't a
+#' \code{tbl_json} object first, and so explicit construction of \code{tidyjson}
+#' objects is rarely needed.
+#'
+#' \code{tbl_json} objects consist of a data frame along with it's associated
+#' JSON, where each row of the data frame corresponds to a single JSON
+#' document. The JSON is stored in a \code{"JSON"} attribute.
+#'
+#' Note that \code{json.list} must have the same length as \code{nrow(df)}, and
+#' if \code{json.list} has any \code{NULL} elements, the corresponding rows will
+#' be removed from \code{df}. Also note that \code{"..JSON"} is a reserved
+#' column name used internally for filtering tbl_json objects, and so is not
+#' allowed in the names of \code{df}.
+#'
+#' @seealso \code{read_json} for reading json from files
 #' @param df data.frame
-#' @param json.list list of json lists parsed with fromJSON
-#' @param drop.null.json drop NULL json entries from data.frame and json
-#' @param .x an object to convert into a tbl_json object
-#' @param json.column the name of the JSON column of data in x, if x is a data.frame
+#' @param json.list list of json lists parsed with
+#'                  \code{\link[jsonlite]{fromJSON}}
+#' @param drop.null.json drop \code{NULL} json entries from \code{df} and
+#'                       \code{json.list}
+#' @param .x an object to convert into a \code{tbl_json} object
+#' @param json.column the name of the json column of data in \code{.x}, if
+#'                    \code{.x} is a data frame
 #' @param ... other arguments
 #' @return a \code{\link{tbl_json}} object
 #' @rdname tbl_json
 #' @export
+#' @examples
+#'
+#' # Construct a tbl_json object using a charater string of JSON
+#' json <- '{"animal": "cat", "count": 2}'
+#' json %>% as.tbl_json
+#'
+#' # access the "JSON" argument
+#' json %>% as.tbl_json %>% attr("JSON")
+#'
+#' # Construct a tbl_json object using multiple documents
+#' json <- c('{"animal": "cat", "count": 2}', '{"animal": "parrot", "count": 1}')
+#' json %>% as.tbl_json
+#'
+#' # Construct a tbl_json object from a data.frame with a JSON colum
+#' library(tibble)
+#' farms <- tribble(
+#'   ~farm, ~animals,
+#'   1L,    '[{"animal": "pig", "count": 50}, {"animal": "cow", "count": 10}]',
+#'   2L,    '[{"animal": "chicken", "count": 20}]'
+#' )
+#' farms %>% as.tbl_json(json.column = "animals")
+#' # tidy the farms
+#' farms %>% as.tbl_json(json.column = "animals") %>%
+#'   gather_array %>% spread_all
 tbl_json <- function(df, json.list, drop.null.json = FALSE) {
 
   assert_that(is.data.frame(df))
