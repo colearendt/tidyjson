@@ -45,6 +45,7 @@ json \%>\% is_json_array
 json \%>\% is_json_scalar
 
 # Use with filter
+library(dplyr)
 json \%>\% filter(is_json_object(.))
 
 # Combine with filter in advance of using gather_array
