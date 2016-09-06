@@ -145,3 +145,12 @@ test_that("seq works for a deeply nested sequence", {
   )
 
 })
+
+test_that("works with empty JSON", {
+
+  expect_identical('[]' %>% json_structure %>% nrow, 1L)
+  expect_identical('{}' %>% json_structure %>% nrow, 1L)
+  expect_identical(character(0) %>% json_structure %>% nrow, 0L)
+  expect_identical('null' %>% json_structure %>% nrow, 1L)
+
+})

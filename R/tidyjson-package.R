@@ -12,7 +12,7 @@
 #' @importFrom igraph graph_from_data_frame plot.igraph V layout_with_kk
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom graphics par
-#' @importFrom magrittr extract2
+#' @importFrom magrittr extract2 is_greater_than
 #' @importFrom tibble trunc_mat
 #' @importFrom utils capture.output
 NULL

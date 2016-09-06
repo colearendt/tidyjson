@@ -103,9 +103,10 @@ should_json_structure_expand_more <- function(s, this.level) {
 
   s %>%
     filter(level == this.level) %>%
-    extract2("type") %>%
-    is.element(c("object", "array")) %>%
-    any
+    json_lengths %>%
+    filter(type %in% c("object", "array") & length > 0) %>%
+    nrow %>%
+    is_greater_than(0L)
 
 }
 
