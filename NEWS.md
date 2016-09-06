@@ -14,7 +14,13 @@
 
 * `spread_all()` spreads all scalar values of a JSON object into new columns (#56)
 
-# `as.character.tbl_json()` converts `tbl_json` objects back into JSON character strings (#62)
+* `as.character.tbl_json()` converts `tbl_json` objects back into JSON character strings (#62)
+
+## Documentation changes
+
+* "Visualizing JSON" vignette for visualizing the structure of complex JSON data, like the `companies` example (#4)
+
+* Significant updates to all documentation and examples for clarity (#42)
 
 ## Bug fixes and minor changes
 
@@ -31,12 +37,6 @@
 * First argument to verbs is `.x` rather than `x` to avoid name conflicts in NSE (#23)
 
 * Fixed `spread_values()` to not coerce types (#24)
-
-## Documentation changes
-
-* "Visualizing JSON" vignette for visualizing the structure of complex JSON data, like the `companies` example (#4)
-
-* Significant updates to all documentation and examples for clarity (#42)
 
 ## Other changes
 
