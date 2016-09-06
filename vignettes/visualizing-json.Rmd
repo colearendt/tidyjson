@@ -131,35 +131,35 @@ co_struct <- companies %>% json_structure
 co_struct %>% sample_n(5)
 ```
 
-We can then aggregate all of the keys across the entire collection, excluding
-`null` values to count the number of documents with meaningful data under
-each key.
+We can then aggregate all of the object names across the entire collection, 
+excluding `null` values to count the number of documents with meaningful data 
+under each object name.
 
 ```{r}
-co_keys <- co_struct %>% 
-  filter(type != "null" & !is.na(key)) %>%
-  group_by(level, key, type) %>%
+co_names <- co_struct %>% 
+  filter(type != "null" & !is.na(name)) %>%
+  group_by(level, name, type) %>%
   summarize(ndoc = n_distinct(document.id))
 
-co_keys
+co_names
 ```
 
-We can get a quick overview of the most common keys using a `wordcloud`.
+We can get a quick overview of the most common names using a `wordcloud`.
 
 ```{r}
-co_keys %$% wordcloud(key, ndoc, scale = c(1.5, .1), min.freq = 100)
+co_names %$% wordcloud(name, ndoc, scale = c(1.5, .1), min.freq = 100)
 ```
 
-Alternatively, we can visualize all the keys in ggplot2.
+Alternatively, we can visualize all the names in ggplot2.
 
 ```{r, fig.height = 9}
-co_keys %>%
+co_names %>%
   ungroup %>%
   group_by(type) %>%
   arrange(desc(ndoc), level) %>%
   mutate(rank = 1:n()) %>%
   ggplot(aes(1, rank)) +
-    geom_text(aes(label = key, color = ndoc)) +
+    geom_text(aes(label = name, color = ndoc)) +
     scale_y_reverse() +
     facet_grid(. ~ type) +
     theme_void() +
@@ -176,7 +176,7 @@ To really understand the structure of a document, we need to visaulize it as
 a graph. Let's use the `plot_json_graph` function to look at our simple example:
 
 ```{r}
-'{"object" : {"key": 1},
+'{"object" : {"name": 1},
   "array"  : ["a", "b"],
   "string" : "value", 
   "number" : 1, 
@@ -188,7 +188,7 @@ a graph. Let's use the `plot_json_graph` function to look at our simple example:
 `plot_json_graph` produces a graph where every node in the JSON document appears
 as a vertex, and parent nodes are connected to children through edges. The color
 is coded to indicate what type each node is, and vertices are labeled based on
-the key (for objects) used to identify the node.
+the name (for objects) used to identify the node.
 
 Now let's look at a real company example:
 
@@ -263,9 +263,9 @@ This is overwhelmed by top level scalar objects. We can visualize the
 more complex objects only
 
 ```{r}
-most_complex %>% gather_keys %>% json_types %>% json_complexity %>%
+most_complex %>% gather_object %>% json_types %>% json_complexity %>%
   filter(type %in% c('array', 'object') & complexity >= 15) %>%
-  split(.$key) %>%
+  split(.$name) %>%
   map(json_schema, type = "value") %>%
   plot_json_graph_panel(3, 3, legend = FALSE)
 ```
