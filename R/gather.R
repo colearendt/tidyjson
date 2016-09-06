@@ -42,8 +42,23 @@ gather_factory <- function(default.column.name, default.column.empty,
         ..json = json %>%
           map(~data_frame(..json = as.list(.)))
       ) %>%
-      unnest(..name, ..json, .drop = FALSE) %>%
-      rename_(.dots = setNames("..name", column.name))
+      unnest(..name, ..json, .drop = FALSE)
+
+    # Check to see if column.name exists, otherwise, increment until not
+    if (column.name %in% names(y)) {
+      new_col <- column.name
+      suffix <- 2L
+      while (new_col %in% names(y)) {
+        new_col <- paste(column.name, suffix, sep = ".")
+        suffix <- suffix + 1L
+      }
+      warning("%s column name already exists, changing to %s" %>%
+                sprintf(column.name, new_col))
+      column.name <- new_col
+    }
+
+    # Rename
+    y <- y %>% rename_(.dots = setNames("..name", column.name))
 
     # Construct tbl_json
     tbl_json(y %>% select(-..json), y$..json)

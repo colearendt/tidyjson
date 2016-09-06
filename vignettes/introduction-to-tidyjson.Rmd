@@ -183,13 +183,13 @@ where each row corresponds to a purchased item:
 
 ```{r}
 purch_items <- purch_json %>%
-  gather_array("user.index") %>%                       # stack the users 
+  gather_array %>%                                     # stack the users 
   spread_values(person = jstring("name")) %>%          # extract the user name
   enter_object("purchases") %>%                        # enter purchases
-  gather_array("purchase.index") %>%                   # stack the purchases
+  gather_array %>%                                     # stack the purchases
   spread_values(purchase.date = jstring("date")) %>%   # extract the purchase date
   enter_object("items") %>%                            # enter items
-  gather_array("items.index") %>%                      # stack the items
+  gather_array %>%                                     # stack the items
   spread_values(                                       # extract item name and price
     item.name = jstring("name"),
     item.price = jnumber("price")

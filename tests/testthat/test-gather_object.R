@@ -129,3 +129,25 @@ test_that("gather_keys has right column name", {
   expect_true("key" %in% names(obj))
 
 })
+
+test_that("can call repeatedly without having to change column.name", {
+
+  expect_identical(
+    suppressWarnings('{"n1": {"n2": 1}}' %>% gather_object %>% gather_object),
+    tbl_json(
+      data_frame(
+        document.id = 1L,
+        name        = "n1",
+        name.2      = "n2"
+      ),
+      list(1L)
+    )
+  )
+
+})
+
+test_that("gather_array called multiple times throws a warning", {
+
+  expect_warning('{"n1": {"n2": 1}}' %>% gather_object %>% gather_object)
+
+})

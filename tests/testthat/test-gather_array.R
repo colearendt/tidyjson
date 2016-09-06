@@ -198,3 +198,27 @@ test_that("preserves a NULL column", {
 
 }
 )
+
+test_that("can call repeatedly without having to change column.name", {
+
+  expect_identical(
+    suppressWarnings('[[1, 2], [3, 4]]' %>% gather_array %>% gather_array),
+    tbl_json(
+      data_frame(
+        document.id = rep(1L, 4),
+        array.index   = c(1L, 1L, 2L, 2L),
+        array.index.2 = c(1L, 2L, 1L, 2L)
+      ),
+      list(1L, 2L, 3L, 4L)
+    )
+  )
+
+})
+
+test_that("gather_array called multiple times throws a warning", {
+
+  expect_warning('[[1, 2], [3, 4]]' %>% gather_array %>% gather_array)
+
+})
+
+
