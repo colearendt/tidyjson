@@ -160,13 +160,21 @@ Philosophy
 
 The goal is to turn complex JSON data, which is often represented as nested lists, into tidy data frames that can be more easily manipulated.
 
--   Work on a single JSON document, or on a collection of related documents (where the schema of each document may vary)
--   Perform complex JSON manipulation using the pipe, `%>%`, producing code that can be read from left to right
--   Guarantee the structure of the data produced, even if the input JSON structure changes (the exception being `spread_all`, which produces new columns based on the input JSON alone)
--   Allow for structuring in tidy form arbitrarily nested (arrays or objects) JSON Naturally handle 'ragged' arrays and / or objects (varying lengths by document)
+-   Work on a single JSON document, or on a collection of related documents
+
+-   Create pipelines with `%>%`, producing code that can be read from left to right
+
+-   Guarantee the structure of the data produced, even if the input JSON structure changes (with the exception of `spread_all`)
+
+-   Work with arbitrarily nested arrays or objects
+
+-   Handle 'ragged' arrays and / or objects (varying lengths by document)
+
 -   Allow for extraction of data in values or object names
+
 -   Ensure edge cases are handled correctly (especially empty data)
--   Integrate seamlessly with `dplyr`, allowing `tbl_json` objects to pipe into `dplyr` verbs, and (when reasonable) back into further `tidyjson` verbs
+
+-   Integrate seamlessly with `dplyr`, allowing `tbl_json` objects to pipe in and out of `dplyr` verbs where reasonable
 
 Related Work
 ------------
