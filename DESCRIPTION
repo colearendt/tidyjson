@@ -10,7 +10,7 @@ Depends:
 Imports:
     assertthat,
     jsonlite,
-    purrr (>= 0.2.2.9000),
+    purrr,
     dplyr,
     magrittr,
     tidyr,
