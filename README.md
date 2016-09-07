@@ -166,7 +166,7 @@ The goal is to turn complex JSON data, which is often represented as nested list
 -   Allow for structuring in tidy form arbitrarily nested (arrays or objects) JSON Naturally handle 'ragged' arrays and / or objects (varying lengths by document)
 -   Allow for extraction of data in values or object names
 -   Ensure edge cases are handled correctly (especially empty data)
--   Integrate seamlessly with `dplyr`, allowing `tbl_json` objects to pipe into `dplyr` verbs, and (when reasonable) back into further `tidyjson` verbs
+-   Integrate seamlessly with `dplyr`, allowing `tbl_json` objects to pipe into `dplyr` verbs, and (when reasonable) back into further tidyjson verbs
 
 Related Work
 ------------
