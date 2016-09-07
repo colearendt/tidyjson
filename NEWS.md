@@ -24,6 +24,8 @@
 
 * Significant updates to all documentation and examples for clarity (#42)
 
+* Updated "Introduction to tidyjson" vignette to be more concise and use new functionality (#74)
+
 ## Bug fixes and minor changes
 
 * `tbl_json` objects now print with a tidy character representation of the JSON attribute (#61)
