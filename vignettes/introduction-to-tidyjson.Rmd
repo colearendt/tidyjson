@@ -23,8 +23,7 @@ JSON has become a common format used in:
 - Relational databases as a new column type (e.g., [PostgreSQL](http://www.postgresql.org/docs/9.4/static/datatype-json.html))
 
 The tidyjson package provides a grammar for turning JSON data into tidy
-data.frames that are easy to work with in dplyr, ggplot2 and other modeling and 
-analytics packages.
+data frames that are easy to work with in the [tidyverse](https://github.com/hadley/tidyverse).
 
 ## Why use tidyjson?
 
@@ -35,67 +34,52 @@ There are already several libraries for working with JSON data in R, such as
 these libraries, you can transform JSON into a nested R list. However, working
 with nested lists using base R functionality is difficult.
 
-The jsonlite package goes farther by automatically creating a nested R data.frame. 
+The jsonlite package goes farther by automatically creating a nested R data frame. 
 This is easier to work with than a list, but has two main limitations. First, the 
-resulting data.frame isn't [tidy](http://vita.had.co.nz/papers/tidy-data.pdf), 
+resulting data frame isn't [tidy](http://vita.had.co.nz/papers/tidy-data.pdf), 
 and so it can still be difficult to work with. Second, the structure of the 
-data.frame may vary as the JSON sample changes, which can happen any time you 
+data frame may vary as the JSON sample changes, which can happen any time you 
 change the database query or API call that generated the data.
 
 The tidyjson package takes an alternate approach to structuring JSON data into tidy 
-data.frames. Similar to [tidyr](http://cran.r-project.org/web/packages/tidyr/index.html), tidyjson builds
+data frames. Similar to [tidyr](http://cran.r-project.org/web/packages/tidyr/index.html), tidyjson builds
 a grammar for manipulating JSON into a tidy table structure. Tidyjson is based
 on the following principles:
 
-- Leverage other libraries for efficiently parsing JSON ([jsonlite](http://cran.r-project.org/web/packages/jsonlite/index.html))
-- Integrate with pipelines built on [dplyr](http://cran.r-project.org/web/packages/dplyr/index.html)
-and the [magrittr](http://cran.r-project.org/web/packages/magrittr/index.html) `%>%` operator
-- Turn arbitrarily complex and nested JSON into tidy data.frames that can be joined later
-- Guarantee a deterministic data.frame column structure
-- Naturally handle 'ragged' arrays and / or objects (varying lengths by document)
-- Allow for extraction of data in values *or* object names
-- Ensure edge cases are handled correctly (especially empty data)
+* Work on a single JSON document, or on a collection of related documents
+(where the schema of each document may vary)
+* Perform complex JSON manipulation using the pipe, `%>%`, producing code that
+can be read from left to right
+* Guarantee the structure of the data produced, even if the input JSON
+structure changes (the exception being `spread_all`, which produces new
+columns based on the input JSON alone)
+* Allow for structuring in tidy form arbitrarily nested (arrays or objects) JSON
+Naturally handle 'ragged' arrays and / or objects (varying lengths by document)
+* Allow for extraction of data in values or object names
+* Ensure edge cases are handled correctly (especially empty data)
+* Integrate seamlessly with `dplyr`, allowing `tbl_json` objects to pipe into
+`dplyr` verbs, and (when reasonable) back into further `tidyjson` verbs
 
 ## A simple example
 
 A simple example of how tidyjson works is as follows:
 
 ```{r, message = FALSE}
-library(dplyr)      # for %>% and other dplyr functions
+library(dplyr)
 
-# Define a simple JSON array of people
-people <- '
-[
-  {
-    "name": "bob",
-    "age": 32
-  }, 
-  {
-    "name": "susan", 
-    "age": 54
-  }
-]'
+# Define a simple people JSON collection
+people <- c('{"age": 32, "name": {"first": "Bob",   "last": "Smith"}}',
+            '{"age": 54, "name": {"first": "Susan", "last": "Doe"}}',
+            '{"age": 18, "name": {"first": "Ann",   "last": "Jones"}}')
 
-# Structure the data
-people %>%                  # %>% is the magrittr pipeline operator 
-  gather_array %>%          # gather (stack) the array by index
-  spread_values(            # spread (widen) values to widen the data.frame
-    name = jstring("name"), # value of "name" becomes a character column
-    age = jnumber("age")    # value of "age" becomes a numeric column
-  )
+# Tidy the JSON data
+people %>% spread_all
 ```
 
-In such a simple example, we can use `fromJSON` in the jsonlite package to do
-this much faster:
-
-```{r, message = FALSE}
-library(jsonlite)
-jsonlite::fromJSON(people, simplifyDataFrame = TRUE)
-```
-
-However, if the structure of the JSON data changed, so would the columns output 
-by `fromJSON`. So even in this simple example there is value in the explicit 
-structure defined in the tidyjson pipeline above.
+This produces a `tbl_json` object, where each row corresponds to an element of
+the `people` vector (a "document" in `tidyjson`). The JSON attribute of the
+`tbl_json` object is shown first, then the columns of the tibble are shown - a `document.id` indicating which document the row originated in, and then the age 
+and name columns that `spread_all` created.
 
 ## A more complex example
 
@@ -105,41 +89,81 @@ individuals:
 
 ```{r}
 purch_json <- '
-[
-  {
-    "name": "bob", 
-    "purchases": [
-      {
-        "date": "2014/09/13",
-        "items": [
-          {"name": "shoes", "price": 187},
-          {"name": "belt", "price": 35}
-        ]
-      }
-    ]
-  },
-  {
-    "name": "susan", 
-    "purchases": [
-      {
-        "date": "2014/10/01",
-        "items": [
-          {"name": "dress", "price": 58},
-          {"name": "bag", "price": 118}
-        ]
-      },
-      {
-        "date": "2015/01/03",
-        "items": [
-          {"name": "shoes", "price": 115}
-        ]
-      }
-    ]
-  }
-]'
+  [{"customer": "bob", 
+    "purchases": 
+      [{"date": "2016-07-13",
+        "items": 
+          [{"name": "shoes", "price": 187},
+           {"name": "belt",  "price": 35}]
+       }
+      ]
+   },
+   {"customer": "susan", 
+    "purchases":
+      [{"date": "2015-10-01",
+        "items": 
+          [{"name": "dress", "price": 58},
+           {"name": "bag", "price": 118}]
+       },
+       {"date": "2016-01-03",
+        "items":
+          [{"name": "shoes", "price": 115}]
+       }
+      ]
+    }
+  ]'
 ```
 
-Suppose we want to find out how much each person has spent. Using jsonlite, we 
+Suppose we want to find out how much each person has spent. We can begin by inspecting the type of the JSON using `json_types`:
+
+```{r}
+purch_json %>% json_types
+```
+
+The top level object is an array (it begins with `[`), so we use `gather_array`
+to gather each array element into it's own row:
+
+```{r}
+purch_json %>% gather_array
+```
+
+Now each JSON begins with a `{`, indicating it is an object, so we use 
+`spread_all` to capture top level keys (in this case, `"name"`):
+
+```{r}
+purch_json %>% gather_array("customer.num") %>% spread_all
+```
+
+Now we want to access the purchase data, so let's enter into the `"purchases"`
+object  using `enter_object`
+
+```{r}
+purch_json %>% gather_array("customer.num") %>% spread_all %>%
+  enter_object("purchases")
+```
+
+As you can see from the JSON attribute, the `"purchases"` object is an array,
+and so we call `gather_array` and `spread_all` again:
+
+```{r}
+purch_json %>% gather_array("customer.num") %>% spread_all %>%
+  enter_object("purchases") %>% gather_array("purchase.num") %>% spread_all
+```
+
+Now we can enter into the final array, `"items"` with a similar pipeline:
+
+```{r}
+purch_json %>% gather_array("customer.num") %>% spread_all %>%
+  enter_object("purchases") %>% gather_array("purchase.num") %>% spread_all %>%
+  enter_object("items") %>% gather_array("item.num") %>% spread_all
+```
+
+
+
+
+
+
+Using jsonlite, we 
 can parse the JSON:
 
 ```{r}
