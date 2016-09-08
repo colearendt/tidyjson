@@ -201,6 +201,7 @@ slice_.tbl_json <- wrap_dplyr_verb(dplyr::slice_)
 #'
 #' @param .x a tbl_json object
 #' @return a character vector of formatted JSON
+#' @export
 as.character.tbl_json <- function(.x) {
 
   json <- attr(.x, "JSON")

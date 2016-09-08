@@ -2,6 +2,7 @@
 
 S3method("[",tbl_json)
 S3method(arrange_,tbl_json)
+S3method(as.character,tbl_json)
 S3method(as.tbl_json,character)
 S3method(as.tbl_json,data.frame)
 S3method(as.tbl_json,tbl_json)
