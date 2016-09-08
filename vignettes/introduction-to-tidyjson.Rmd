@@ -24,8 +24,9 @@ JSON has become a common format used in:
 
 * Relational databases as a new column type (e.g., [PostgreSQL](http://www.postgresql.org/docs/9.4/static/datatype-json.html))
 
-Tidyjson provides a grammar for turning JSON data into tidy
-data frames that are easy to work with in the [tidyverse](https://github.com/hadley/tidyverse).
+Tidyjson provides a grammar for turning complex JSON data into tidy
+data frames that are easy to work with in the 
+[tidyverse](https://github.com/hadley/tidyverse).
 
 ## Why use tidyjson?
 

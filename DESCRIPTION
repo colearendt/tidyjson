@@ -1,10 +1,10 @@
 Package: tidyjson
-Title: A Grammar for Turning 'JSON' into Tidy Tables
+Title: Tidy Complex JSON
 Version: 0.2.1.9000
 Author: Jeremy Stanley <jeremy.stanley@gmail.com>
 Maintainer: Jeremy Stanley <jeremy.stanley@gmail.com>
-Description: An easy and consistent way to turn 'JSON' into tidy data frames
-    that are natural to work with in 'dplyr', 'ggplot2' and other tools.
+Description: Tidyjson provides a grammar for turning complex JSON data into tidy
+    data frames.
 Depends:
     R (>= 3.1.0)
 Imports:
@@ -15,7 +15,6 @@ Imports:
     magrittr,
     tidyr,
     tibble
-URL: https://github.com/sailthru/tidyjson
 License: MIT + file LICENSE
 LazyData: true
 Suggests:
@@ -31,4 +30,6 @@ Suggests:
     igraph,
     RColorBrewer
 VignetteBuilder: knitr
+URL: https://github.com/jeremystan/tidyjson
+BugReports: https://github.com/jeremystan/tidyjson/issues
 RoxygenNote: 5.0.1
