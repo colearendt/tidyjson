@@ -10,8 +10,6 @@
 
 * `is_json` functions for testing JSON types, such as `is_json_string()`, `is_json_null()` or `is_json_object()` (#39)
 
-* `plot_json_graph()` plots an [igraph](https://github.com/igraph/igraph) visualization of a JSON document (#47)
-
 * `spread_all()` spreads all scalar values of a JSON object into new columns (#56)
 
 * `as.character.tbl_json()` converts `tbl_json` objects back into JSON character strings (#62)

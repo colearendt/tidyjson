@@ -129,10 +129,6 @@ API
 
 -   `json_schema()` for representing the schema of complex JSON, unioned across disparate JSON documents, and collapsing arrays to their most complex type representation
 
-### JSON plotting
-
--   `plot_json_graph()` for plotting JSON (or `json_schema()`) as a graph using the `igraph` package
-
 ### Creating tbl\_json objects
 
 -   `as.tbl_json()` for converting a string or character vector into a `tbl_json` object, or for converting a `data.frame` with a JSON column using the `json.column` argument

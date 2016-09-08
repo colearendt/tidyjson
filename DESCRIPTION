@@ -14,8 +14,6 @@ Imports:
     dplyr,
     magrittr,
     tidyr,
-    igraph,
-    RColorBrewer,
     tibble
 URL: https://github.com/sailthru/tidyjson
 License: MIT + file LICENSE
@@ -29,6 +27,8 @@ Suggests:
     forcats,
     wordcloud,
     viridis,
-    listviewer
+    listviewer,
+    igraph,
+    RColorBrewer
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1

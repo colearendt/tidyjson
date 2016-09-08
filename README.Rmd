@@ -117,11 +117,6 @@ recursively structures arbitrary JSON data
 disparate JSON documents, and collapsing arrays to their most complex type
 representation
 
-### JSON plotting
-
-* `plot_json_graph()` for plotting JSON (or `json_schema()`) as a graph using
-the `igraph` package
-
 ### Creating tbl_json objects
 
 * `as.tbl_json()` for converting a string or character vector into a `tbl_json`

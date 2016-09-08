@@ -28,13 +28,11 @@
 #' you may want to sample your JSON collection first.
 #'
 #' @seealso \code{\link{json_structure}} to recursively structure all
-#'          documents into a single data frame,
-#'          \code{\link{plot_json_graph}} to plot JSON (including results
-#'          of \code{json_schema} as a graph
+#'          documents into a single data frame
 #' @param .x a json string or \code{\link{tbl_json}} object
 #' @param type whether to capture scalar nodes using the string that defines
 #'        their type (e.g., "logical") or as a representative value
-#'        (e.g., "true"), useful in conjunction with plot_json_graph
+#'        (e.g., "true")
 #' @return a character string JSON document that represents the schema of
 #'         the collection
 #' @export
@@ -55,13 +53,10 @@
 #' # Using type = 'value' to show a representative value
 #' json %>% json_schema(type = "value") %>% writeLines
 #'
-#' # Plotting the schema of a company example
-#' companies[1] %>% json_schema(type = "value") %>% plot_json_graph
-#'
 #' # Schema of the first 5 github issues
 #' library(dplyr)
 #' issues %>% gather_array %>% slice(1:10) %>%
-#'   json_schema(type = "value") %>% plot_json_graph
+#'   json_schema(type = "value") %>% writeLines
 json_schema <- function(.x, type = c("string", "value")) {
 
   type <- match.arg(type)
