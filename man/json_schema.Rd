@@ -11,7 +11,7 @@ json_schema(.x, type = c("string", "value"))
 
 \item{type}{whether to capture scalar nodes using the string that defines
 their type (e.g., "logical") or as a representative value
-(e.g., "true"), useful in conjunction with plot_json_graph}
+(e.g., "true")}
 }
 \value{
 a character string JSON document that represents the schema of
@@ -63,18 +63,13 @@ json \%>\% json_schema \%>\% writeLines
 # Using type = 'value' to show a representative value
 json \%>\% json_schema(type = "value") \%>\% writeLines
 
-# Plotting the schema of a company example
-companies[1] \%>\% json_schema(type = "value") \%>\% plot_json_graph
-
 # Schema of the first 5 github issues
 library(dplyr)
 issues \%>\% gather_array \%>\% slice(1:10) \%>\%
-  json_schema(type = "value") \%>\% plot_json_graph
+  json_schema(type = "value") \%>\% writeLines
 }
 \seealso{
 \code{\link{json_structure}} to recursively structure all
-         documents into a single data frame,
-         \code{\link{plot_json_graph}} to plot JSON (including results
-         of \code{json_schema} as a graph
+         documents into a single data frame
 }
 

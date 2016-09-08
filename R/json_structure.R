@@ -41,8 +41,7 @@
 #' }
 #'
 #' @seealso \code{\link{json_schema}} to create a schema for a JSON document or
-#'          collection, \code{\link{plot_json_graph}} to plot the structure
-#'          of a JSON object as a graph
+#'          collection
 #' @param .x a json string or tbl_json object
 #' @return a \code{\link{tbl_json}} object
 #' @export
