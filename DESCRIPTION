@@ -28,7 +28,8 @@ Suggests:
     viridis,
     listviewer,
     igraph,
-    RColorBrewer
+    RColorBrewer,
+    covr
 VignetteBuilder: knitr
 URL: https://github.com/jeremystan/tidyjson
 BugReports: https://github.com/jeremystan/tidyjson/issues
