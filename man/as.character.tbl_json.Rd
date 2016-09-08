@@ -4,10 +4,12 @@
 \alias{as.character.tbl_json}
 \title{Convert the JSON in an tbl_json object back to a JSON string}
 \usage{
-\method{as.character}{tbl_json}(.x)
+\method{as.character}{tbl_json}(x, ...)
 }
 \arguments{
-\item{.x}{a tbl_json object}
+\item{x}{a tbl_json object}
+
+\item{...}{not used (\code{\link[purrr]{map_chr}} used instead)}
 }
 \value{
 a character vector of formatted JSON
