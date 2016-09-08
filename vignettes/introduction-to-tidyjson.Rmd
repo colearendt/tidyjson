@@ -31,15 +31,15 @@ data frames that are easy to work with in the
 ## Why use tidyjson?
 
 Several libraries exist for working with JSON data in R, such as
-[rjson](http://cran.r-project.org/web/packages/rjson/index.html),
-[rjsonio](http://cran.r-project.org/web/packages/RJSONIO/index.html) and
-[jsonlite](http://cran.r-project.org/web/packages/jsonlite/index.html). These
+[rjson](https://cran.r-project.org/package=rjson),
+[rjsonio](https://cran.r-project.org/package=RJSONIO) and
+[jsonlite](https://cran.r-project.org/package=jsonlite). These
 libraries transform JSON data automatically into nested R lists or complex data 
 frames. However, working with these complex objects can be difficult.
 
 The tidyjson package takes a different approach to structuring JSON data into 
 tidy data frames. Similar to 
-[tidyr](http://cran.r-project.org/web/packages/tidyr/index.html), tidyjson 
+[tidyr](https://cran.r-project.org/package=tidyr), tidyjson 
 builds a grammar for manipulating JSON into a tidy table structure.
 
 Tidyjson is based on the following principles:
