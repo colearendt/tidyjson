@@ -142,39 +142,33 @@ test_that("works with real examples", {
 
 })
 
-test_that("works when column names are duplicated from data frame", {
-
-  df <- data_frame(key = 1L, json = '{"key": "a"}') %>%
-    as.tbl_json(json.column = "json")
-
-  expect_identical(
-    supressWarnings(df %>% spread_all %>% tbl_df),
-    data_frame(key = 1L, key.2 = "a")
-  )
-  expect_warning(df %>% spread_all)
-
-})
-
-test_that("works when column names are duplicated in JSON", {
-
-  json <- '{"key": "a", "key": "b"}'
-
-  expect_identical(
-    supressWarnings(json %>% spread_all %>% tbl_df),
-    data_frame(key = "a", key.2 = "b")
-  )
-  expect_warning(json %>% spread_all)
-
-})
-
 test_that("works with multiple duplicated columns", {
 
   json <- '{"key": "a", "key": "b", "key": "c"}'
 
   expect_identical(
-    supressWarnings(json %>% spread_all %>% tbl_df),
-    data_frame(key = "a", key.2 = "b", key.3 = "c")
+    suppressWarnings(json %>% spread_all),
+    tbl_json(
+      data_frame(document.id = 1L, key = "a", key.2 = "b", key.3 = "c"),
+      list(fromJSON(json, simplifyVector = FALSE))
+    )
   )
   expect_warning(json %>% spread_all)
+
+})
+
+test_that("works when column names are duplicated from data frame", {
+
+  df <- data_frame(key = 1L, json = '{"key": "a", "key": "b"}') %>%
+    as.tbl_json(json.column = "json")
+
+  expect_identical(
+    suppressWarnings(df %>% spread_all),
+    tbl_json(
+      data_frame(key = 1L, key.2 = "a", key.3 = "b"),
+      attr(df, "JSON")
+    )
+  )
+  expect_warning(df %>% spread_all)
 
 })

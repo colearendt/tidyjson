@@ -43,7 +43,8 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
 
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
-  reserved_cols <- c("..id", "..name1", "..name2", "..type", "..value")
+  reserved_cols <- c("..id", "..name1", "..name2", "..type", "..value",
+                     "..suffix")
   assert_that(!(any(reserved_cols %in% names(.x))))
 
   # Return .x if no rows
@@ -56,6 +57,9 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
     warning("no JSON records are objects, returning .x")
     return(.x)
   }
+
+  # Get existing column names
+  exist_cols <- names(.x)
 
   # Get JSON
   json <- attr(.x, "JSON")
@@ -74,6 +78,28 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
         y %>% filter(..type != "object"),
         recursive_gather(y, sep)
       )
+
+  # Look for duplicate keys
+  key_freq <- y %>% group_by(..id, ..name1) %>% tally
+
+  if (any(key_freq$n > 1) || any(key_freq$..name1 %in% exist_cols)) {
+
+    warning("results in duplicate column names, appending .# for uniqueness")
+
+    # Deal with duplicate keys
+    y_dedupe <- y %>%
+      group_by(..id, ..name1) %>%
+      mutate(..suffix = 1L:n()) %>%
+      mutate(..suffix = ..suffix + ifelse(..name1 %in% exist_cols, 1L, 0L)) %>%
+      mutate(..suffix = ifelse(..suffix == 1L, "", paste0(".", ..suffix))) %>%
+      ungroup %>%
+      mutate(..name1 = paste0(..name1, ..suffix)) %>%
+      select(-..suffix)
+
+    # Re-attach JSON
+    y <- tbl_json(y_dedupe, attr(y, "JSON"))
+
+  }
 
   name_order <- y %>%
     filter(..type %in% c("string", "number", "logical", "null")) %>%
