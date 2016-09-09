@@ -36,6 +36,11 @@ ignored, as they have no names to create column names with.
 The order of columns is determined by the order they are encountered in the
 JSON document, with nested objects placed at the end.
 
+If an objects have name-value pairs with names that are duplicates, then
+\code{".n"} is appended for n incrementing from 2 on to ensure that columns
+are unique. This also happens if \code{.x} already has a column with the
+name of a name-value pair.
+
 This function does not change the value of the JSON attribute of the
 \code{\link{tbl_json}} object in any way.
 }
@@ -49,6 +54,10 @@ json \%>\% spread_all
 
 # A more complex example
 worldbank \%>\% spread_all
+
+# Resolving duplicate column names
+json <- '{"a": "x", "a": "y"}'
+json \%>\% spread_all
 }
 \seealso{
 \code{\link{spread_values}} to specific which specific values

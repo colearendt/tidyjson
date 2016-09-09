@@ -17,6 +17,11 @@
 #' The order of columns is determined by the order they are encountered in the
 #' JSON document, with nested objects placed at the end.
 #'
+#' If an objects have name-value pairs with names that are duplicates, then
+#' \code{".n"} is appended for n incrementing from 2 on to ensure that columns
+#' are unique. This also happens if \code{.x} already has a column with the
+#' name of a name-value pair.
+#'
 #' This function does not change the value of the JSON attribute of the
 #' \code{\link{tbl_json}} object in any way.
 #'
@@ -39,11 +44,16 @@
 #'
 #' # A more complex example
 #' worldbank %>% spread_all
+#'
+#' # Resolving duplicate column names
+#' json <- '{"a": "x", "a": "y"}'
+#' json %>% spread_all
 spread_all <- function(.x, recursive = TRUE, sep = ".") {
 
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
-  reserved_cols <- c("..id", "..name1", "..name2", "..type", "..value")
+  reserved_cols <- c("..id", "..name1", "..name2", "..type", "..value",
+                     "..suffix")
   assert_that(!(any(reserved_cols %in% names(.x))))
 
   # Return .x if no rows
@@ -56,6 +66,9 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
     warning("no JSON records are objects, returning .x")
     return(.x)
   }
+
+  # Get existing column names
+  exist_cols <- names(.x)
 
   # Get JSON
   json <- attr(.x, "JSON")
@@ -74,6 +87,28 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
         y %>% filter(..type != "object"),
         recursive_gather(y, sep)
       )
+
+  # Look for duplicate keys
+  key_freq <- y %>% group_by(..id, ..name1) %>% tally
+
+  if (any(key_freq$n > 1) || any(key_freq$..name1 %in% exist_cols)) {
+
+    warning("results in duplicate column names, appending .# for uniqueness")
+
+    # Deal with duplicate keys
+    y_dedupe <- y %>%
+      group_by(..id, ..name1) %>%
+      mutate(..suffix = 1L:n()) %>%
+      mutate(..suffix = ..suffix + ifelse(..name1 %in% exist_cols, 1L, 0L)) %>%
+      mutate(..suffix = ifelse(..suffix == 1L, "", paste0(".", ..suffix))) %>%
+      ungroup %>%
+      mutate(..name1 = paste0(..name1, ..suffix)) %>%
+      select(-..suffix)
+
+    # Re-attach JSON
+    y <- tbl_json(y_dedupe, attr(y, "JSON"))
+
+  }
 
   name_order <- y %>%
     filter(..type %in% c("string", "number", "logical", "null")) %>%
