@@ -18,8 +18,8 @@
 #'    entered into, \code{\link{gather_array}} to gather an array in an object
 #'    and \code{\link{spread_all}} to spread values in an object.
 #' @param .x a json string or tbl_json object
-#' @param ... a sequence of character strings designating the object name or
-#'            sequences of names you wish to enter
+#' @param ... a quoted or unquoted sequence of strings designating the object
+#'            name or sequences of names you wish to enter
 #' @return a \code{\link{tbl_json}} object
 #' @export
 #' @examples
@@ -35,21 +35,28 @@
 #' # Let's capture the parent first and then enter in the children object
 #' json %>% spread_all %>% enter_object("children")
 #'
+#' # No need to quote the path "children"
+#' json %>% spread_all %>% enter_object(children)
+#'
 #' # Notice that "anne" was discarded, as she has no children
 #'
 #' # We can now use gather array to stack the array
-#' json %>% spread_all %>% enter_object("children") %>%
+#' json %>% spread_all %>% enter_object(children) %>%
 #'   gather_array("child.num")
 #'
 #' # And append_values_string to add the children names
-#' json %>% spread_all %>% enter_object("children") %>%
+#' json %>% spread_all %>% enter_object(children) %>%
 #'   gather_array("child.num") %>%
 #'   append_values_string("child")
+#'
+#' # The path can be comma delimited to go deep into a nested object
+#' json <- '{"name": "bob", "attributes": {"age": 32, "gender": "male"}}'
+#' json %>% enter_object(attributes, age)
 #'
 #' # A more realistc example with companies data
 #' library(dplyr)
 #' companies %>%
-#'   enter_object("acquisitions") %>%
+#'   enter_object(acquisitions) %>%
 #'   gather_array %>%
 #'   spread_all %>%
 #'   glimpse
@@ -58,7 +65,7 @@ enter_object <- function(.x, ...) {
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
   # Prepare path
-  path <- list(...)
+  path <- path(...) %>% as.list
 
   # Extract json
   json <- attr(.x, "JSON")
