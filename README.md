@@ -2,7 +2,7 @@
 tidyjson
 ========
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tidyjson)](http://cran.r-project.org/package=tidyjson) [![Build Status](https://travis-ci.org/jeremystan/tidyjson.svg?branch=master)](https://travis-ci.org/jeremystan/tidyjson) [![Coverage Status](https://img.shields.io/codecov/c/github/jeremystan/tidyjson/master.svg)](https://codecov.io/github/jeremystan/tidyjson?branch=master)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tidyjson)](https://cran.r-project.org/package=tidyjson) [![Build Status](https://travis-ci.org/jeremystan/tidyjson.svg?branch=master)](https://travis-ci.org/jeremystan/tidyjson) [![Coverage Status](https://img.shields.io/codecov/c/github/jeremystan/tidyjson/master.svg)](https://codecov.io/github/jeremystan/tidyjson?branch=master)
 
 ![tidyjson graphs](https://cloud.githubusercontent.com/assets/2284427/18217882/1b3b2db4-7114-11e6-8ba3-07938f1db9af.png)
 
@@ -74,7 +74,7 @@ In order to capture the data in `majorsector_percent` we can use `enter_object` 
 
 ``` r
 worldbank %>%
-  enter_object("majorsector_percent") %>%
+  enter_object(majorsector_percent) %>%
   gather_array %>%
   spread_all %>%
   select(-document.id, -array.index)
