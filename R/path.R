@@ -2,7 +2,6 @@
 #'
 #' @param ... a sequence of quoted or unquoted character strings specifying
 #'            JSON object names
-#' @export
 #' @return a \code{path} object
 path <- function(...) {
 
