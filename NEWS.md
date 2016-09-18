@@ -26,6 +26,8 @@
 
 ## Bug fixes and minor changes
 
+* `enter_object` and the `jstring`, `jnumber` and `jlogical` functions now accept unqoted strings to specify their path (#26)
+
 * `tbl_json` objects now print with a tidy character representation of the JSON attribute (#61)
 
 * Use [purrr](https://github.com/jeremystan/purrr) for most list based internal operations (#1)

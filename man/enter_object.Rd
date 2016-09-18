@@ -9,8 +9,8 @@ enter_object(.x, ...)
 \arguments{
 \item{.x}{a json string or tbl_json object}
 
-\item{...}{a sequence of character strings designating the object name or
-sequences of names you wish to enter}
+\item{...}{a quoted or unquoted sequence of strings designating the object
+name or sequences of names you wish to enter}
 }
 \value{
 a \code{\link{tbl_json}} object
@@ -42,23 +42,30 @@ json <- c('{"parent": "bob",  "children": ["sally", "george"]}',
 json \%>\% gather_object \%>\% json_types
 
 # Let's capture the parent first and then enter in the children object
+json \%>\% spread_all \%>\% enter_object(children)
+
+# Also works with quotes
 json \%>\% spread_all \%>\% enter_object("children")
 
 # Notice that "anne" was discarded, as she has no children
 
 # We can now use gather array to stack the array
-json \%>\% spread_all \%>\% enter_object("children") \%>\%
+json \%>\% spread_all \%>\% enter_object(children) \%>\%
   gather_array("child.num")
 
 # And append_values_string to add the children names
-json \%>\% spread_all \%>\% enter_object("children") \%>\%
+json \%>\% spread_all \%>\% enter_object(children) \%>\%
   gather_array("child.num") \%>\%
   append_values_string("child")
+
+# The path can be comma delimited to go deep into a nested object
+json <- '{"name": "bob", "attributes": {"age": 32, "gender": "male"}}'
+json \%>\% enter_object(attributes, age)
 
 # A more realistc example with companies data
 library(dplyr)
 companies \%>\%
-  enter_object("acquisitions") \%>\%
+  enter_object(acquisitions) \%>\%
   gather_array \%>\%
   spread_all \%>\%
   glimpse

@@ -34,10 +34,10 @@ issues \%>\% gather_array \%>\% gather_object \%>\% json_types \%>\%
 
 # Count issues labels by name
 labels <- issues \%>\%
-  gather_array \%>\%                      # stack issues as "issue.num"
-  spread_values(id = jnumber("id")) \%>\% # capture just issue id
-  enter_object("labels") \%>\%            # filter just those with labels
-  gather_array("label.index") \%>\%       # stack labels
+  gather_array \%>\%                    # stack issues as "issue.num"
+  spread_values(id = jnumber(id)) \%>\% # capture just issue id
+  enter_object(labels) \%>\%            # filter just those with labels
+  gather_array("label.index") \%>\%     # stack labels
   spread_all
 labels \%>\% glimpse
 

@@ -45,9 +45,9 @@ json <- '{"name": {"first": "Bob", "last": "Jones"}, "age": 32}'
 # Using spread_values
 json \%>\%
   spread_values(
-    first.name = jstring("name", "first"),
-    last.name  = jstring("name", "last"),
-    age        = jnumber("age")
+    first.name = jstring(name, first),
+    last.name  = jstring(name, last),
+    age        = jnumber(age)
   )
 
 # Another document, this time with a middle name (and no age)
@@ -56,9 +56,9 @@ json2 <- '{"name": {"first": "Ann", "middle": "A", "last": "Smith"}, "age": 23}'
 # spread_values still gives the same column structure
 c(json, json2) \%>\%
   spread_values(
-    first.name = jstring("name", "first"),
-    last.name  = jstring("name", "last"),
-    age        = jnumber("age")
+    first.name = jstring(name, first),
+    last.name  = jstring(name, last),
+    age        = jnumber(age)
   )
 
 # whereas spread_all adds a new column

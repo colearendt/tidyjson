@@ -23,7 +23,7 @@
 #' key_employees <- companies[1:100] %>%
 #'   spread_all %>%
 #'   select(name) %>%
-#'   enter_object("relationships") %>%
+#'   enter_object(relationships) %>%
 #'   gather_array() %>%
 #'   spread_all
 #'

@@ -37,9 +37,9 @@
 #' # Using spread_values
 #' json %>%
 #'   spread_values(
-#'     first.name = jstring("name", "first"),
-#'     last.name  = jstring("name", "last"),
-#'     age        = jnumber("age")
+#'     first.name = jstring(name, first),
+#'     last.name  = jstring(name, last),
+#'     age        = jnumber(age)
 #'   )
 #'
 #' # Another document, this time with a middle name (and no age)
@@ -48,9 +48,9 @@
 #' # spread_values still gives the same column structure
 #' c(json, json2) %>%
 #'   spread_values(
-#'     first.name = jstring("name", "first"),
-#'     last.name  = jstring("name", "last"),
-#'     age        = jnumber("age")
+#'     first.name = jstring(name, first),
+#'     last.name  = jstring(name, last),
+#'     age        = jnumber(age)
 #'   )
 #'
 #' # whereas spread_all adds a new column
@@ -83,6 +83,7 @@ jfactory <- function(map.function) {
 
   function(..., recursive = FALSE) {
 
+    path <- path(...)
     if (recursive)  recursive.fun <- unlist
     else            recursive.fun <- identity
 
@@ -90,7 +91,7 @@ jfactory <- function(map.function) {
     function(json) {
 
       json %>%
-        map(list(...)) %>%
+        map(path %>% as.list) %>%
         map(replace_nulls_na) %>%
         map.function(recursive.fun)
 
@@ -108,7 +109,8 @@ jfactory <- function(map.function) {
 #' @seealso \code{\link{spread_values}} for using these functions to spread
 #'          the values of a JSON object into new columns
 #' @name jfunctions
-#' @param ... the path to follow
+#' @param ... a quoted or unquoted sequence of strings designating the object
+#'            name sequence you wish to follow to find a value
 #' @param recursive logical indicating whether second level and beyond objects
 #'        should be extracted.  Only works when there exists a single value in
 #'        the nested json object

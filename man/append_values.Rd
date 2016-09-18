@@ -59,8 +59,8 @@ attribute of the \code{tbl_json} object in any way.
 recipes <- c('{"name": "pie", "tags": {"apple": 10, "pie": 2, "flour": 5}}',
              '{"name": "cookie", "tags": {"chocolate": 2, "cookie": 1}}')
 recipes \%>\%
-  spread_values(name = jstring("name")) \%>\%
-  enter_object("tags") \%>\%
+  spread_values(name = jstring(name)) \%>\%
+  enter_object(tags) \%>\%
   gather_object("tag") \%>\%
   append_values_number("count")
 }

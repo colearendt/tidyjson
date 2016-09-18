@@ -123,17 +123,17 @@ worldbank %>% gather_object %>% json_types %>% count(name, type)
 options(tibble.print_min = 4L, tibble.print_max = 4L)
 ```
 
-It appears that `"majorsector_percent"` is an array, and so we can use
+It appears that `majorsector_percent` is an array, and so we can use
 `enter_object` to enter into it:
 
 ```{r}
-worldbank %>% enter_object("majorsector_percent")
+worldbank %>% enter_object(majorsector_percent)
 ```
 
 and `gather_array` to gather it by index
 
 ```{r}
-worldbank %>% enter_object("majorsector_percent") %>% gather_array
+worldbank %>% enter_object(majorsector_percent) %>% gather_array
 ```
 
 We can then `spread_all` again to capture the name-value pairs stored in each
@@ -141,7 +141,7 @@ object
 
 ```{r}
 worldbank %>% 
-  enter_object("majorsector_percent") %>% gather_array %>% spread_all
+  enter_object(majorsector_percent) %>% gather_array %>% spread_all
 ```
 
 By combining with our initial top-level `spread_all`, we can aggregate funding
@@ -150,7 +150,7 @@ dollars by sector by region:
 ```{r}
 worldbank %>%
   spread_all %>% select(region = regionname, funding = totalamt) %>%
-  enter_object("majorsector_percent") %>% gather_array %>% 
+  enter_object(majorsector_percent) %>% gather_array %>% 
   spread_all %>% rename(sector = Name, percent = Percent) %>%
   group_by(region, sector) %>%
   summarize(funding = sum(funding * percent))
@@ -205,7 +205,7 @@ Enter into an array nested under an object, and gather it
 `enter_object %>% gather_array`
 
 ```{r}
-worldbank %>% enter_object("majorsector_percent") %>% gather_array
+worldbank %>% enter_object(majorsector_percent) %>% gather_array
 ```
 
 ### Filter for a specific type

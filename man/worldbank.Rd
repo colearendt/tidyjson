@@ -28,9 +28,9 @@ worldbank \%>\% gather_object \%>\% json_types \%>\% count(name, type)
 wb_sectors <- worldbank \%>\%   # 500 Projects funded by the world bank
   spread_all \%>\%
   select(project_name, regionname) \%>\%
-  enter_object("majorsector_percent") \%>\% # Enter the 'sector' object
-  gather_array("sector.index") \%>\%        # Gather the array
-  spread_values(sector = jstring("Name")) # Spread the sector name
+  enter_object(majorsector_percent) \%>\% # Enter the 'sector' object
+  gather_array("sector.index") \%>\%      # Gather the array
+  spread_values(sector = jstring(Name)) # Spread the sector name
 
 # Examine the structured data
 wb_sectors \%>\% glimpse
