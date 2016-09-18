@@ -26,6 +26,6 @@
 #'
 #' # Let's look at the parents array
 #' commits %>% gather_array("commit") %>%
-#'   enter_object("parents") %>% gather_array("parent") %>%
+#'   enter_object(parents) %>% gather_array("parent") %>%
 #'   spread_all %>% glimpse
 NULL
