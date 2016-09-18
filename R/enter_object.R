@@ -33,10 +33,10 @@
 #' json %>% gather_object %>% json_types
 #'
 #' # Let's capture the parent first and then enter in the children object
-#' json %>% spread_all %>% enter_object("children")
-#'
-#' # No need to quote the path "children"
 #' json %>% spread_all %>% enter_object(children)
+#'
+#' # Also works with quotes
+#' json %>% spread_all %>% enter_object("children")
 #'
 #' # Notice that "anne" was discarded, as she has no children
 #'
@@ -65,13 +65,13 @@ enter_object <- function(.x, ...) {
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
   # Prepare path
-  path <- path(...) %>% as.list
+  path <- path(...)
 
   # Extract json
   json <- attr(.x, "JSON")
 
   # Access path
-  json <- map(json, path)
+  json <- map(json, path %>% as.list)
 
   tbl_json(.x, json, drop.null.json = TRUE)
 

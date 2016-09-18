@@ -16,6 +16,19 @@ test_that("works with simple input", {
   }
 )
 
+test_that("works with unquoted strings", {
+
+  json <- list(
+    fromJSON('{"name": {"first": "bob", "last": "smith"}}'),
+    fromJSON('{"name": {"first": "susan", "last": "jones"}}')
+  )
+
+  expect_identical(jstring(name, first)(json), c("bob", "susan"))
+  expect_identical(jstring(name, last)(json), c("smith", "jones"))
+
+}
+)
+
 test_that("handles missing input properly", {
 
     json <- list(
