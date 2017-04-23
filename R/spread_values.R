@@ -67,7 +67,7 @@ spread_values <- function(.x, ...) {
   new_values <- invoke_map(lst(...), .x = list(NULL), json)
 
   # Add on new values
-  y <- bind_cols(.x, new_values)
+  y <- dplyr::bind_cols(.x, new_values)
 
   tbl_json(y, json)
 
@@ -91,8 +91,8 @@ jfactory <- function(map.function) {
     function(json) {
 
       json %>%
-        map(path %>% as.list) %>%
-        map(replace_nulls_na) %>%
+        purrr::map(path %>% as.list) %>%
+        purrr::map(replace_nulls_na) %>%
         map.function(recursive.fun)
 
     }

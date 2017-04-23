@@ -85,7 +85,7 @@ json_structure <- function(.x) {
 json_structure_init <- function(x) {
 
   x %>%
-    mutate(
+    dplyr::mutate(
       parent.id = NA_character_,
       level = 0L,
       index = 1L,
@@ -101,18 +101,18 @@ json_structure_init <- function(x) {
 should_json_structure_expand_more <- function(s, this.level) {
 
   s %>%
-    filter(level == this.level) %>%
+    dplyr::filter(level == this.level) %>%
     json_lengths %>%
-    filter(type %in% c("object", "array") & length > 0) %>%
+    dplyr::filter(type %in% c("object", "array") & length > 0) %>%
     nrow %>%
-    is_greater_than(0L)
+    magrittr::is_greater_than(0L)
 
 }
 
 json_structure_empty <- function() {
 
   tbl_json(
-    data_frame(
+    dplyr::data_frame(
       document.id = integer(0),
       parent.id = character(0),
       level = integer(0),
@@ -155,8 +155,8 @@ json_structure_level <- function(s) {
 json_structure_objects <- function(s) {
 
   expand_s <- s %>%
-    filter(type == "object") %>%
-    transmute(
+    dplyr::filter(type == "object") %>%
+    dplyr::transmute(
       document.id,
       parent.id = child.id,
       seq,
@@ -168,14 +168,14 @@ json_structure_objects <- function(s) {
 
   # Create rest of data frame
   df_s <- expand_s %>%
-    group_by(parent.id) %>%
-    mutate(index = 1L:n()) %>%
-    ungroup %>%
-    mutate(
+    dplyr::group_by(parent.id) %>%
+    dplyr::mutate(index = 1L:n()) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
       child.id = paste(parent.id, index, sep = "."),
       seq = map2(seq, name, c)
     ) %>%
-    select(
+    dplyr::select(
       document.id, parent.id, level, index, child.id, seq, name, type, length
     )
 
@@ -187,8 +187,8 @@ json_structure_objects <- function(s) {
 json_structure_arrays <- function(s) {
 
   s %>%
-    filter(type == "array") %>%
-    transmute(
+    dplyr::filter(type == "array") %>%
+    dplyr::transmute(
       document.id,
       parent.id = child.id,
       seq,
@@ -197,11 +197,11 @@ json_structure_arrays <- function(s) {
     gather_array("index") %>%
     json_types %>%
     json_lengths %>%
-    mutate(
+    dplyr::mutate(
       child.id = paste(parent.id, index, sep = "."),
       seq = map2(seq, index, c)
     ) %>%
-    transmute(
+    dplyr::transmute(
       document.id, parent.id, level, index, child.id,
       seq, name = NA_character_, type, length
     )

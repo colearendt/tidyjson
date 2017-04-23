@@ -26,7 +26,7 @@ test_that("correctly parses length(json) > 1", {
   )
 })
 
-test_that("currectly parses character(0)", {
+test_that("correctly parses character(0)", {
   expect_identical(
     as.tbl_json(character(0)),
     tbl_json(
@@ -51,7 +51,7 @@ test_that("correctly parses empty objects", {
 
 })
 
-test_that("currectly structures an array", {
+test_that("correctly structures an array", {
   expect_identical(
     as.tbl_json('[{"name": "bob"}, {"name": "susan"}]'),
     tbl_json(
@@ -101,6 +101,41 @@ test_that("works for worldbank data", {
 
   inverts_json_test(worldbank[1:5])
 
+})
+
+
+context("as.tbl_json.tbl_json")
+
+test_that('functions as the identity on a simple pipeline', {
+   x <- commits %>% gather_array() %>% enter_object('commit') %>% spread_all()
+   
+   expect_identical(
+     x, as.tbl_json(x)
+   )
+   
+   y <- commits %>% gather_array() %>% gather_object()
+   
+   expect_identical(
+     y, as.tbl_json(y)
+   )
+})
+
+test_that('functions as the identity on a more advanced pipeline', {
+  x <- commits %>% gather_array() %>% spread_values(
+    sha=jstring('sha')
+    , name=jstring('commit','author','name')
+    , msg=jstring('commit','message')
+    , comment_count=jnumber('commit','comment_count')
+    , committer.name=jstring('commit','committer','name')
+    , committer.date=jstring('commit','committer','date')
+    , tree.sha=jstring('committ','tree','sha')
+    , tree.url=jstring('committ','tree','url')
+    , url=jstring('url')
+  )
+  
+  expect_identical(
+    x, as.tbl_json(x)
+  )
 })
 
 context("print.tbl_json")
@@ -242,6 +277,42 @@ test_that("[ column filtering doesn't change the JSON", {
 
   }
 )
+
+
+test_that('handles "drop" like a tbl_df', {
+  mydata <- as.tbl_json('[{"name": "Frodo", "occupation": "Ring Bearer"}
+                        ,{"name": "Aragorn", "occupation": "Ranger"}]') %>%
+    gather_array() %>%
+    spread_values(name=jstring('name'), occupation=jstring('occupation'))
+   
+  expect_true(is.tbl_json(mydata[,]))
+  expect_true(is.tbl_json(mydata[,'name']))
+  expect_true(is.tbl_json(mydata[,'occupation',drop=TRUE]))
+  expect_warning(is.tbl_json(mydata[,'name',drop=TRUE]),'drop ignored')
+})
+
+context('tbl_df') 
+
+test_that('tbl_df drops the JSON attribute and tbl_json class', {
+  
+  jtidy <- issues %>% gather_array() %>% spread_all()
+  
+  expect_identical(attr(tbl_df(jtidy),'JSON'),NULL)
+  expect_false('tlb_json' %in% class(tbl_df(jtidy)))
+})
+
+test_that('as_data_frame functions like tbl_df', {
+  
+  jtidy <- issues %>% gather_array() %>% spread_values(
+    url=jstring('url')
+    , body=jstring('body')
+    , user.id=jnumber('user.id')
+    , user.login=jstring('user.login')
+  )
+  
+  expect_identical(attr(as_data_frame(jtidy),'JSON'),NULL)
+  expect_false('tbl_json' %in% class(as_data_frame(jtidy)))
+})
 
 context("tbl_json: dplyr verbs")
 
