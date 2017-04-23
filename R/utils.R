@@ -16,7 +16,7 @@ NULL
 rbind_tbl_json <- function(x, y) {
 
   tbl_json(
-    bind_rows(x %>% unclass, y %>% unclass),
+    dplyr::bind_rows(x %>% unclass, y %>% unclass),
     c(attr(x, "JSON"), attr(y, "JSON"))
   )
 

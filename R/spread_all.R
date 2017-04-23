@@ -54,7 +54,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
 
   reserved_cols <- c("..id", "..name1", "..name2", "..type", "..value",
                      "..suffix")
-  assert_that(!(any(reserved_cols %in% names(.x))))
+  assertthat::assert_that(!(any(reserved_cols %in% names(.x))))
 
   # Return .x if no rows
   if (nrow(.x) == 0)
@@ -74,7 +74,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
   json <- attr(.x, "JSON")
 
   # Create a new identifier
-  .x <- .x %>% mutate(..id = seq_len(n()))
+  .x <- .x %>% dplyr::mutate(..id = seq_len(n()))
 
   # gather types
   y <- .x %>%
@@ -84,7 +84,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
   if (recursive)
     while(any(y$..type == "object"))
       y <- rbind_tbl_json(
-        y %>% filter(..type != "object"),
+        y %>% dplyr::filter(..type != "object"),
         recursive_gather(y, sep)
       )
 
@@ -97,13 +97,13 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
 
     # Deal with duplicate keys
     y_dedupe <- y %>%
-      group_by(..id, ..name1) %>%
-      mutate(..suffix = 1L:n()) %>%
-      mutate(..suffix = ..suffix + ifelse(..name1 %in% exist_cols, 1L, 0L)) %>%
-      mutate(..suffix = ifelse(..suffix == 1L, "", paste0(".", ..suffix))) %>%
-      ungroup %>%
-      mutate(..name1 = paste0(..name1, ..suffix)) %>%
-      select(-..suffix)
+      dplyr::group_by(..id, ..name1) %>%
+      dplyr::mutate(..suffix = 1L:n()) %>%
+      dplyr::mutate(..suffix = ..suffix + ifelse(..name1 %in% exist_cols, 1L, 0L)) %>%
+      dplyr::mutate(..suffix = ifelse(..suffix == 1L, "", paste0(".", ..suffix))) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(..name1 = paste0(..name1, ..suffix)) %>%
+      dplyr::select(-..suffix)
 
     # Re-attach JSON
     y <- tbl_json(y_dedupe, attr(y, "JSON"))
@@ -111,8 +111,8 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
   }
 
   name_order <- y %>%
-    filter(..type %in% c("string", "number", "logical", "null")) %>%
-    extract2("..name1") %>%
+    dplyr::filter(..type %in% c("string", "number", "logical", "null")) %>%
+    magrittr::extract2("..name1") %>%
     unique
 
   y_string  <- spread_type(y, "string",  append_values_string)
@@ -120,14 +120,14 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
   y_logical <- spread_type(y, "logical", append_values_logical)
 
   z <- .x %>%
-    left_join(y_string,  by = "..id") %>%
-    left_join(y_number,  by = "..id") %>%
-    left_join(y_logical, by = "..id")
+    dplyr::left_join(y_string,  by = "..id") %>%
+    dplyr::left_join(y_number,  by = "..id") %>%
+    dplyr::left_join(y_logical, by = "..id")
 
   all_null <- y %>%
-    group_by(..name1) %>%
-    summarize(all.null = all(..type == "null")) %>%
-    filter(all.null)
+    dplyr::group_by(..name1) %>%
+    dplyr::summarize(all.null = all(..type == "null")) %>%
+    dplyr::filter(all.null)
 
   if (nrow(all_null) > 0) {
     null_names <- all_null %>% extract2("..name1")
@@ -135,7 +135,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
   }
 
   final_columns <- names(.x) %>%
-    setdiff("..id") %>%
+    dplyr::setdiff("..id") %>%
     c(name_order)
 
   z[, final_columns, drop = FALSE] %>%
@@ -147,10 +147,10 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
 recursive_gather <- function(.x, sep) {
 
   .x %>%
-    filter(..type == "object") %>%
+    dplyr::filter(..type == "object") %>%
     gather_object("..name2") %>%
-    mutate(..name1 = paste(..name1, ..name2, sep = sep)) %>%
-    select(-..type, -..name2) %>%
+    dplyr::mutate(..name1 = paste(..name1, ..name2, sep = sep)) %>%
+    dplyr::select(-..type, -..name2) %>%
     json_types("..type")
 
 }
@@ -164,10 +164,10 @@ spread_type <- function(.x, this.type, append.fun) {
     return(data_frame(..id = integer(0)))
 
   .x %>%
-    filter(..type == this.type) %>%
+    dplyr::filter(..type == this.type) %>%
     append.fun("..value") %>%
-    tbl_df %>%
-    select(..id, ..name1, ..value) %>%
-    spread(..name1, ..value)
+    dplyr::tbl_df() %>%
+    dplyr::select(..id, ..name1, ..value) %>%
+    tidyr::spread(..name1, ..value)
 
 }

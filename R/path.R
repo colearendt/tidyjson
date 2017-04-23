@@ -16,7 +16,7 @@ path <- function(...) {
   }
 
   structure(
-    map_chr(dots, as.character),
+    purrr::map_chr(dots, as.character),
     class = "path"
   )
 }

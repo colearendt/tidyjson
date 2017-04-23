@@ -36,7 +36,7 @@ json_lengths <- function(.x, column.name = "length") {
   json <- attr(.x, "JSON")
 
   # Determine lengths
-  lengths <- map_int(json, length)
+  lengths <- purrr::map_int(json, length)
 
   # Add as a column to x
   .x[column.name] <- lengths
