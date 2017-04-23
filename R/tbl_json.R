@@ -81,7 +81,7 @@ tbl_json <- function(df, json.list, drop.null.json = FALSE) {
     json.list <- json.list[!nulls]
   }
 
-  structure(df, JSON = json.list, class = c("tbl_json", "tbl", "data.frame"))
+  structure(df, JSON = json.list, class = c("tbl_json", "tbl_df", "tbl", "data.frame"))
 }
 
 #' @export
@@ -140,20 +140,13 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
 #' @return a \code{\link{tbl_json}} object
 #' @export
 `[.tbl_json` <- function(.x, i, j,
-  drop = if (missing(i)) TRUE else length(cols) == 1) {
-
-  # Same functionality as in `[.data.frame`
-  y <- NextMethod("[")
-  cols <- names(y)
+  drop = FALSE) {
 
   # Extract JSON to subset later
   json <- attr(.x, "JSON")
 
-  # Convert x back into a data.frame
-  .x <- as.data.frame(.x)
-
   # Subset x
-  .x <- `[.data.frame`(.x, i, j, drop)
+  .x <- NextMethod('[')
 
   # If i is not missing, subset json as well
   if (!missing(i)) {
