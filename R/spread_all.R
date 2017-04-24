@@ -61,7 +61,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
     return(.x)
 
   # Check if any objects
-  unq_types <- .x %>% json_types("..type") %>% extract2("..type") %>% unique
+  unq_types <- .x %>% json_types("..type") %>% magrittr::extract2("..type") %>% unique
   if (!("object" %in% unq_types)) {
     warning("no JSON records are objects, returning .x")
     return(.x)
@@ -119,7 +119,8 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
   y_number  <- spread_type(y, "number",  append_values_number)
   y_logical <- spread_type(y, "logical", append_values_logical)
 
-  z <- .x %>%
+  ## Build data_frame component
+  z <- dplyr::tbl_df(.x) %>%
     dplyr::left_join(y_string,  by = "..id") %>%
     dplyr::left_join(y_number,  by = "..id") %>%
     dplyr::left_join(y_logical, by = "..id")
@@ -130,7 +131,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
     dplyr::filter(all.null)
 
   if (nrow(all_null) > 0) {
-    null_names <- all_null %>% extract2("..name1")
+    null_names <- all_null %>% magrittr::extract2("..name1")
     z[, null_names] <- NA
   }
 

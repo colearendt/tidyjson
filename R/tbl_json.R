@@ -81,7 +81,7 @@ tbl_json <- function(df, json.list, drop.null.json = FALSE) {
     json.list <- json.list[!nulls]
   }
 
-  structure(df, JSON = json.list, class = c("tbl_json", "tbl", "data.frame"))
+  structure(df, JSON = json.list, class = c("tbl_json", "tbl_df", "tbl", "data.frame"))
 }
 
 #' @export
@@ -145,10 +145,8 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
   # Extract JSON to subset later
   json <- attr(.x, "JSON")
   
-  .x <- as.data.frame(.x)
-
   # Subset x
-  .x <- `[.data.frame`(.x,i,j,drop)
+  .x <- NextMethod('[')
 
   # If i is not missing, subset json as well
   if (!missing(i)) {
@@ -207,6 +205,30 @@ as.character.tbl_json <- function(x, ...) {
 
 }
 
+#' Convert a tbl_json back to a tbl_df
+#' 
+#' Drops the JSON attribute and the tbl_json class, so that
+#' we are back to a pure tbl_df.  Useful for some internals.  Also useful
+#' when you are done processing the JSON portion of your data and are
+#' ready to move on to other tools.
+#' 
+#' Note that as.tbl calls tbl_df under the covers, which in turn
+#' calls as_data_frame.  As a result, this should take care of all cases.
+#' 
+#' @param x a tbl_json object
+#' @param ... additional parameters
+#' @return a tbl_df object (with no tbl_json component)
+#' 
+#' @export
+as_data_frame.tbl_json <- function(x, ...) {
+  attr(x,'JSON') <- NULL
+  class(x) <- class(x)[class(x) != 'tbl_json']
+  
+  x
+}
+
+
+
 #' Print a tbl_json object
 #'
 #' @param x a \code{\link{tbl_json}} object
@@ -226,7 +248,7 @@ print.tbl_json <- function(x, ..., json.n = 20, json.width = 15) {
   json[lengths > json.width] <- paste0(json[lengths > json.width], "...")
 
   # Add the json
-  .y <- tbl_df(x)
+  .y <- dplyr::tbl_df(x)
   json_name <- 'attr(., "JSON")'
   .y[json_name] <- rep("...", nrow(x))
   .y[[json_name]][seq_len(length(json))] <- json

@@ -103,6 +103,41 @@ test_that("works for worldbank data", {
 
 })
 
+
+context("as.tbl_json.tbl_json")
+
+test_that('functions as the identity on a simple pipeline', {
+   x <- commits %>% gather_array() %>% enter_object('commit') %>% spread_all()
+   
+   expect_identical(
+     x, as.tbl_json(x)
+   )
+   
+   y <- commits %>% gather_array() %>% gather_object()
+   
+   expect_identical(
+     y, as.tbl_json(y)
+   )
+})
+
+test_that('functions as the identity on a more advanced pipeline', {
+  x <- commits %>% gather_array() %>% spread_values(
+    sha=jstring('sha')
+    , name=jstring('commit','author','name')
+    , msg=jstring('commit','message')
+    , comment_count=jnumber('commit','comment_count')
+    , committer.name=jstring('commit','committer','name')
+    , committer.date=jstring('commit','committer','date')
+    , tree.sha=jstring('committ','tree','sha')
+    , tree.url=jstring('committ','tree','url')
+    , url=jstring('url')
+  )
+  
+  expect_identical(
+    x, as.tbl_json(x)
+  )
+})
+
 context("print.tbl_json")
 
 test_that("print.tbl_json works for a simple case", {
@@ -242,6 +277,19 @@ test_that("[ column filtering doesn't change the JSON", {
 
   }
 )
+
+
+test_that('handles "drop" like a tbl_df', {
+  mydata <- as.tbl_json('[{"name": "Frodo", "occupation": "Ring Bearer"}
+                        ,{"name": "Aragorn", "occupation": "Ranger"}]') %>%
+    gather_array() %>%
+    spread_values(name=jstring('name'), occupation=jstring('occupation'))
+   
+  expect_true(is.tbl_json(mydata[,]))
+  expect_true(is.tbl_json(mydata[,'name']))
+  expect_true(is.tbl_json(mydata[,'occupation',drop=TRUE]))
+  expect_warning(is.tbl_json(mydata[,'name',drop=TRUE]),'drop ignored')
+})
 
 context("tbl_json: dplyr verbs")
 
