@@ -26,7 +26,7 @@ test_that("correctly parses length(json) > 1", {
   )
 })
 
-test_that("currectly parses character(0)", {
+test_that("correctly parses character(0)", {
   expect_identical(
     as.tbl_json(character(0)),
     tbl_json(
@@ -51,7 +51,7 @@ test_that("correctly parses empty objects", {
 
 })
 
-test_that("currectly structures an array", {
+test_that("correctly structures an array", {
   expect_identical(
     as.tbl_json('[{"name": "bob"}, {"name": "susan"}]'),
     tbl_json(
@@ -289,6 +289,29 @@ test_that('handles "drop" like a tbl_df', {
   expect_true(is.tbl_json(mydata[,'name']))
   expect_true(is.tbl_json(mydata[,'occupation',drop=TRUE]))
   expect_warning(is.tbl_json(mydata[,'name',drop=TRUE]),'drop ignored')
+})
+
+context('tbl_df') 
+
+test_that('tbl_df drops the JSON attribute and tbl_json class', {
+  
+  jtidy <- issues %>% gather_array() %>% spread_all()
+  
+  expect_identical(attr(tbl_df(jtidy),'JSON'),NULL)
+  expect_false('tlb_json' %in% class(tbl_df(jtidy)))
+})
+
+test_that('as_data_frame functions like tbl_df', {
+  
+  jtidy <- issues %>% gather_array() %>% spread_values(
+    url=jstring('url')
+    , body=jstring('body')
+    , user.id=jnumber('user.id')
+    , user.login=jstring('user.login')
+  )
+  
+  expect_identical(attr(as_data_frame(jtidy),'JSON'),NULL)
+  expect_false('tbl_json' %in% class(as_data_frame(jtidy)))
 })
 
 context("tbl_json: dplyr verbs")
