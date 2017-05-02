@@ -6,7 +6,6 @@ cache: packages
 
 r_packages:
   - covr
-  - needs
 
 after_success:
   - Rscript -e 'library(covr); codecov()'
