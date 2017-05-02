@@ -19,7 +19,7 @@ NULL
 #' @aliases as_data_frame
 #' @seealso as_data_frame.tbl_json
 #' @export
-#' @usage tbl_df(mytbljson)
+#' @usage tbl_df(data)
 NULL
 
 #' Bind two tbl_json objects together and preserve JSON attribute

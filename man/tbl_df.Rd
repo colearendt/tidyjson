@@ -5,7 +5,7 @@
 \alias{tbl_df}
 \title{Convert object to tbl_df}
 \usage{
-tbl_df(mytbljson)
+tbl_df(data)
 }
 \description{
 Exported from dplyr package.  Converts an object
