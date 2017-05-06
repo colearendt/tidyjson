@@ -66,22 +66,22 @@ NULL
 #'   gather_array %>% spread_all
 tbl_json <- function(df, json.list, drop.null.json = FALSE) {
 
-  assert_that(is.data.frame(df))
-  assert_that(is.list(json.list) || is.vector(json.list))
-  assert_that(nrow(df) == length(json.list))
-  assert_that(!("..JSON" %in% names(df)))
+  assertthat::assert_that(is.data.frame(df))
+  assertthat::assert_that(is.list(json.list) || is.vector(json.list))
+  assertthat::assert_that(nrow(df) == length(json.list))
+  assertthat::assert_that(!("..JSON" %in% names(df)))
 
   # Remove any row.names
   row.names(df) <- NULL
 
   # Remove any rows of df where json.list is NULL
   if (drop.null.json) {
-    nulls <- map_lgl(json.list, is.null)
+    nulls <- purrr::map_lgl(json.list, is.null)
     df <- df[!nulls, , drop = FALSE]
     json.list <- json.list[!nulls]
   }
 
-  structure(df, JSON = json.list, class = c("tbl_json", "tbl", "data.frame"))
+  structure(df, JSON = json.list, class = c("tbl_json", "tbl_df", "tbl", "data.frame"))
 }
 
 #' @export
@@ -97,7 +97,7 @@ as.tbl_json.tbl_json <- function(.x, ...) .x
 as.tbl_json.character <- function(.x, ...) {
 
   # Parse the json
-  json <- map(.x, fromJSON, simplifyVector = FALSE)
+  json <- purrr::map(.x, jsonlite::fromJSON, simplifyVector = FALSE)
 
   # Setup document ids
   ids <- data.frame(document.id = seq_along(json))
@@ -110,11 +110,11 @@ as.tbl_json.character <- function(.x, ...) {
 #' @rdname tbl_json
 as.tbl_json.data.frame <- function(.x, json.column, ...) {
 
-  assert_that(is.character(json.column))
-  assert_that(json.column %in% names(.x))
+  assertthat::assert_that(is.character(json.column))
+  assertthat::assert_that(json.column %in% names(.x))
 
   # Parse the json
-  json <- map(.x[[json.column]], fromJSON, simplifyVector = FALSE)
+  json <- purrr::map(.x[[json.column]], jsonlite::fromJSON, simplifyVector = FALSE)
 
   # Remove json column
   .x <- .x[, setdiff(names(.x), json.column), drop = FALSE]
@@ -140,20 +140,13 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
 #' @return a \code{\link{tbl_json}} object
 #' @export
 `[.tbl_json` <- function(.x, i, j,
-  drop = if (missing(i)) TRUE else length(cols) == 1) {
-
-  # Same functionality as in `[.data.frame`
-  y <- NextMethod("[")
-  cols <- names(y)
+  drop = FALSE) {
 
   # Extract JSON to subset later
   json <- attr(.x, "JSON")
-
-  # Convert x back into a data.frame
-  .x <- as.data.frame(.x)
-
+  
   # Subset x
-  .x <- `[.data.frame`(.x, i, j, drop)
+  .x <- NextMethod('[')
 
   # If i is not missing, subset json as well
   if (!missing(i)) {
@@ -177,10 +170,10 @@ wrap_dplyr_verb <- function(dplyr.verb) {
     .data$..JSON <- attr(.data, "JSON")
 
     # Apply the transformation
-    y <- dplyr.verb(tbl_df(.data), ...)
+    y <- dplyr.verb(dplyr::tbl_df(.data), ...)
 
     # Reconstruct tbl_json without ..JSON column
-    tbl_json(select_(y, "-..JSON"), y$..JSON)
+    tbl_json(dplyr::select_(y, "-..JSON"), y$..JSON)
 
   }
 }
@@ -206,11 +199,35 @@ slice_.tbl_json <- wrap_dplyr_verb(dplyr::slice_)
 as.character.tbl_json <- function(x, ...) {
 
   json <- attr(x, "JSON")
-  json %>% map_chr(jsonlite::toJSON,
+  json %>% purrr::map_chr(jsonlite::toJSON,
                    null = "null",
                    auto_unbox = TRUE)
 
 }
+
+#' Convert a tbl_json back to a tbl_df
+#' 
+#' Drops the JSON attribute and the tbl_json class, so that
+#' we are back to a pure tbl_df.  Useful for some internals.  Also useful
+#' when you are done processing the JSON portion of your data and are
+#' ready to move on to other tools.
+#' 
+#' Note that as.tbl calls tbl_df under the covers, which in turn
+#' calls as_data_frame.  As a result, this should take care of all cases.
+#' 
+#' @param x a tbl_json object
+#' @param ... additional parameters
+#' @return a tbl_df object (with no tbl_json component)
+#' 
+#' @export
+as_data_frame.tbl_json <- function(x, ...) {
+  attr(x,'JSON') <- NULL
+  class(x) <- class(x)[class(x) != 'tbl_json']
+  
+  x
+}
+
+
 
 #' Print a tbl_json object
 #'
@@ -231,7 +248,7 @@ print.tbl_json <- function(x, ..., json.n = 20, json.width = 15) {
   json[lengths > json.width] <- paste0(json[lengths > json.width], "...")
 
   # Add the json
-  .y <- tbl_df(x)
+  .y <- dplyr::tbl_df(x)
   json_name <- 'attr(., "JSON")'
   .y[json_name] <- rep("...", nrow(x))
   .y[[json_name]][seq_len(length(json))] <- json

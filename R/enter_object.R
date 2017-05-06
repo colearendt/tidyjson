@@ -71,7 +71,7 @@ enter_object <- function(.x, ...) {
   json <- attr(.x, "JSON")
 
   # Access path
-  json <- map(json, path %>% as.list)
+  json <- purrr::map(json, path %>% as.list)
 
   tbl_json(.x, json, drop.null.json = TRUE)
 

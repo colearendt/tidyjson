@@ -6,3 +6,5 @@ inst/doc
 .Rproj.user
 *.Rproj
 .DS_Store
+packrat/lib*/
+packrat/src/

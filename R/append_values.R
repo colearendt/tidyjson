@@ -52,12 +52,12 @@ append_values_factory <- function(type, as.value) {
 
     if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
-    if (force == FALSE) assert_that(recursive == FALSE)
+    if (force == FALSE) assertthat::assert_that(recursive == FALSE)
 
     # Extract json
     json <- attr(.x, "JSON")
 
-    assert_that(length(json) == nrow(.x))
+    assertthat::assert_that(length(json) == nrow(.x))
 
     # if json is empty, return empty
     if (length(json) == 0) {
@@ -78,7 +78,7 @@ append_values_factory <- function(type, as.value) {
           new_val[loc] <- NA
        }
        new_val <- new_val %>% as.value
-       assert_that(length(new_val) == nrow(.x))
+       assertthat::assert_that(length(new_val) == nrow(.x))
        .x[column.name] <- new_val
     }
 
@@ -92,7 +92,7 @@ append_values_factory <- function(type, as.value) {
 #' @param l a list that we want to unlist
 #' @param recursive logical indicating whether to unlist nested lists
 my_unlist <- function(l, recursive = FALSE) {
-  nulls <- map_int(l, length) != 1
+  nulls <- purrr::map_int(l, length) != 1
   l[nulls] <- NA
   unlist(l, recursive = recursive)
 }

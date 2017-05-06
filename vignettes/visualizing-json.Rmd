@@ -384,7 +384,7 @@ rounds_usd <- rounds %>%
   filter(!is.na(raised)) %>%
   select(document.id, round, raised)
 
-rounds_by_geo <- inner_join(rounds_usd, hqs, by = "document.id")
+rounds_by_geo <- inner_join(rounds_usd, hqs, by = "document.id") %>% tbl_df
 ```
 
 Now we can visualize the results

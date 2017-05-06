@@ -74,7 +74,7 @@ json_schema <- function(.x, type = c("string", "value")) {
 
   if (any(is_array)) {
 
-    array_schema <- json[is_array] %>% map(json_schema_array, type)
+    array_schema <- json[is_array] %>% purrr::map(json_schema_array, type)
 
     array_schema <- array_schema %>%
       unlist(recursive = FALSE) %>%
@@ -88,7 +88,7 @@ json_schema <- function(.x, type = c("string", "value")) {
 
   if (any(is_object)) {
 
-    object_schema <- json[is_object] %>% map(json_schema_object, type)
+    object_schema <- json[is_object] %>% purrr::map(json_schema_object, type)
 
     object_schema <- object_schema %>%
       bind_rows %>%
@@ -124,7 +124,7 @@ json_schema <- function(.x, type = c("string", "value")) {
 
 list_to_tbl_json <- function(l) {
 
-  tbl_json(data_frame(document.id = 1L), list(l))
+  tbl_json(dplyr::data_frame(document.id = 1L), list(l))
 
 }
 
@@ -143,15 +143,15 @@ json_schema_array <- function(json, type) {
 
 collapse_array <- function(schema) {
 
-  data_frame(schemas = schema) %>%
-    mutate(json = schemas) %>%
+  dplyr::data_frame(schemas = schema) %>%
+    dplyr::mutate(json = schemas) %>%
     as.tbl_json(json.column = "json") %>%
     json_types %>%
     json_complexity %>%
-    tbl_df %>%
-    arrange(desc(complexity), type) %>%
-    slice(1) %>%
-    extract2("schemas") %>%
+    dplyr::tbl_df() %>%
+    dplyr::arrange(desc(complexity), type) %>%
+    dplyr::slice(1) %>%
+    magrittr::extract2("schemas") %>%
     paste(collapse = ", ") %>%
     sprintf("[%s]", .)
 
@@ -161,10 +161,10 @@ json_schema_object <- function(json, type) {
 
   x <- json %>% list_to_tbl_json %>% gather_object
 
-  x$schemas <- attr(x, "JSON") %>% map(list_to_tbl_json) %>%
-    map_chr(json_schema, type)
+  x$schemas <- attr(x, "JSON") %>% purrr::map(list_to_tbl_json) %>%
+    purrr::map_chr(json_schema, type)
 
-  schemas <- x %>% select(name, schemas) %>% unique
+  schemas <- x %>% dplyr::select(name, schemas) %>% unique
 
   schemas
 
@@ -173,18 +173,18 @@ json_schema_object <- function(json, type) {
 collapse_object <- function(schema) {
 
   schema %>%
-    mutate(json = schemas) %>%
+    dplyr::mutate(json = schemas) %>%
     as.tbl_json(json.column = "json") %>%
     json_types %>%
     json_complexity %>%
-    tbl_df %>%
-    group_by(name) %>%
-    arrange(desc(complexity), type) %>%
-    slice(1) %>%
-    ungroup %>%
-    mutate(name = name %>% sprintf('"%s"', .)) %>%
-    mutate(schemas = map2(name, schemas, paste, sep = ": ")) %>%
-    extract2("schemas") %>%
+    dplyr::tbl_df() %>%
+    dplyr::group_by(name) %>%
+    dplyr::arrange(desc(complexity), type) %>%
+    dplyr::slice(1) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(name = name %>% sprintf('"%s"', .)) %>%
+    dplyr::mutate(schemas = map2(name, schemas, paste, sep = ": ")) %>%
+    magrittr::extract2("schemas") %>%
     paste(collapse = ", ") %>%
     sprintf("{%s}", .)
 
