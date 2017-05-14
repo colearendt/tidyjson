@@ -182,13 +182,29 @@ wrap_dplyr_verb <- function(dplyr.verb) {
 filter_.tbl_json <- wrap_dplyr_verb(dplyr::filter_)
 
 #' @export
+#' @method filter tbl_json
+filter.tbl_json <- wrap_dplyr_verb(dplyr::filter)
+
+#' @export
 arrange_.tbl_json <- wrap_dplyr_verb(dplyr::arrange_)
+
+#' @export
+#' @method arrange tbl_json
+arrange.tbl_json <- wrap_dplyr_verb(dplyr::arrange)
 
 #' @export
 mutate_.tbl_json <- wrap_dplyr_verb(dplyr::mutate_)
 
 #' @export
+#' @method mutate tbl_json
+mutate.tbl_json <- wrap_dplyr_verb(dplyr::mutate)
+
+#' @export
 slice_.tbl_json <- wrap_dplyr_verb(dplyr::slice_)
+
+#' @export
+#' @method slice tbl_json
+slice.tbl_json <- wrap_dplyr_verb(dplyr::slice)
 
 #' Convert the JSON in an tbl_json object back to a JSON string
 #'
