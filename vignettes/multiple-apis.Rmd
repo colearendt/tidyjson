@@ -1,0 +1,85 @@
+---
+title: "Multiple APIs"
+author: "Cole"
+date: "May 13, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+Let's take a look at a few HTTP APIs that transmit data in JSON format, and then manipulate the structure with tidyjson.
+
+```{r, echo=TRUE}
+library(dplyr)
+library(jsonlite)
+library(tidyjson)
+```
+
+# Github
+
+Tidyverse is used heavily for data cleansing.  Let's explore some of the data through Github's APIs.  We are going to grab the data directly and then explore the structure of the JSON with `json_schema`.
+
+```{r, echo=TRUE}
+dplyr_issues <- as.tbl_json('https://api.github.com/repos/tidyverse/dplyr/issues')
+
+dplyr_issues %>% json_schema %>% prettify
+```
+
+After exploring the structure of the data, we decide we want to look at a high level of what sort of issues we have.
+
+```{r, echo=TRUE}
+
+highlevel <- dplyr_issues %>% gather_array('index') %>% 
+  spread_values(id=jnumber('id')
+                , assignee=jstring('assignee','login')
+                , comments=jnumber('comments')
+                , title=jstring('title')
+                , state=jstring('state')
+                )
+
+print(highlevel)
+
+```
+
+And perhaps we want to look at a few different summaries.  We notice that there are only 30 issues here, but anyone familiar with `dplyr` will know that the repo is much more popular than that.  Github's API is paginated, so we only got the first 30 issues back from the API.
+
+```{r, echo=TRUE}
+
+highlevel %>% group_by(assignee) %>% summarize(nissues=n())
+
+highlevel %>% group_by(comments) %>% summarize(nissues=n()) %>% 
+  ungroup() %>% arrange(desc(comments))
+
+highlevel %>% group_by(state) %>% summarize(nissues=n())
+
+```
+
+Let's aggregate a few more api calls.  Documentation can be found at the  [github API docs](https://developer.github.com/guides/traversing-with-pagination/).
+
+```{r, echo=TRUE}
+
+
+```
