@@ -206,6 +206,20 @@ slice_.tbl_json <- wrap_dplyr_verb(dplyr::slice_)
 #' @method slice tbl_json
 slice.tbl_json <- wrap_dplyr_verb(dplyr::slice)
 
+#' @export
+bind_rows <- function(...) {
+  r <- dplyr::bind_rows(...)
+  
+  d <- list_or_dots(...)
+  if (all(unlist(lapply(d,is.tbl_json)))) {
+    j <- unlist(lapply(d, attr, 'JSON'), recursive=FALSE)
+    return(tbl_json(r,j))
+  } else {
+    warning('Some non-tbl_json objects.  Reverting to dplyr::bind_rows')
+    return(r)
+  }
+}
+
 #' Convert the JSON in an tbl_json object back to a JSON string
 #'
 #' @param x a tbl_json object

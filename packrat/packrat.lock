@@ -338,6 +338,12 @@ Source: CRAN
 Version: 1.0.0
 Hash: 77da8f1df873a4b91e5c4a68fe2fb1b6
 
+Package: pryr
+Source: CRAN
+Version: 0.1.2
+Hash: 4189249ad9cfa35bb1f70ce398fce673
+Requires: Rcpp, stringr
+
 Package: purrr
 Source: CRAN
 Version: 0.2.2.2

@@ -453,10 +453,7 @@ test_that("dplyr::sample_n works", {
 })
 
 test_that("dplyr:bind_rows works", {
-  ## A relevant SO post: http://stackoverflow.com/questions/43868846/why-does-object-json-not-found-error-occur-using-tidyjson-package-bind-rows
-  
-  skip('dplyr::bind_rows is not supported yet')
-  
+
   # Define a simple JSON array
   people <- '
   [
@@ -478,14 +475,13 @@ test_that("dplyr:bind_rows works", {
       age = jnumber("age"))
   
   ## Print method fails after bind_rows
-  z <- people_df %>% dplyr::bind_rows(people_df)
-  print(z)
+  z <- people_df %>% bind_rows(people_df)
   
-  ## missing JSON attribute
-  attr(z,'JSON')
-  
+
+  expect_is(attr(z,'JSON'),'list')
   expect_is(z, 'tbl_json')
   expect_equal(nrow(z), nrow(people_df) * 2)
+  expect_equal(length(attr(z,'JSON')), nrow(people_df) * 2)
 })
 
 

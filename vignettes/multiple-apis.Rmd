@@ -43,12 +43,13 @@ library(tidyjson)
 Tidyverse is used heavily for data cleansing.  Let's explore some of the data through Github's APIs.  We are going to grab the data directly and then explore the structure of the JSON with `json_schema`.
 
 ```{r, echo=TRUE}
-dplyr_issues <- as.tbl_json('https://api.github.com/repos/tidyverse/dplyr/issues')
+baseurl <- 'https://api.github.com/repos/tidyverse/dplyr/issues'
+dplyr_issues <- as.tbl_json(baseurl)
 
 dplyr_issues %>% json_schema %>% prettify
 ```
 
-After exploring the structure of the data, we decide we want to look at a high level of what sort of issues we have.
+After exploring the structure of the data, we decide we want to look at a high level of the isssues we have.
 
 ```{r, echo=TRUE}
 
@@ -77,9 +78,11 @@ highlevel %>% group_by(state) %>% summarize(nissues=n())
 
 ```
 
-Let's aggregate a few more api calls.  Documentation can be found at the  [github API docs](https://developer.github.com/guides/traversing-with-pagination/).
+Let's aggregate a few more api calls.  Documentation can be found at the [github API docs](https://developer.github.com/guides/traversing-with-pagination/) and in particular [here](https://developer.github.com/v3/issues/#list-issues).
 
 ```{r, echo=TRUE}
+manyissues <- lapply(c(1:7), function(x){as.tbl_json(paste0(baseurl,'?state=all&per_page=50&page=',x))})
 
-
+## Collapse into one tbl_json
+manyissues <- bind_rows(manyissues)
 ```

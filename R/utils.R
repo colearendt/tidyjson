@@ -35,3 +35,47 @@ rbind_tbl_json <- function(x, y) {
   )
 
 }
+
+
+#' Handles dots or a list
+list_or_dots <- function (...) 
+{
+  dots <- list(...)
+  data_lists <- vapply(dots, is_data_list, logical(1))
+  dots[data_lists] <- lapply(dots[data_lists], list)
+  unlist(dots, recursive = FALSE)
+}
+
+#' 
+#' Checks whether a list is being provided
+#' 
+is_data_list <- function (x) 
+{
+  if (is.data.frame(x) || is.null(x)) 
+    return(TRUE)
+  if (!is.list(x)) 
+    return(FALSE)
+  if (!is.null(names(x)) && length(x) == 0) 
+    return(TRUE)
+  if (any(!has_names(x))) 
+    return(FALSE)
+  is_1d <- vapply(x, is_1d, logical(1))
+  if (any(!is_1d)) 
+    return(FALSE)
+  n <- vapply(x, length, integer(1))
+  if (any(n != n[1])) 
+    return(FALSE)
+  TRUE
+}
+
+#' Check for Names
+has_names <- function (x) 
+{
+  nms <- names(x)
+  if (is.null(nms)) {
+    rep(FALSE, length(x))
+  }
+  else {
+    !is.na(nms) & nms != ""
+  }
+}
