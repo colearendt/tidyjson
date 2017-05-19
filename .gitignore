@@ -7,6 +7,6 @@ inst/doc
 *.Rproj
 .DS_Store
 packrat/lib*/
-packrat/*
+packrat/src/
 working/
 .Rprofile
