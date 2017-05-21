@@ -1,6 +1,6 @@
 PackratFormat: 1.4
 PackratVersion: 0.4.8.1
-RVersion: 3.3.2
+RVersion: 3.4.0
 Repos: CRAN=http://cran.rstudio.com/
 
 Package: BH

@@ -9,3 +9,6 @@ r_packages:
 
 after_success:
   - Rscript -e 'library(covr); codecov()'
+
+after_script:
+ - ./travis-tool.sh dump_logs
