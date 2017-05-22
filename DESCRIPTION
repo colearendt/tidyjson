@@ -1,6 +1,6 @@
 Package: tidyjson
 Title: Tidy Complex JSON
-Version: 0.2.1.9000
+Version: 0.2.1.9001
 Author: Jeremy Stanley <jeremy.stanley@gmail.com>
 Maintainer: Jeremy Stanley <jeremy.stanley@gmail.com>
 Description: Turn complex JSON data into tidy data frames.
