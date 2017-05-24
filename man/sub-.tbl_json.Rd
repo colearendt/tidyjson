@@ -22,4 +22,3 @@ a \code{\link{tbl_json}} object
 Extends `[.data.frame` to work with tbl_json objects, so that row filtering
 of the underlying data.frame also filters the associated JSON.
 }
-

@@ -2,13 +2,13 @@
 % Please edit documentation in R/is_json.R
 \name{is_json}
 \alias{is_json}
-\alias{is_json_array}
+\alias{is_json_string}
+\alias{is_json_number}
 \alias{is_json_logical}
 \alias{is_json_null}
-\alias{is_json_number}
+\alias{is_json_array}
 \alias{is_json_object}
 \alias{is_json_scalar}
-\alias{is_json_string}
 \title{Predicates to test for specific JSON types in \code{\link{tbl_json}} objects}
 \usage{
 is_json_string(.x)
@@ -62,4 +62,3 @@ companies[1:5] \%>\% gather_object \%>\% filter(is_json_object(.)) \%>\%
 \code{\link{json_types}} for creating a new column to identify the
          type of every JSON document
 }
-

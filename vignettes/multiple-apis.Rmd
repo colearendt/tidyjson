@@ -1,6 +1,6 @@
 ---
 title: "Multiple APIs"
-author: "Cole"
+author: "Cole Arendt"
 date: "May 13, 2017"
 output: html_document
 ---
@@ -9,49 +9,29 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
-
 Let's take a look at a few HTTP APIs that transmit data in JSON format, and then manipulate the structure with tidyjson.
 
-```{r, echo=TRUE}
+```{r load, echo=TRUE, results='hide', message=FALSE}
 library(dplyr)
+library(tidyr)
 library(jsonlite)
 library(tidyjson)
 ```
 
 # Github
 
-Tidyverse is used heavily for data cleansing.  Let's explore some of the data through Github's APIs.  We are going to grab the data directly and then explore the structure of the JSON with `json_schema`.
+The tidyverse is used heavily for data cleansing, so let's explore some tidyverse repository data through Github's APIs.  We are going to grab the data directly and then explore the structure of the JSON with `json_schema`.
 
-```{r, echo=TRUE}
+```{r gitapi, echo=TRUE}
 baseurl <- 'https://api.github.com/repos/tidyverse/dplyr/issues'
 dplyr_issues <- as.tbl_json(baseurl)
 
 dplyr_issues %>% json_schema %>% prettify
 ```
 
-After exploring the structure of the data, we decide we want to look at a high level of the isssues we have.
+After exploring the structure of the data, we decide we want to look at a high level of the isssues we have.  Note that we can grab nested object detail by declaring a more complex path like `jstring('assignee','login')`.  This avoids the tendency to use `enter_object()` where it is not necessary.
 
-```{r, echo=TRUE}
+```{r gitapi_highlevel, echo=TRUE}
 
 highlevel <- dplyr_issues %>% gather_array('index') %>% 
   spread_values(id=jnumber('id')
@@ -59,6 +39,7 @@ highlevel <- dplyr_issues %>% gather_array('index') %>%
                 , comments=jnumber('comments')
                 , title=jstring('title')
                 , state=jstring('state')
+                , number=jnumber('number')
                 )
 
 print(highlevel)
@@ -67,11 +48,11 @@ print(highlevel)
 
 And perhaps we want to look at a few different summaries.  We notice that there are only 30 issues here, but anyone familiar with `dplyr` will know that the repo is much more popular than that.  Github's API is paginated, so we only got the first 30 issues back from the API.
 
-```{r, echo=TRUE}
+```{r gitapi_summarize, echo=TRUE}
 
 highlevel %>% group_by(assignee) %>% summarize(nissues=n())
 
-highlevel %>% group_by(comments) %>% summarize(nissues=n()) %>% 
+highlevel %>% group_by(comments) %>% summarize(nissues=n(), issues=paste(number,collapse=',')) %>% 
   ungroup() %>% arrange(desc(comments))
 
 highlevel %>% group_by(state) %>% summarize(nissues=n())
@@ -80,9 +61,20 @@ highlevel %>% group_by(state) %>% summarize(nissues=n())
 
 Let's aggregate a few more api calls.  Documentation can be found at the [github API docs](https://developer.github.com/guides/traversing-with-pagination/) and in particular [here](https://developer.github.com/v3/issues/#list-issues).
 
-```{r, echo=TRUE}
+```{r gitapi_many, echo=TRUE}
 manyissues <- lapply(c(1:7), function(x){as.tbl_json(paste0(baseurl,'?state=all&per_page=50&page=',x))})
 
 ## Collapse into one tbl_json
-manyissues <- bind_rows(manyissues)
+manyissues <- tidyjson::bind_rows(manyissues)
+
+## Summarize status & users that create issues
+manyissues %>% gather_array('issue') %>% spread_values(
+  login=jstring('user','login')
+  , comments=jnumber('comments')
+  , issuenum = jnumber('number')
+  , state = jstring('state')
+) %>% group_by(login, state) %>% summarize(issuecount=n()) %>% ungroup() %>%
+  spread(state, issuecount, fill=0) %>%
+  mutate(total=closed+open) %>%
+  arrange(desc(total), desc(open)) %>% head(10)
 ```

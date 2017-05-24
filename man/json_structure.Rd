@@ -73,4 +73,3 @@ companies[1] \%>\% json_structure \%>\% sample_n(5)
 \code{\link{json_schema}} to create a schema for a JSON document or
          collection
 }
-

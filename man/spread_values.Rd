@@ -51,7 +51,7 @@ json \%>\%
   )
 
 # Another document, this time with a middle name (and no age)
-json2 <- '{"name": {"first": "Ann", "middle": "A", "last": "Smith"}, "age": 23}'
+json2 <- '{"name": {"first": "Ann", "middle": "A", "last": "Smith"}}'
 
 # spread_values still gives the same column structure
 c(json, json2) \%>\%
@@ -71,4 +71,3 @@ c(json, json2) \%>\% spread_all
          \code{\link{jstring}}, \code{\link{jnumber}},
          \code{\link{jlogical}} for accessing specific names
 }
-

@@ -12,4 +12,3 @@ jfactory(map.function)
 \description{
 Factory that creates the j* functions below
 }
-

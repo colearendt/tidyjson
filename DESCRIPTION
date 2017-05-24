@@ -32,4 +32,4 @@ Suggests:
 VignetteBuilder: knitr
 URL: https://github.com/jeremystan/tidyjson
 BugReports: https://github.com/jeremystan/tidyjson/issues
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

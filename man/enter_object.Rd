@@ -73,6 +73,5 @@ companies \%>\%
 \seealso{
 \code{\link{gather_object}} to find sub-objects that could be
    entered into, \code{\link{gather_array}} to gather an array in an object
-   and \code{\link{spread_all}} to spread values in an object.
+   and \code{\link{spread_all}} or \code{\link{spread_values}} to spread values in an object.
 }
-

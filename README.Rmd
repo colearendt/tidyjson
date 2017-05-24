@@ -44,26 +44,30 @@ devtools::install_github("jeremystan/tidyjson")
 
 The following example takes a character vector of 
 `r library(tidyjson);length(worldbank)` 
-documents in the `worldbank` dataset and spreads out all objects into new 
-columns
+documents in the `worldbank` dataset and spreads out all objects.  
+Every JSON object key gets its own column with types inferred, so long 
+as the key does not represent an array.  When `recursive=TRUE` (the default behavior), 
+`spread_all` does this recursively for nested objects and creates column names 
+using the `sep` parameter (i.e. `{"a":{"b":1}}` with `sep='.'` would 
+generate a single column: `a.b`).
 
-```{r}
+```{r, message=FALSE}
+library(dplyr)
 library(tidyjson)
-suppressMessages(library(dplyr))
 
 worldbank %>% spread_all
 ```
 
-However, some objects in `worldbank` are arrays, this example shows how
+Some objects in `worldbank` are arrays, which are not handled by `spread_all`.  This example shows how
 to quickly summarize the top level structure of a JSON collection
 
 ```{r}
 worldbank %>% gather_object %>% json_types %>% count(name, type)
 ```
 
-In order to capture the data in `majorsector_percent` we can use `enter_object` 
+In order to capture the data in the `majorsector_percent` array, we can use `enter_object` 
 to enter into that object, `gather_array` to stack the array and `spread_all`
-to capture the object names under the array.
+to capture the object items under the array.
 
 ```{r}
 worldbank %>%
@@ -81,7 +85,9 @@ worldbank %>%
 objects having concatenated names
 
 * `spread_values()` for specifying a subset of object values to spread into
-new columns using the `jstring()`, `jnumber()` and `jlogical()` functions
+new columns using the `jstring()`, `jnumber()` and `jlogical()` functions.  It is
+possible to specify multiple parameters to extract data from nested objects 
+(i.e. `jstring('a','b')`).
 
 ### Object navigation
 

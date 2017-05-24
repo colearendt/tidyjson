@@ -2,9 +2,9 @@
 % Please edit documentation in R/spread_values.R
 \name{jfunctions}
 \alias{jfunctions}
-\alias{jlogical}
-\alias{jnumber}
 \alias{jstring}
+\alias{jnumber}
+\alias{jlogical}
 \title{Navigates nested objects to get at names of a specific type, to be used as
 arguments to \code{\link{spread_values}}}
 \usage{
@@ -32,4 +32,3 @@ Note that these functions fail if they encounter the incorrect type.
 \code{\link{spread_values}} for using these functions to spread
          the values of a JSON object into new columns
 }
-
