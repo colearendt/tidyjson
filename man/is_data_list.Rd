@@ -2,9 +2,15 @@
 % Please edit documentation in R/utils.R
 \name{is_data_list}
 \alias{is_data_list}
-\title{Checks whether a list is being provided}
+\title{List Check}
 \usage{
 is_data_list(x)
+}
+\arguments{
+\item{x}{Input object}
+}
+\value{
+Boolean.  Indicates whether x is a list
 }
 \description{
 Checks whether a list is being provided

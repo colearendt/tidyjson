@@ -1,15 +1,18 @@
 ---
-title: "Multiple APIs"
-author: "Cole Arendt"
-date: "May 13, 2017"
-output: html_document
+title: "Using Multiple APIs"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using Multiple APIs}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Let's take a look at a few HTTP APIs that transmit data in JSON format, and then manipulate the structure with tidyjson.
+Let's take a look at a few HTTP APIs that transmit data in JSON format, and then get that data into tidy data_frames with tidyjson.
 
 ```{r load, echo=TRUE, results='hide', message=FALSE}
 library(dplyr)

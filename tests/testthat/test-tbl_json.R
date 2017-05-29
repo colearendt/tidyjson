@@ -103,6 +103,14 @@ test_that("works for worldbank data", {
 
 })
 
+test_that("throws informative warning message when attr(.,'JSON') is missing", {
+  j <- '{"a": 1, "b": "test"}' %>% as.tbl_json()
+  attr(j,'JSON') <- NULL
+  
+  expect_warning(j %>% as.character(),'attr.*JSON.*remove.*tbl_json')
+  expect_identical(suppressWarnings(j %>% as.character()),character())
+})
+
 
 context("as.tbl_json.tbl_json")
 
@@ -483,7 +491,7 @@ test_that("dplyr::sample_n works", {
 
 })
 
-test_that("dplyr:bind_rows works", {
+test_that("bind_rows works with tbl_json", {
 
   # Define a simple JSON array
   people <- '
@@ -505,7 +513,6 @@ test_that("dplyr:bind_rows works", {
       name = jstring("name"),
       age = jnumber("age"))
   
-  ## Print method fails after bind_rows
   z <- people_df %>% bind_rows(people_df)
   
 
@@ -515,7 +522,15 @@ test_that("dplyr:bind_rows works", {
   expect_equal(length(attr(z,'JSON')), nrow(people_df) * 2)
 })
 
-
+test_that("bind_rows falls back to normal behavior if not tbl_json", {
+  a <- dplyr::data_frame(a=c(1,2), b=c('one','two'))
+  c <- dplyr::data_frame(a=c(3,4), b=c('three','four'))
+  
+  out <- bind_rows(a,c)
+  expect_equal(nrow(out), nrow(a) + nrow(c))
+  expect_equal(names(out), c('a','b'))
+  expect_is(out,'tbl_df')
+})
 
 context('tbl_json: dplyr SE verbs')
 

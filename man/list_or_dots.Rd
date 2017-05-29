@@ -2,10 +2,17 @@
 % Please edit documentation in R/utils.R
 \name{list_or_dots}
 \alias{list_or_dots}
-\title{Handles dots or a list}
+\title{List or Dots}
 \usage{
 list_or_dots(...)
 }
+\arguments{
+\item{...}{Either a list or the `...` of a function call}
+}
+\value{
+The input object coerced into a list for easier use
+}
 \description{
-Handles dots or a list
+Handles dots or a list, coercing into a list
+so that the output is easy to handle
 }

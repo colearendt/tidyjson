@@ -6,6 +6,12 @@
 \usage{
 has_names(x)
 }
+\arguments{
+\item{x}{Input object}
+}
+\value{
+Boolean.  Indicates whether x has names
+}
 \description{
-Check for Names
+Checks the input object for the existence of names
 }

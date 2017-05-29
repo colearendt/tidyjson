@@ -37,7 +37,14 @@ rbind_tbl_json <- function(x, y) {
 }
 
 
-#' Handles dots or a list
+#' List or Dots
+#' 
+#' Handles dots or a list, coercing into a list
+#' so that the output is easy to handle
+#' 
+#' @param ... Either a list or the `...` of a function call
+#' 
+#' @return The input object coerced into a list for easier use
 list_or_dots <- function (...) 
 {
   dots <- list(...)
@@ -47,7 +54,13 @@ list_or_dots <- function (...)
 }
 
 #' 
+#' List Check
+#' 
 #' Checks whether a list is being provided
+#' 
+#' @param x Input object
+#' 
+#' @return Boolean.  Indicates whether x is a list
 #' 
 is_data_list <- function (x) 
 {
@@ -69,6 +82,12 @@ is_data_list <- function (x)
 }
 
 #' Check for Names
+#' 
+#' Checks the input object for the existence of names
+#' 
+#' @param x Input object
+#' 
+#' @return Boolean.  Indicates whether x has names
 has_names <- function (x) 
 {
   nms <- names(x)
