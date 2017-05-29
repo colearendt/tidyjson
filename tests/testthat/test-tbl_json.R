@@ -216,6 +216,22 @@ test_that("print.tbl_json json.n works correctly", {
 
 })
 
+test_that('does not throw an error', {
+  printregex <- 'tbl_json.*JSON.*attribute.*document\\.id'
+  json <- '{"a":1, "b": "test", "c": [1,2,3]}'
+  
+  expect_output(json %>% as.tbl_json() %>% print, printregex)
+  
+  j <- json %>% spread_all() %>% enter_object('c') %>% 
+    gather_array('c_id') %>% append_values_number()
+  
+  expect_output(j %>% print, printregex)
+  
+  attr(j,'JSON') <- NULL
+  
+  expect_output(j %>% print, printregex)
+})
+
 context("tbl_json: as.tbl_json.data.frame")
 
 test_that("works for a data.frame and data_frame created objects", {

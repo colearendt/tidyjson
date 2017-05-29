@@ -305,7 +305,7 @@ print.tbl_json <- function(x, ..., json.n = 20, json.width = 15) {
   json <- json[seq_len(min(json.n, nrow(x)))]
 
   # Truncate json
-  lengths <- json %>% nchar
+  lengths <- dplyr::coalesce(json %>% nchar,0L)
   json <- json %>% strtrim(json.width)
   json[lengths > json.width] <- paste0(json[lengths > json.width], "...")
 
