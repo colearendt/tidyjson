@@ -81,15 +81,19 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
     gather_object("..name1") %>%
     json_types("..type")
 
-  if (recursive)
+  if (recursive) {
     while(any(y$..type == "object"))
       y <- rbind_tbl_json(
         y %>% dplyr::filter(..type != "object"),
         recursive_gather(y, sep)
       )
+  } else {
+    y <- y %>% dplyr::filter(..type != 'object')
+  }
+    
 
   # Look for duplicate keys
-  key_freq <- y %>% group_by(..id, ..name1) %>% tally
+  key_freq <- y %>% dplyr::group_by(..id, ..name1) %>% dplyr::tally()
 
   if (any(key_freq$n > 1) || any(key_freq$..name1 %in% exist_cols)) {
 
@@ -162,7 +166,7 @@ spread_type <- function(.x, this.type, append.fun) {
   any_type <- any(.x$..type == this.type)
 
   if (!any_type)
-    return(data_frame(..id = integer(0)))
+    return(dplyr::data_frame(..id = integer(0)))
 
   .x %>%
     dplyr::filter(..type == this.type) %>%

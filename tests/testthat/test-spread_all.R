@@ -5,7 +5,7 @@ test_that("works for simple example", {
   expect_identical(
     '{"a": 1, "b": "x", "c": true}' %>% spread_all,
     tbl_json(
-      data_frame(
+      dplyr::data_frame(
         document.id = 1L,
         a = 1,
         b = "x",
@@ -22,7 +22,7 @@ test_that("spreads a null column", {
   expect_identical(
     '{"a": null}' %>% spread_all,
     tbl_json(
-      data_frame(
+      dplyr::data_frame(
         document.id = 1L,
         a = NA
       ),
@@ -43,7 +43,7 @@ test_that("handles a more complex document", {
   expect_identical(
     json %>% spread_all,
     tbl_json(
-      data_frame(
+      dplyr::data_frame(
         document.id = 1L:3L,
         a = c("x", NA_character_, NA_character_),
         b = c(1, NA_integer_, NA_integer_),
@@ -51,7 +51,7 @@ test_that("handles a more complex document", {
         d = rep(NA, 3),
         e = rep(NA, 3)
       ),
-      json %>% map(fromJSON, simplifyVector = FALSE)
+      json %>% purrr::map(jsonlite::fromJSON, simplifyVector = FALSE)
     )
   )
 
@@ -102,14 +102,14 @@ test_that("recursive names work", {
   expect_identical(
     json %>% spread_all,
     tbl_json(
-      data_frame(
+      dplyr::data_frame(
         document.id = 1L,
         k1 = 1,
         k6 = 4,
         k2.k3 = 2,
         k2.k4.k5 = 3
       ),
-      json %>% map(fromJSON, simplifyVector = FALSE)
+      json %>% purrr::map(jsonlite::fromJSON, simplifyVector = FALSE)
     )
   )
 
@@ -149,8 +149,8 @@ test_that("works with multiple duplicated columns", {
   expect_identical(
     suppressWarnings(json %>% spread_all),
     tbl_json(
-      data_frame(document.id = 1L, key = "a", key.2 = "b", key.3 = "c"),
-      list(fromJSON(json, simplifyVector = FALSE))
+      dplyr::data_frame(document.id = 1L, key = "a", key.2 = "b", key.3 = "c"),
+      list(jsonlite::fromJSON(json, simplifyVector = FALSE))
     )
   )
   expect_warning(json %>% spread_all)
@@ -159,16 +159,44 @@ test_that("works with multiple duplicated columns", {
 
 test_that("works when column names are duplicated from data frame", {
 
-  df <- data_frame(key = 1L, json = '{"key": "a", "key": "b"}') %>%
+  df <- dplyr::data_frame(key = 1L, json = '{"key": "a", "key": "b"}') %>%
     as.tbl_json(json.column = "json")
 
   expect_identical(
     suppressWarnings(df %>% spread_all),
     tbl_json(
-      data_frame(key = 1L, key.2 = "a", key.3 = "b"),
+      dplyr::data_frame(key = 1L, key.2 = "a", key.3 = "b"),
       attr(df, "JSON")
     )
   )
   expect_warning(df %>% spread_all)
 
+})
+
+test_that("works with recursive=FALSE when objects are present", {
+  json <- '{"id":1, "name": "Charles", "obj":{"a":2, "b": "test"}}'
+  
+  j <- json %>% spread_all(recursive=FALSE)
+  
+  expect_identical(names(j),c('document.id','id','name'))
+  
+  i <- issues %>% gather_array() %>% spread_all(recursive=FALSE)
+  
+  expect_equal(nrow(i),30)
+  expect_equal(ncol(i), 19)
+})
+
+test_that("attr(.,JSON) remains intact", {
+  json <- '{"id": 1, "name": "Charles", 
+  "hobby": ["a","b","c","d"], 
+  "obj": {"a":2, "b": "test"}}'
+  
+  j <- json %>% spread_all(recursive=FALSE) %>%
+    spread_values(a=jnumber(obj,a), b=jstring(obj,b)) %>%
+    enter_object('hobby') %>% gather_array('hobbyid') %>%
+    append_values_string('hobby')
+  
+  expect_equal(j$hobby,c('a','b','c','d'))
+  expect_equal(nrow(j),4)
+  expect_equal(names(j),c('document.id','id','name','a','b','hobbyid','hobby'))
 })
