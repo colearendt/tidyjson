@@ -200,3 +200,11 @@ test_that("attr(.,JSON) remains intact", {
   expect_equal(nrow(j),4)
   expect_equal(names(j),c('document.id','id','name','a','b','hobbyid','hobby'))
 })
+
+test_that("multiple iterations of deduped names work", {
+  json <- '{"a.b": 1, "a": {"b.2": 2, "b":3}}'
+
+  expect_warning(json %>% spread_all(), 'results in duplicate column names')
+  
+  expect_named(suppressWarnings(json %>% spread_all), c('document.id','a.b','a.b.2','a.b.2.2'))
+})

@@ -95,7 +95,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
   # Look for duplicate keys
   key_freq <- y %>% dplyr::group_by(..id, ..name1) %>% dplyr::tally()
 
-  if (any(key_freq$n > 1) || any(key_freq$..name1 %in% exist_cols)) {
+  while (any(key_freq$n > 1) || any(key_freq$..name1 %in% exist_cols)) {
 
     warning("results in duplicate column names, appending .# for uniqueness")
 
@@ -112,6 +112,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
     # Re-attach JSON
     y <- tbl_json(y_dedupe, attr(y, "JSON"))
 
+    key_freq <- y %>% dplyr::group_by(..id, ..name1) %>% dplyr::tally()
   }
 
   name_order <- y %>%

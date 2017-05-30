@@ -229,7 +229,7 @@ test_that('does not throw an error', {
   
   attr(j,'JSON') <- NULL
   
-  expect_output(j %>% print, printregex)
+  expect_output(suppressWarnings(j %>% print), printregex)
 })
 
 context("tbl_json: as.tbl_json.data.frame")
