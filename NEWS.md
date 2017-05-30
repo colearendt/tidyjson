@@ -1,4 +1,34 @@
-# purrr 0.2.1.9000
+# tidyjson 0.2.1.9001
+
+## New functions
+
+* Add `bind_rows()` support.  Though currently not an S3 implementation, it behaves as much like the `dplyr` variant as possible, preserving the `attr(.,'JSON')` components if all components are `tbl_json` objects. (#58)
+
+## Documentation Changes
+
+* "Using Multiple APIs" vignette added to show support for using tidyjson with multiple APIs (#85)
+
+* Updated README.md to better explain `spread_all()` (#92)
+
+## Bug fixes and minor changes
+
+* `DROP=TRUE` caused an error.  Altered behavior to be consistent with `tbl_df` (throw a warning and do nothing)
+
+* Fix `spread_all(recursive=FALSE)` bug that caused an error (#65)
+
+* Alter `spread_all()` behavior to recursively check for deduplication of names (and thus avoid an error) (#76)
+
+* Add named support for the `NSE` versions of dplyr functions (`filter()`,`mutate()`,`slice()`, etc.) since the `SE` variants are no longer called behind-the-scenes since `dplyr 0.6.0`.  (#97)
+
+* Fix errors with `print.tbl_json()` when the JSON attribute is missing
+
+## Deprecated functions
+
+* `jstring()`, `jnumber()`, `jlogical()` -> use `json_chr()`, `json_dbl()`, `json_lgl()` instead (#93)
+
+* `is_json_string()`,`is_json_number()`,`is_json_logical()` -> use `is_json_chr()`, `is_json_dbl()`, `is_json_lgl()` instead (#93)
+
+# tidyjson 0.2.1.9000
 
 ## New functions
 

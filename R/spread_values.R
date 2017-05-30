@@ -73,10 +73,10 @@ spread_values <- function(.x, ...) {
 
 }
 
-#' Factory that creates the j* functions below
+#' Factory that creates the json_* functions below
 #'
 #' @param map.function function to map to collapse
-jfactory <- function(map.function) {
+json_factory <- function(map.function) {
 
   replace_nulls_na <- function(x)
     if (is.null(x)) NA else x
@@ -108,7 +108,7 @@ jfactory <- function(map.function) {
 #'
 #' @seealso \code{\link{spread_values}} for using these functions to spread
 #'          the values of a JSON object into new columns
-#' @name jfunctions
+#' @name json_functions
 #' @param ... a quoted or unquoted sequence of strings designating the object
 #'            name sequence you wish to follow to find a value
 #' @param recursive logical indicating whether second level and beyond objects
@@ -117,34 +117,34 @@ jfactory <- function(map.function) {
 #' @return a function that can operate on parsed JSON data
 NULL
 
-#' @rdname jfunctions
+#' @rdname json_functions
 #' @export
-json_chr <- jfactory(map_chr)
+json_chr <- json_factory(map_chr)
 
-#' @rdname jfunctions
+#' @rdname json_functions
 #' @export
-jstring <- function(...) {
+jstring <- function(..., recursive=FALSE) {
   .Deprecated('json_chr')
   json_chr(...)
 }
-#' @rdname jfunctions
+#' @rdname json_functions
 #' @export
-json_dbl <- jfactory(map_dbl)
+json_dbl <- json_factory(map_dbl)
 
-#' @rdname jfunctions
+#' @rdname json_functions
 #' @export
-jnumber <- function(...) {
+jnumber <- function(..., recursive=FALSE) {
   .Deprecated('json_dbl')
   json_dbl(...)
 }
 
-#' @rdname jfunctions
+#' @rdname json_functions
 #' @export
-json_lgl <- jfactory(map_lgl)
+json_lgl <- json_factory(map_lgl)
 
-#' @rdname jfunctions
+#' @rdname json_functions
 #' @export
-jlogical <- function(...) {
+jlogical <- function(..., recursive=FALSE) {
   .Deprecated('json_lgl')
   json_lgl(...)
 }

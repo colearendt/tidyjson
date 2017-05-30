@@ -9,7 +9,8 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(collapse = T, comment = "#>")
+options(tibble.print_min = 4L, tibble.print_max = 4L)
 ```
 
 Let's take a look at a few HTTP APIs that transmit data in JSON format, and then get that data into tidy data_frames with tidyjson.
@@ -32,17 +33,17 @@ dplyr_issues <- as.tbl_json(baseurl)
 dplyr_issues %>% json_schema %>% prettify
 ```
 
-After exploring the structure of the data, we decide we want to look at a high level of the isssues we have.  Note that we can grab nested object detail by declaring a more complex path like `jstring('assignee','login')`.  This avoids the tendency to use `enter_object()` where it is not necessary.
+After exploring the structure of the data, we decide we want to look at a high level overview of the isssues we have.  Note that we can grab nested object detail by declaring a more complex path like `json_chr('assignee','login')`.  This avoids the tendency to use `enter_object()` where it is not necessary.
 
 ```{r gitapi_highlevel, echo=TRUE}
 
 highlevel <- dplyr_issues %>% gather_array('index') %>% 
-  spread_values(id=jnumber('id')
-                , assignee=jstring('assignee','login')
-                , comments=jnumber('comments')
-                , title=jstring('title')
-                , state=jstring('state')
-                , number=jnumber('number')
+  spread_values(id=json_dbl('id')
+                , assignee=json_chr('assignee','login')
+                , comments=json_dbl('comments')
+                , title=json_chr('title')
+                , state=json_chr('state')
+                , number=json_dbl('number')
                 )
 
 print(highlevel)
@@ -72,10 +73,10 @@ manyissues <- tidyjson::bind_rows(manyissues)
 
 ## Summarize status & users that create issues
 manyissues %>% gather_array('issue') %>% spread_values(
-  login=jstring('user','login')
-  , comments=jnumber('comments')
-  , issuenum = jnumber('number')
-  , state = jstring('state')
+  login=json_chr('user','login')
+  , comments=json_dbl('comments')
+  , issuenum = json_dbl('number')
+  , state = json_chr('state')
 ) %>% group_by(login, state) %>% summarize(issuecount=n()) %>% ungroup() %>%
   spread(state, issuecount, fill=0) %>%
   mutate(total=closed+open) %>%

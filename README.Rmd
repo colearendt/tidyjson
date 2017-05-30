@@ -85,9 +85,9 @@ worldbank %>%
 objects having concatenated names
 
 * `spread_values()` for specifying a subset of object values to spread into
-new columns using the `jstring()`, `jnumber()` and `jlogical()` functions.  It is
+new columns using the `json_chr()`, `json_dbl()` and `json_lgl()` functions.  It is
 possible to specify multiple parameters to extract data from nested objects 
-(i.e. `jstring('a','b')`).
+(i.e. `json_chr('a','b')`).
 
 ### Object navigation
 
