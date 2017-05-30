@@ -192,7 +192,7 @@ test_that("attr(.,JSON) remains intact", {
   "obj": {"a":2, "b": "test"}}'
   
   j <- json %>% spread_all(recursive=FALSE) %>%
-    spread_values(a=jnumber(obj,a), b=jstring(obj,b)) %>%
+    spread_values(a=json_dbl(obj,a), b=json_chr(obj,b)) %>%
     enter_object('hobby') %>% gather_array('hobbyid') %>%
     append_values_string('hobby')
   

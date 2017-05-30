@@ -2,13 +2,13 @@
 #'
 #' The \code{spread_values} function lets you extract extract specific values
 #' from (potentiall nested) JSON objects. \code{spread_values} takes
-#' \code{\link{jstring}}, \code{\link{jnumber}} or \code{\link{jlogical}} named
+#' \code{\link{json_chr}}, \code{\link{json_dbl}} or \code{\link{json_lgl}} named
 #' function calls as arguments in order to specify the type of the data that
 #' should be captured at each desired name-value pair location. These values can
 #' be of varying types at varying depths.
 #'
-#' Note that \code{\link{jstring}}, \code{\link{jnumber}} and
-#' \code{\link{jlogical}} will fail if they encounter the incorrect type in any
+#' Note that \code{\link{json_chr}}, \code{\link{json_dbl}} and
+#' \code{\link{json_lgl}} will fail if they encounter the incorrect type in any
 #' document.
 #'
 #' The advantage of \code{spread_values} over \code{\link{spread_all}} is that
@@ -19,13 +19,13 @@
 #'
 #' @seealso \code{\link{spread_all}} for spreading all values,
 #'          \code{\link[tidyr]{spread}} for spreading data frames,
-#'          \code{\link{jstring}}, \code{\link{jnumber}},
-#'          \code{\link{jlogical}} for accessing specific names
+#'          \code{\link{json_chr}}, \code{\link{json_dbl}},
+#'          \code{\link{json_lgl}} for accessing specific names
 #' @param .x a json string or \code{\link{tbl_json}} object
 #' @param ... \code{column = value} pairs where \code{column} will be the
 #'            column name created and \code{value} must be a call to
-#'            \code{\link{jstring}}, \code{\link{jnumber}} or
-#'            \code{\link{jlogical}} specifying the path to get the value (and
+#'            \code{\link{json_chr}}, \code{\link{json_dbl}} or
+#'            \code{\link{json_lgl}} specifying the path to get the value (and
 #'            the type implicit in the function name)
 #' @return a \code{\link{tbl_json}} object
 #' @export
@@ -37,9 +37,9 @@
 #' # Using spread_values
 #' json %>%
 #'   spread_values(
-#'     first.name = jstring(name, first),
-#'     last.name  = jstring(name, last),
-#'     age        = jnumber(age)
+#'     first.name = json_chr(name, first),
+#'     last.name  = json_chr(name, last),
+#'     age        = json_dbl(age)
 #'   )
 #'
 #' # Another document, this time with a middle name (and no age)
@@ -48,9 +48,9 @@
 #' # spread_values still gives the same column structure
 #' c(json, json2) %>%
 #'   spread_values(
-#'     first.name = jstring(name, first),
-#'     last.name  = jstring(name, last),
-#'     age        = jnumber(age)
+#'     first.name = json_chr(name, first),
+#'     last.name  = json_chr(name, last),
+#'     age        = json_dbl(age)
 #'   )
 #'
 #' # whereas spread_all adds a new column
@@ -119,12 +119,32 @@ NULL
 
 #' @rdname jfunctions
 #' @export
-jstring <- jfactory(map_chr)
+json_chr <- jfactory(map_chr)
 
 #' @rdname jfunctions
 #' @export
-jnumber <- jfactory(map_dbl)
+jstring <- function(...) {
+  .Deprecated('json_chr')
+  json_chr(...)
+}
+#' @rdname jfunctions
+#' @export
+json_dbl <- jfactory(map_dbl)
 
 #' @rdname jfunctions
 #' @export
-jlogical <- jfactory(map_lgl)
+jnumber <- function(...) {
+  .Deprecated('json_dbl')
+  json_dbl(...)
+}
+
+#' @rdname jfunctions
+#' @export
+json_lgl <- jfactory(map_lgl)
+
+#' @rdname jfunctions
+#' @export
+jlogical <- function(...) {
+  .Deprecated('json_lgl')
+  json_lgl(...)
+}

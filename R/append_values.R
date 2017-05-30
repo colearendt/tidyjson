@@ -37,7 +37,7 @@
 #' recipes <- c('{"name": "pie", "tags": {"apple": 10, "pie": 2, "flour": 5}}',
 #'              '{"name": "cookie", "tags": {"chocolate": 2, "cookie": 1}}')
 #' recipes %>%
-#'   spread_values(name = jstring(name)) %>%
+#'   spread_values(name = json_chr(name)) %>%
 #'   enter_object(tags) %>%
 #'   gather_object("tag") %>%
 #'   append_values_number("count")
