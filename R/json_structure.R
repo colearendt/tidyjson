@@ -160,13 +160,13 @@ json_structure_level <- function(s) {
 
 json_structure_objects <- function(s) {
   
-  v <- c('document.id',parent.id='child.id','seq',level ='level + 1L')
-  v <- v[v != 'document.id' | 'document.id' %in% names(s)]
-  
   expand_s <- s %>%
     dplyr::filter(type == "object") %>%
-    dplyr::transmute_(
-      .dots=v
+    dplyr::transmute(
+      document.id
+      , parent.id=child.id
+      , seq
+      , level=level + 1L
     ) %>%
     gather_object %>%
     json_types %>%
@@ -180,12 +180,17 @@ json_structure_objects <- function(s) {
     dplyr::mutate(
       child.id = paste(parent.id, index, sep = "."),
       seq = purrr::map2(seq, name, c)
-    )
-  
-  v <- c('document.id','parent.id','level','index','child.id','seq','name','type','length')
-  v <- v[v != 'document.id' | 'document.id' %in% names(df_s)]
-  df_s <- df_s %>% dplyr::select_(
-      .dots=v
+    ) %>%
+    dplyr::select(
+      document.id
+      , parent.id
+      , level
+      , index
+      , child.id
+      , seq
+      , name
+      , type
+      , length
     )
 
   # Reconstruct tbl_json object
@@ -195,13 +200,13 @@ json_structure_objects <- function(s) {
 
 json_structure_arrays <- function(s) {
   
-  v <- c('document.id',parent.id='child.id','seq',level ='level + 1L')
-  v <- v[v != 'document.id' | 'document.id' %in% names(s)]
-
   s <- s %>%
     dplyr::filter(type == "array") %>%
-    dplyr::transmute_(
-      .dots=v
+    dplyr::transmute(
+      document.id
+      , parent.id=child.id
+      , seq
+      , level=level + 1L
     ) %>%
     gather_array("index") %>%
     json_types %>%
@@ -209,15 +214,17 @@ json_structure_arrays <- function(s) {
     dplyr::mutate(
       child.id = paste(parent.id, index, sep = "."),
       seq = purrr::map2(seq, index, c)
-    )
-  
-    v <- c('document.id', 'parent.id', 'level'
-           , 'index', 'child.id', 'seq'
-           , name='NA_character_', 'type', 'length')
-    v <- v[v != 'document.id' | 'document.id' %in% names(s)]
-  
-    s %>% dplyr::transmute_(
-      .dots=v
+    ) %>%
+    dplyr::transmute(
+      document.id
+      , parent.id
+      , level
+      , index
+      , child.id
+      , seq
+      , name=NA_character_
+      , type
+      , length
     )
 
 }
