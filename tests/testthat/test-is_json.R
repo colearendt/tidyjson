@@ -31,3 +31,13 @@ test_that("works with filter", {
   )
 
 })
+
+test_that('deprecated functions warn appropriately', {
+  deptxt <- function(func,alt) {
+    paste0(func,'.*deprecated.*',alt,'.*instead')
+  }
+  
+  expect_warning(is_json_string('"a"'),deptxt('is_json_string','is_json_chr'))
+  expect_warning(is_json_number('2'),deptxt('is_json_number','is_json_dbl'))
+  expect_warning(is_json_logical('true'),deptxt('is_json_logical','is_json_lgl'))
+})

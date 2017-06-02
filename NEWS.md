@@ -22,6 +22,9 @@
 
 * Fix errors with `print.tbl_json()` when the JSON attribute is missing
 
+* Fix json_structure() failure if `document.id` missing by imputing 
+the missing `document.id`.  (#86)
+
 ## Deprecated functions
 
 * `jstring()`, `jnumber()`, `jlogical()` -> use `json_chr()`, `json_dbl()`, `json_lgl()` instead (#93)

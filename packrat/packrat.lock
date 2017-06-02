@@ -162,13 +162,13 @@ Requires: foreach, iterators
 Package: dplyr
 Source: github
 Version: 0.6.0
-Hash: 7e0ae536aa5a9edfbfb6359875dae5a7
+Hash: 26e5049e2234c96439aa569fbe46ef91
 Requires: BH, R6, Rcpp, assertthat, bindrcpp, glue, magrittr,
     pkgconfig, plogr, rlang, tibble
 GithubRepo: dplyr
 GithubUsername: tidyverse
 GithubRef: master
-GithubSha1: c7ca37436c140173a3bf0e7f15d55b604b52c0b4
+GithubSha1: 02df8071498f3aa8ba8335cf7bc0e3eb0a2d9ca0
 
 Package: evaluate
 Source: CRAN
@@ -274,8 +274,8 @@ Hash: 488b93c2a4166db0d15f1e8d882cb1d4
 
 Package: jsonlite
 Source: CRAN
-Version: 1.4
-Hash: 24cc0ffeb1771d710173d9803a131870
+Version: 1.5
+Hash: 9c51936d8dd00b2f1d4fe9d10499694c
 
 Package: knitr
 Source: CRAN
@@ -303,6 +303,12 @@ Source: CRAN
 Version: 1.4.0
 Hash: 1ba384647832321e8b40ef071ebe2b30
 Requires: htmltools, htmlwidgets, shiny
+
+Package: lubridate
+Source: CRAN
+Version: 1.6.0
+Hash: b90f4cbefe0b3c545dd68b22c66a8a12
+Requires: stringr
 
 Package: magrittr
 Source: CRAN
@@ -487,13 +493,13 @@ Requires: R6, crayon, digest, magrittr, praise
 
 Package: tibble
 Source: github
-Version: 1.3.2
-Hash: 95fe40badd408ec13f6b7cde9acaee4c
+Version: 1.3.3
+Hash: 07babb29e8d1a37fbf14f860101ee312
 Requires: Rcpp, rlang
 GithubRepo: tibble
 GithubUsername: tidyverse
 GithubRef: master
-GithubSha1: 393bd8399ddd2b819b8ca3cea93844c49cf901a4
+GithubSha1: b2275d51116684d184a81c1f34f001a2215d751b
 
 Package: tidyr
 Source: CRAN

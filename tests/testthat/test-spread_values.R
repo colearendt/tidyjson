@@ -182,6 +182,17 @@ test_that('correctly handles over-specified path', {
   expect_equal(json %>% spread_values(c = json_lgl('c','d')) %>% .$c, as.logical(NA))
 })
 
+
+test_that('deprecated functions warn appropriately', {
+  deptxt <- function(func,alt) {
+    paste0(func,'.*deprecated.*',alt,'.*instead')
+  }
+  j <- '{"a":"one","b":2,"c":true}'
+  expect_warning(j %>% spread_values(a=jstring(a)),deptxt('jstring','json_chr'))
+  expect_warning(j %>% spread_values(b=jnumber(b)),deptxt('jnumber','json_dbl'))
+  expect_warning(j %>% spread_values(c=jlogical(c)),deptxt('jlogical','json_lgl'))
+})
+
 context("recursive option")
 
 test_that("recursive works for simple input", {
