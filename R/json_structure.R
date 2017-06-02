@@ -69,9 +69,9 @@ json_structure <- function(.x) {
   this_level <- 0L
   while(structure %>% should_json_structure_expand_more(this_level)) {
 
-    structure <- rbind_tbl_json(
+    structure <- bind_rows(
       structure,
-      json_structure_level(structure %>% filter(level == this_level))
+      json_structure_level(structure %>% dplyr::filter(level == this_level))
     )
 
     this_level <- this_level + 1L
@@ -84,6 +84,11 @@ json_structure <- function(.x) {
 
 json_structure_init <- function(x) {
 
+  if (!'document.id' %in% names(x)) {
+    x <- x %>% dplyr::mutate(
+      document.id=row_number()
+    )
+  }
   x %>%
     dplyr::mutate(
       parent.id = NA_character_,
@@ -131,10 +136,11 @@ json_structure_empty <- function() {
 json_structure_level <- function(s) {
 
   new_s <- json_structure_empty()
+  new_s <- new_s %>% dplyr::select_(.dots=names(s)[names(s) %in% names(new_s)])
 
   # Expand any objects
   if (any(s$type == "object")) {
-    new_s <- rbind_tbl_json(
+    new_s <- bind_rows(
       new_s,
       s %>% json_structure_objects
     )
@@ -142,7 +148,7 @@ json_structure_level <- function(s) {
 
   # Expand any arrays
   if (any(s$type == "array")) {
-    new_s <- rbind_tbl_json(
+    new_s <- bind_rows(
       new_s,
       s %>% json_structure_arrays
     )
@@ -153,14 +159,14 @@ json_structure_level <- function(s) {
 }
 
 json_structure_objects <- function(s) {
-
+  
+  v <- c('document.id',parent.id='child.id','seq',level ='level + 1L')
+  v <- v[v != 'document.id' | 'document.id' %in% names(s)]
+  
   expand_s <- s %>%
     dplyr::filter(type == "object") %>%
-    dplyr::transmute(
-      document.id,
-      parent.id = child.id,
-      seq,
-      level = level + 1L
+    dplyr::transmute_(
+      .dots=v
     ) %>%
     gather_object %>%
     json_types %>%
@@ -173,10 +179,13 @@ json_structure_objects <- function(s) {
     dplyr::ungroup() %>%
     dplyr::mutate(
       child.id = paste(parent.id, index, sep = "."),
-      seq = map2(seq, name, c)
-    ) %>%
-    dplyr::select(
-      document.id, parent.id, level, index, child.id, seq, name, type, length
+      seq = purrr::map2(seq, name, c)
+    )
+  
+  v <- c('document.id','parent.id','level','index','child.id','seq','name','type','length')
+  v <- v[v != 'document.id' | 'document.id' %in% names(df_s)]
+  df_s <- df_s %>% dplyr::select_(
+      .dots=v
     )
 
   # Reconstruct tbl_json object
@@ -185,25 +194,30 @@ json_structure_objects <- function(s) {
 }
 
 json_structure_arrays <- function(s) {
+  
+  v <- c('document.id',parent.id='child.id','seq',level ='level + 1L')
+  v <- v[v != 'document.id' | 'document.id' %in% names(s)]
 
-  s %>%
+  s <- s %>%
     dplyr::filter(type == "array") %>%
-    dplyr::transmute(
-      document.id,
-      parent.id = child.id,
-      seq,
-      level = level + 1L
+    dplyr::transmute_(
+      .dots=v
     ) %>%
     gather_array("index") %>%
     json_types %>%
     json_lengths %>%
     dplyr::mutate(
       child.id = paste(parent.id, index, sep = "."),
-      seq = map2(seq, index, c)
-    ) %>%
-    dplyr::transmute(
-      document.id, parent.id, level, index, child.id,
-      seq, name = NA_character_, type, length
+      seq = purrr::map2(seq, index, c)
+    )
+  
+    v <- c('document.id', 'parent.id', 'level'
+           , 'index', 'child.id', 'seq'
+           , name='NA_character_', 'type', 'length')
+    v <- v[v != 'document.id' | 'document.id' %in% names(s)]
+  
+    s %>% dplyr::transmute_(
+      .dots=v
     )
 
 }
