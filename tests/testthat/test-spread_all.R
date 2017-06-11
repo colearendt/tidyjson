@@ -208,3 +208,14 @@ test_that("multiple iterations of deduped names work", {
   
   expect_named(suppressWarnings(json %>% spread_all), c('document.id','a.b','a.b.2','a.b.2.2'))
 })
+
+test_that('Handles nulls in an array column',{
+  skip('Not handled yet')
+  json <- c('{"a":null}','{"a":[1,2,3]}')
+  
+  ## Not sure how best to handle this... if we should get a column a out or not
+  expect_equal(
+    (json %>% as.tbl_json() %>% spread_all())$document.id
+    , c(1,2)
+  )
+})
