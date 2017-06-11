@@ -47,14 +47,14 @@ json <- '{"2014": 32, "2015": 56, "2016": 14}'
 # Then we can use the column.name argument to change the column name
 json \%>\% gather_object("year")
 
-# We can also use append_values_number to capture the values, since they are
+# We can also use append_dbl to capture the values, since they are
 # all of the same type
-json \%>\% gather_object("year") \%>\% append_values_number("count")
+json \%>\% gather_object("year") \%>\% append_dbl("count")
 
 # This can even work with a more complex, nested example
 json <- '{"2015": {"1": 10, "3": 1, "11": 5}, "2016": {"2": 3, "5": 15}}'
 json \%>\% gather_object("year") \%>\% gather_object("month") \%>\%
-  append_values_number("count")
+  append_dbl("count")
 
 # Most JSON starts out as an object (or an array of objects), and
 # gather_object can be used to inspect the top level (or 2nd level) objects

@@ -9,8 +9,8 @@ r_packages:
   
 script: 
   - |
-    travis_wait 20 R CMD build .
-    travis_wait 20 R CMD check tidyjson*tar.gz
+    travis_wait 60 R CMD build --no-build-vignettes --no-manual --no-resave-data . 
+    travis_wait 60 R CMD check --no-build-vignettes --no-manual tidyjson*tar.gz
 
 after_success:
   - Rscript -e 'library(covr); codecov()'
