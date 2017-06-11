@@ -107,14 +107,14 @@ gather_factory <- function(default.column.name, default.column.empty,
 #' # Then we can use the column.name argument to change the column name
 #' json %>% gather_object("year")
 #'
-#' # We can also use append_values_number to capture the values, since they are
+#' # We can also use append_dbl to capture the values, since they are
 #' # all of the same type
-#' json %>% gather_object("year") %>% append_values_number("count")
+#' json %>% gather_object("year") %>% append_dbl("count")
 #'
 #' # This can even work with a more complex, nested example
 #' json <- '{"2015": {"1": 10, "3": 1, "11": 5}, "2016": {"2": 3, "5": 15}}'
 #' json %>% gather_object("year") %>% gather_object("month") %>%
-#'   append_values_number("count")
+#'   append_dbl("count")
 #'
 #' # Most JSON starts out as an object (or an array of objects), and
 #' # gather_object can be used to inspect the top level (or 2nd level) objects
@@ -173,7 +173,7 @@ gather_keys <- function(.x, column.name = "key") {
 #' json %>% gather_array %>% json_types
 #'
 #' # Extract string values
-#' json %>% gather_array %>% append_values_string
+#' json %>% gather_array %>% append_chr
 #'
 #' # A more complex mixed type example
 #' json <- '["a", 1, true, null, {"name": "value"}]'
@@ -186,7 +186,7 @@ gather_keys <- function(.x, column.name = "key") {
 #'
 #' # Extract both levels
 #' json %>% gather_array("index.1") %>% gather_array("index.2") %>%
-#'   append_values_string
+#'   append_chr
 #'
 #' # Some JSON begins as an array
 #' commits %>% gather_array

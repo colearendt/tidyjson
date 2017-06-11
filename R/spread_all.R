@@ -120,9 +120,9 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
     magrittr::extract2("..name1") %>%
     unique
 
-  y_string  <- spread_type(y, "string",  append_values_string)
-  y_number  <- spread_type(y, "number",  append_values_number)
-  y_logical <- spread_type(y, "logical", append_values_logical)
+  y_string  <- spread_type(y, "string",  append_chr)
+  y_number  <- spread_type(y, "number",  append_dbl)
+  y_logical <- spread_type(y, "logical", append_lgl)
 
   ## Build data_frame component
   z <- dplyr::tbl_df(.x) %>%

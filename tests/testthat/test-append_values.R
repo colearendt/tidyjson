@@ -6,7 +6,7 @@ test_that("has correct complete structure with simple input", {
 
     expect_identical(
       json %>% gather_array %>% gather_object %>%
-        append_values_string,
+        append_chr,
       tbl_json(
         data.frame(
           document.id = c(1L, 1L, 1L),
@@ -27,7 +27,7 @@ test_that("string works with value array", {
     json <- '["a", "b"]'
 
     expect_identical(
-      json %>% gather_array %>% append_values_string,
+      json %>% gather_array %>% append_chr,
       tbl_json(
         data.frame(
           document.id = c(1L, 1L),
@@ -47,7 +47,7 @@ test_that("string works with simple input", {
     json <- '["a", "b", null]'
 
     expect_identical(
-      (json %>% gather_array %>% append_values_string)$string,
+      (json %>% gather_array %>% append_chr)$string,
       c("a", "b", NA_character_)
     )
 
@@ -59,7 +59,7 @@ test_that("number works with simple input", {
     json <- '[1, 2, null]'
 
     expect_identical(
-      (json %>% gather_array %>% append_values_number)$number,
+      (json %>% gather_array %>% append_dbl)$number,
       c(1, 2, NA_real_)
     )
 
@@ -71,7 +71,7 @@ test_that("logical works with simple input", {
     json <- '[true, false, null]'
 
     expect_identical(
-      (json %>% gather_array %>% append_values_logical)$logical,
+      (json %>% gather_array %>% append_lgl)$logical,
       c(TRUE, FALSE, NA)
     )
 
@@ -82,18 +82,18 @@ test_that("handles mixed input as appropriate NA", {
 
     data <- '["a", 1, true, null]' %>% gather_array
     expect_identical(
-      (data %>% append_values_string)$string,
+      (data %>% append_chr)$string,
       c("a", "1", "TRUE", NA_character_)
     )
 
-    expect_warning(tmp_data <- data %>% append_values_number)
+    expect_warning(tmp_data <- data %>% append_dbl)
 
     expect_identical(
       tmp_data$number,
       c(NA_real_, 1, NA_real_, NA_real_)
     )
     expect_identical(
-      (data %>% append_values_logical)$logical,
+      (data %>% append_lgl)$logical,
       c(NA, NA, TRUE, NA)
     )
 
@@ -111,7 +111,7 @@ test_that("correctly handles character(0)", {
     list())
 
     expect_identical(
-      character(0) %>% append_values_string,
+      character(0) %>% append_chr,
       empty)
 
   }
@@ -130,7 +130,7 @@ test_that("correctly handles {}", {
       list(nl))
 
     expect_identical(
-      '{}' %>% append_values_string,
+      '{}' %>% append_chr,
       empty)
 
   }
@@ -146,7 +146,7 @@ test_that("correctly handles []", {
       list(list()))
 
     expect_identical(
-      '[]' %>% append_values_string,
+      '[]' %>% append_chr,
       empty)
 
   }
@@ -157,15 +157,15 @@ test_that("correctly handles mixed types when force=FALSE", {
     data <- '["a", 1, true, null]' %>% gather_array
 
     expect_identical(
-      (data %>% append_values_string(force=FALSE))$string,
+      (data %>% append_chr(force=FALSE))$string,
       c("a", rep(NA_character_,3))
     )
     expect_identical(
-      (data %>% append_values_number(force=FALSE))$number,
+      (data %>% append_dbl(force=FALSE))$number,
       c(NA_real_, 1, NA_real_, NA_real_)
     )
     expect_identical(
-      (data %>% append_values_logical(force=FALSE))$logical,
+      (data %>% append_lgl(force=FALSE))$logical,
       c(NA, NA, TRUE, NA)
     )
   }
@@ -176,7 +176,7 @@ test_that("correctly handles append when trying to append an array", {
    data <- '[["a", "b", "c"], "d", "e", "f"]' %>% gather_array
 
    expect_identical(
-     (data %>% append_values_string())$string,
+     (data %>% append_chr())$string,
      c(NA_character_, "d", "e", "f")
    )
   }
@@ -189,38 +189,48 @@ test_that("recursive works as expected", {
    expected_val <- c(30, 40, 30)
 
    expect_identical(
-     (data %>% append_values_number(force=TRUE, recursive=FALSE))$number,
+     (data %>% append_dbl(force=TRUE, recursive=FALSE))$number,
      expected_na)
    expect_identical(
-     (data %>% append_values_number(force=TRUE, recursive=TRUE))$number,
+     (data %>% append_dbl(force=TRUE, recursive=TRUE))$number,
      expected_val)
    expect_identical(
-     (data %>% append_values_number(force=FALSE, recursive=FALSE))$number,
+     (data %>% append_dbl(force=FALSE, recursive=FALSE))$number,
      expected_na)
    expect_error(
-     (data %>% append_values_number(force=FALSE, recursive=TRUE))$number)
+     (data %>% append_dbl(force=FALSE, recursive=TRUE))$number)
 
    data <- '{"item1": {"price" : {"usd" : {"real" : 30}}}, "item2" : 40, "item3" : 30}' %>%
               gather_object
 
    expect_identical(
-     (data %>% append_values_number(recursive=FALSE))$number,
+     (data %>% append_dbl(recursive=FALSE))$number,
      expected_na)
    expect_identical(
-     (data %>% append_values_number(recursive=TRUE))$number,
+     (data %>% append_dbl(recursive=TRUE))$number,
      expected_val)
 
    data <- '{"item1": {"price" : 30, "qty" : 1}, "item2" : 40, "item3" : 30}' %>% gather_object
 
    expect_identical(
-     (data %>% append_values_number(recursive=FALSE))$number,
+     (data %>% append_dbl(recursive=FALSE))$number,
      expected_na)
    expect_identical(
-     (data %>% append_values_number(recursive=TRUE))$number,
+     (data %>% append_dbl(recursive=TRUE))$number,
      expected_na)
 
   }
 )
+
+test_that('deprecated functions warn appropriately', {
+  deptxt <- function(func,alt) {
+    paste0(func,'.*deprecated.*',alt,'.*instead')
+  }
+  
+  expect_warning(append_values_string('"a"'),deptxt('append_values_string','append_chr'))
+  expect_warning(append_values_number('2'),deptxt('append_values_number','append_dbl'))
+  expect_warning(append_values_logical('true'),deptxt('append_values_logical','append_lgl'))
+})
 
 context("my_unlist")
 test_that("my_unlist safely handles edge cases", {

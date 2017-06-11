@@ -7,7 +7,7 @@
 #'
 #' Any values that can not be converted to the specified will be \code{NA} in
 #' the resulting column. This includes other scalar types (e.g., numbers or
-#' logicals if you are using \code{append_values_string}) and *also* any rows
+#' logicals if you are using \code{append_chr}) and *also* any rows
 #' where the JSON is NULL or an object or array.
 #'
 #' Note that the \code{append_values} functions do not alter the JSON
@@ -30,7 +30,7 @@
 #' # Stack names
 #' '{"first": "bob", "last": "jones"}' %>%
 #'   gather_object %>%
-#'   append_values_string
+#'   append_chr
 #'
 #' # This is most useful when data is stored in name-value pairs
 #' # For example, tags in recipes:
@@ -40,7 +40,7 @@
 #'   spread_values(name = json_chr(name)) %>%
 #'   enter_object(tags) %>%
 #'   gather_object("tag") %>%
-#'   append_values_number("count")
+#'   append_dbl("count")
 NULL
 
 #' Creates the append_values_* functions
@@ -120,12 +120,33 @@ append_values_type <- function(json, type) {
 
 #' @export
 #' @rdname append_values
-append_values_string <- append_values_factory("string", as.character)
+append_chr <- append_values_factory("string", as.character)
 
 #' @export
 #' @rdname append_values
-append_values_number <- append_values_factory("number", as.numeric)
+append_values_string <- function(.x, column.name = 'string', force = TRUE, recursive = FALSE){
+  .Deprecated(new='append_chr')
+  append_chr(.x,column.name,force,recursive)
+}
 
 #' @export
 #' @rdname append_values
-append_values_logical <- append_values_factory("logical", as.logical)
+append_dbl <- append_values_factory("number", as.numeric)
+
+#' @export
+#' @rdname append_values
+append_values_number <- function(.x, column.name = 'number', force = TRUE, recursive = FALSE){
+  .Deprecated(new='append_dbl')
+  append_dbl(.x,column.name,force,recursive)
+}
+
+#' @export
+#' @rdname append_values
+append_lgl <- append_values_factory("logical", as.logical)
+
+#' @export
+#' @rdname append_values
+append_values_logical <- function(.x, column.name = 'logical', force = TRUE, recursive = FALSE){
+  .Deprecated(new='append_lgl')
+  append_lgl(.x,column.name,force,recursive)
+}

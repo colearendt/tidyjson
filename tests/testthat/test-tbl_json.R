@@ -223,7 +223,7 @@ test_that('does not throw an error', {
   expect_output(json %>% as.tbl_json() %>% print, printregex)
   
   j <- json %>% spread_all() %>% enter_object('c') %>% 
-    gather_array('c_id') %>% append_values_number()
+    gather_array('c_id') %>% append_dbl()
   
   expect_output(j %>% print, printregex)
   

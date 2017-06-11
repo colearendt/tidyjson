@@ -44,10 +44,10 @@
 #' json %>% spread_all %>% enter_object(children) %>%
 #'   gather_array("child.num")
 #'
-#' # And append_values_string to add the children names
+#' # And append_chr to add the children names
 #' json %>% spread_all %>% enter_object(children) %>%
 #'   gather_array("child.num") %>%
-#'   append_values_string("child")
+#'   append_chr("child")
 #'
 #' # The path can be comma delimited to go deep into a nested object
 #' json <- '{"name": "bob", "attributes": {"age": 32, "gender": "male"}}'
