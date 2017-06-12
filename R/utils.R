@@ -3,24 +3,30 @@
 #' @name %>%
 #' @rdname pipe
 #' @keywords internal
-#' @export
 #' @importFrom magrittr %>%
 #' @usage lhs \%>\% rhs
-NULL
+#' @export
+magrittr::`%>%`
 
 #' Convert object to tbl_df
 #' 
 #' Exported from dplyr package.  Converts an object
-#' to a tbl_df.
+#' to a pure tibble (revert to tbl_df class and drops
+#' tbl_json class/attributes).
 #' 
-#' @name tbl_df
-#' @rdname tbl_df
-#' @keywords internal
+#' @name as_tibble
+#' @rdname as_tibble
 #' @aliases as_data_frame
-#' @seealso as_data_frame.tbl_json
+#' @aliases tbl_df
+#' @seealso as_tibble.tbl_json
+#' @keywords internal
 #' @export
-#' @usage tbl_df(data)
-NULL
+#' @usage as_tibble(data)
+dplyr::as_tibble
+
+#' @export
+#' @rdname as_tibble
+dplyr::as_data_frame
 
 #' Bind two tbl_json objects together and preserve JSON attribute
 #'

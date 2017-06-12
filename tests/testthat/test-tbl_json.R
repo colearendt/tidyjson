@@ -346,17 +346,17 @@ test_that('handles "drop" like a tbl_df', {
   expect_warning(is.tbl_json(mydata[,'name',drop=TRUE]),'drop ignored')
 })
 
-context('tbl_df') 
+context('as_tibble') 
 
-test_that('tbl_df drops the JSON attribute and tbl_json class', {
+test_that('as_tibble drops the JSON attribute and tbl_json class', {
   
   jtidy <- issues %>% gather_array() %>% spread_all()
   
-  expect_identical(attr(tbl_df(jtidy),'JSON'),NULL)
-  expect_false('tlb_json' %in% class(tbl_df(jtidy)))
+  expect_identical(attr(dplyr::as_tibble(jtidy),'JSON'),NULL)
+  expect_false('tbl_json' %in% class(dplyr::as_tibble(jtidy)))
 })
 
-test_that('as_data_frame functions like tbl_df', {
+test_that('as_data_frame functions like as_tibble', {
   
   jtidy <- issues %>% gather_array() %>% spread_values(
     url=json_chr('url')

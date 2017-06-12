@@ -88,6 +88,7 @@ tbl_json <- function(df, json.list, drop.null.json = FALSE) {
 #' @rdname tbl_json
 as.tbl_json <- function(.x, ...) UseMethod("as.tbl_json")
 
+
 #' @export
 #' @rdname tbl_json
 as.tbl_json.tbl_json <- function(.x, ...) .x
@@ -170,7 +171,7 @@ wrap_dplyr_verb <- function(dplyr.verb) {
     .data$..JSON <- attr(.data, "JSON")
 
     # Apply the transformation
-    y <- dplyr.verb(dplyr::tbl_df(.data), ...)
+    y <- dplyr.verb(dplyr::as_tibble(.data), ...)
 
     # Reconstruct tbl_json without ..JSON column
     tbl_json(dplyr::select_(y, "-..JSON"), y$..JSON)
@@ -244,7 +245,7 @@ bind_rows <- function(...) {
     return(tbl_json(r,j))
   } else {
     message('Some non-tbl_json objects.  Reverting to dplyr::bind_rows')
-    return(tbl_df(r))
+    return(dplyr::as_tibble(r))
   }
 }
 
@@ -281,12 +282,16 @@ as.character.tbl_json <- function(x, ...) {
 #' @param ... additional parameters
 #' @return a tbl_df object (with no tbl_json component)
 #' 
-#' @export
-as_data_frame.tbl_json <- function(x, ...) {
+as_tibble.tbl_json <- function(x, ...) {
   attr(x,'JSON') <- NULL
   class(x) <- class(x)[class(x) != 'tbl_json']
   
   x
+}
+
+#' @rdname as_tibble.tbl_json
+as_data_frame.tbl_json <- function(x, ...) {
+  as_tibble.tbl_json(x,...)
 }
 
 
@@ -310,7 +315,7 @@ print.tbl_json <- function(x, ..., json.n = 20, json.width = 15) {
   json[lengths > json.width] <- paste0(json[lengths > json.width], "...")
 
   # Add the json
-  .y <- dplyr::tbl_df(x)
+  .y <- dplyr::as_tibble(x)
   json_name <- 'attr(., "JSON")'
   .y[json_name] <- rep("...", nrow(x))
   .y[[json_name]][seq_len(length(json))] <- json

@@ -125,7 +125,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
   y_logical <- spread_type(y, "logical", append_lgl)
 
   ## Build data_frame component
-  z <- dplyr::tbl_df(.x) %>%
+  z <- dplyr::as_tibble(.x) %>%
     dplyr::left_join(y_string,  by = "..id") %>%
     dplyr::left_join(y_number,  by = "..id") %>%
     dplyr::left_join(y_logical, by = "..id")
@@ -172,7 +172,7 @@ spread_type <- function(.x, this.type, append.fun) {
   .x %>%
     dplyr::filter(..type == this.type) %>%
     append.fun("..value") %>%
-    dplyr::tbl_df() %>%
+    dplyr::as_tibble() %>%
     dplyr::select(..id, ..name1, ..value) %>%
     tidyr::spread(..name1, ..value)
 

@@ -92,7 +92,7 @@ json_schema <- function(.x, type = c("string", "value")) {
 
     object_schema <- object_schema %>%
       bind_rows %>%
-      tbl_df %>%
+      dplyr::as_tibble() %>%
       unique
 
     object_schema <- collapse_object(object_schema)
@@ -148,7 +148,7 @@ collapse_array <- function(schema) {
     as.tbl_json(json.column = "json") %>%
     json_types %>%
     json_complexity %>%
-    dplyr::tbl_df() %>%
+    dplyr::as_tibble() %>%
     dplyr::arrange(desc(complexity), type) %>%
     dplyr::slice(1) %>%
     magrittr::extract2("schemas") %>%
@@ -177,7 +177,7 @@ collapse_object <- function(schema) {
     as.tbl_json(json.column = "json") %>%
     json_types %>%
     json_complexity %>%
-    dplyr::tbl_df() %>%
+    dplyr::as_tibble() %>%
     dplyr::group_by(name) %>%
     dplyr::arrange(desc(complexity), type) %>%
     dplyr::slice(1) %>%

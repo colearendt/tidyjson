@@ -36,7 +36,7 @@ gather_factory <- function(default.column.name, default.column.empty,
       stop(sprintf("%s records are not %ss", sum(bad_type), required.type))
 
     y <- .x %>%
-      dplyr::tbl_df() %>%
+      dplyr::as_tibble() %>%
       dplyr::mutate(
         ..name = json %>% purrr::map(expand.fun),
         ..json = json %>%
