@@ -42,4 +42,3 @@ commits \%>\% gather_array \%>\% json_lengths \%$\% table(length)
 \code{\link{json_complexity}} to compute the recursive length of
          each value
 }
-

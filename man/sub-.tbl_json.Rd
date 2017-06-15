@@ -4,8 +4,7 @@
 \alias{[.tbl_json}
 \title{Extract subsets of a tbl_json object (not replace)}
 \usage{
-\method{[}{tbl_json}(.x, i, j, drop = if (missing(i)) TRUE else length(cols)
-  == 1)
+\method{[}{tbl_json}(.x, i, j, drop = FALSE)
 }
 \arguments{
 \item{.x}{a tbl_json object}
@@ -23,4 +22,3 @@ a \code{\link{tbl_json}} object
 Extends `[.data.frame` to work with tbl_json objects, so that row filtering
 of the underlying data.frame also filters the associated JSON.
 }
-

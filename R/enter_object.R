@@ -16,7 +16,7 @@
 #'
 #' @seealso \code{\link{gather_object}} to find sub-objects that could be
 #'    entered into, \code{\link{gather_array}} to gather an array in an object
-#'    and \code{\link{spread_all}} to spread values in an object.
+#'    and \code{\link{spread_all}} or \code{\link{spread_values}} to spread values in an object.
 #' @param .x a json string or tbl_json object
 #' @param ... a quoted or unquoted sequence of strings designating the object
 #'            name or sequences of names you wish to enter
@@ -44,10 +44,10 @@
 #' json %>% spread_all %>% enter_object(children) %>%
 #'   gather_array("child.num")
 #'
-#' # And append_values_string to add the children names
+#' # And append_chr to add the children names
 #' json %>% spread_all %>% enter_object(children) %>%
 #'   gather_array("child.num") %>%
-#'   append_values_string("child")
+#'   append_chr("child")
 #'
 #' # The path can be comma delimited to go deep into a nested object
 #' json <- '{"name": "bob", "attributes": {"age": 32, "gender": "male"}}'
@@ -71,7 +71,7 @@ enter_object <- function(.x, ...) {
   json <- attr(.x, "JSON")
 
   # Access path
-  json <- map(json, path %>% as.list)
+  json <- purrr::map(json, path %>% as.list)
 
   tbl_json(.x, json, drop.null.json = TRUE)
 

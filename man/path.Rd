@@ -16,4 +16,3 @@ a \code{path} object
 \description{
 Create a JSON path with a minimum of typing
 }
-

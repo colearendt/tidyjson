@@ -2,18 +2,27 @@
 % Please edit documentation in R/append_values.R
 \name{append_values}
 \alias{append_values}
-\alias{append_values_logical}
-\alias{append_values_number}
+\alias{append_chr}
 \alias{append_values_string}
+\alias{append_dbl}
+\alias{append_values_number}
+\alias{append_lgl}
+\alias{append_values_logical}
 \title{Appends all JSON values with a specified type as a new column}
 \usage{
-append_values_string(.x, column.name = type, force = TRUE,
+append_chr(.x, column.name = type, force = TRUE, recursive = FALSE)
+
+append_values_string(.x, column.name = "string", force = TRUE,
   recursive = FALSE)
 
-append_values_number(.x, column.name = type, force = TRUE,
+append_dbl(.x, column.name = type, force = TRUE, recursive = FALSE)
+
+append_values_number(.x, column.name = "number", force = TRUE,
   recursive = FALSE)
 
-append_values_logical(.x, column.name = type, force = TRUE,
+append_lgl(.x, column.name = type, force = TRUE, recursive = FALSE)
+
+append_values_logical(.x, column.name = "logical", force = TRUE,
   recursive = FALSE)
 }
 \arguments{
@@ -41,7 +50,7 @@ column named \code{column.name}. This is particularly useful after using
 \details{
 Any values that can not be converted to the specified will be \code{NA} in
 the resulting column. This includes other scalar types (e.g., numbers or
-logicals if you are using \code{append_values_string}) and *also* any rows
+logicals if you are using \code{append_chr}) and *also* any rows
 where the JSON is NULL or an object or array.
 
 Note that the \code{append_values} functions do not alter the JSON
@@ -52,20 +61,19 @@ attribute of the \code{tbl_json} object in any way.
 # Stack names
 '{"first": "bob", "last": "jones"}' \%>\%
   gather_object \%>\%
-  append_values_string
+  append_chr
 
 # This is most useful when data is stored in name-value pairs
 # For example, tags in recipes:
 recipes <- c('{"name": "pie", "tags": {"apple": 10, "pie": 2, "flour": 5}}',
              '{"name": "cookie", "tags": {"chocolate": 2, "cookie": 1}}')
 recipes \%>\%
-  spread_values(name = jstring(name)) \%>\%
+  spread_values(name = json_chr(name)) \%>\%
   enter_object(tags) \%>\%
   gather_object("tag") \%>\%
-  append_values_number("count")
+  append_dbl("count")
 }
 \seealso{
 \code{\link{gather_object}} to gather an object first,
    \code{\link{spread_all}} to spread values into new columns
 }
-

@@ -35,7 +35,7 @@ json_complexity <- function(.x, column.name = "complexity") {
   json <- attr(.x, "JSON")
 
   # Determine lengths
-  lengths <- json %>% map(unlist, recursive = TRUE) %>% map_int(length)
+  lengths <- json %>% purrr::map(unlist, recursive = TRUE) %>% purrr::map_int(length)
 
   # Add as a column to x
   .x[column.name] <- lengths

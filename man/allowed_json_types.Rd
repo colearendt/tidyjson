@@ -14,4 +14,3 @@ Fundamental JSON types from http://json.org/, where I collapse 'true' and
 'false' into 'logical'
 }
 \keyword{datasets}
-

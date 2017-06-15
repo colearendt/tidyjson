@@ -12,8 +12,8 @@ gather_factory <- function(default.column.name, default.column.empty,
 
   function(.x, column.name = default.column.name) {
 
-    assert_that(!("..name" %in% names(.x)))
-    assert_that(!("..json" %in% names(.x)))
+    assertthat::assert_that(!("..name" %in% names(.x)))
+    assertthat::assert_that(!("..json" %in% names(.x)))
 
     if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
@@ -36,13 +36,13 @@ gather_factory <- function(default.column.name, default.column.empty,
       stop(sprintf("%s records are not %ss", sum(bad_type), required.type))
 
     y <- .x %>%
-      tbl_df %>%
-      mutate(
-        ..name = json %>% map(expand.fun),
+      dplyr::as_tibble() %>%
+      dplyr::mutate(
+        ..name = json %>% purrr::map(expand.fun),
         ..json = json %>%
-          map(~data_frame(..json = as.list(.)))
+          purrr::map(~dplyr::data_frame(..json = as.list(.)))
       ) %>%
-      unnest(..name, ..json, .drop = FALSE)
+      tidyr::unnest(..name, ..json, .drop = FALSE)
 
     # Check to see if column.name exists, otherwise, increment until not
     if (column.name %in% names(y)) {
@@ -58,10 +58,10 @@ gather_factory <- function(default.column.name, default.column.empty,
     }
 
     # Rename
-    y <- y %>% rename_(.dots = setNames("..name", column.name))
+    y <- y %>% dplyr::rename_(.dots = setNames("..name", column.name))
 
     # Construct tbl_json
-    tbl_json(y %>% select(-..json), y$..json)
+    tbl_json(y %>% dplyr::select(-..json), y$..json)
 
   }
 
@@ -107,14 +107,14 @@ gather_factory <- function(default.column.name, default.column.empty,
 #' # Then we can use the column.name argument to change the column name
 #' json %>% gather_object("year")
 #'
-#' # We can also use append_values_number to capture the values, since they are
+#' # We can also use append_dbl to capture the values, since they are
 #' # all of the same type
-#' json %>% gather_object("year") %>% append_values_number("count")
+#' json %>% gather_object("year") %>% append_dbl("count")
 #'
 #' # This can even work with a more complex, nested example
 #' json <- '{"2015": {"1": 10, "3": 1, "11": 5}, "2016": {"2": 3, "5": 15}}'
 #' json %>% gather_object("year") %>% gather_object("month") %>%
-#'   append_values_number("count")
+#'   append_dbl("count")
 #'
 #' # Most JSON starts out as an object (or an array of objects), and
 #' # gather_object can be used to inspect the top level (or 2nd level) objects
@@ -173,7 +173,7 @@ gather_keys <- function(.x, column.name = "key") {
 #' json %>% gather_array %>% json_types
 #'
 #' # Extract string values
-#' json %>% gather_array %>% append_values_string
+#' json %>% gather_array %>% append_chr
 #'
 #' # A more complex mixed type example
 #' json <- '["a", 1, true, null, {"name": "value"}]'
@@ -186,7 +186,7 @@ gather_keys <- function(.x, column.name = "key") {
 #'
 #' # Extract both levels
 #' json %>% gather_array("index.1") %>% gather_array("index.2") %>%
-#'   append_values_string
+#'   append_chr
 #'
 #' # Some JSON begins as an array
 #' commits %>% gather_array

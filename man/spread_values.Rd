@@ -11,8 +11,8 @@ spread_values(.x, ...)
 
 \item{...}{\code{column = value} pairs where \code{column} will be the
 column name created and \code{value} must be a call to
-\code{\link{jstring}}, \code{\link{jnumber}} or
-\code{\link{jlogical}} specifying the path to get the value (and
+\code{\link{json_chr}}, \code{\link{json_dbl}} or
+\code{\link{json_lgl}} specifying the path to get the value (and
 the type implicit in the function name)}
 }
 \value{
@@ -21,14 +21,14 @@ a \code{\link{tbl_json}} object
 \description{
 The \code{spread_values} function lets you extract extract specific values
 from (potentiall nested) JSON objects. \code{spread_values} takes
-\code{\link{jstring}}, \code{\link{jnumber}} or \code{\link{jlogical}} named
+\code{\link{json_chr}}, \code{\link{json_dbl}} or \code{\link{json_lgl}} named
 function calls as arguments in order to specify the type of the data that
 should be captured at each desired name-value pair location. These values can
 be of varying types at varying depths.
 }
 \details{
-Note that \code{\link{jstring}}, \code{\link{jnumber}} and
-\code{\link{jlogical}} will fail if they encounter the incorrect type in any
+Note that \code{\link{json_chr}}, \code{\link{json_dbl}} and
+\code{\link{json_lgl}} will fail if they encounter the incorrect type in any
 document.
 
 The advantage of \code{spread_values} over \code{\link{spread_all}} is that
@@ -45,20 +45,20 @@ json <- '{"name": {"first": "Bob", "last": "Jones"}, "age": 32}'
 # Using spread_values
 json \%>\%
   spread_values(
-    first.name = jstring(name, first),
-    last.name  = jstring(name, last),
-    age        = jnumber(age)
+    first.name = json_chr(name, first),
+    last.name  = json_chr(name, last),
+    age        = json_dbl(age)
   )
 
 # Another document, this time with a middle name (and no age)
-json2 <- '{"name": {"first": "Ann", "middle": "A", "last": "Smith"}, "age": 23}'
+json2 <- '{"name": {"first": "Ann", "middle": "A", "last": "Smith"}}'
 
 # spread_values still gives the same column structure
 c(json, json2) \%>\%
   spread_values(
-    first.name = jstring(name, first),
-    last.name  = jstring(name, last),
-    age        = jnumber(age)
+    first.name = json_chr(name, first),
+    last.name  = json_chr(name, last),
+    age        = json_dbl(age)
   )
 
 # whereas spread_all adds a new column
@@ -68,7 +68,6 @@ c(json, json2) \%>\% spread_all
 \seealso{
 \code{\link{spread_all}} for spreading all values,
          \code{\link[tidyr]{spread}} for spreading data frames,
-         \code{\link{jstring}}, \code{\link{jnumber}},
-         \code{\link{jlogical}} for accessing specific names
+         \code{\link{json_chr}}, \code{\link{json_dbl}},
+         \code{\link{json_lgl}} for accessing specific names
 }
-

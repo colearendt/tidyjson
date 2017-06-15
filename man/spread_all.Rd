@@ -64,4 +64,3 @@ json \%>\% spread_all
          to spread along with their types,
          \code{\link[tidyr]{spread}} for spreading data frames
 }
-

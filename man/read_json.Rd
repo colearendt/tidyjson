@@ -22,4 +22,3 @@ a \code{\link{tbl_json}} object
 Reads JSON from an input uri (file, url, ...) and returns a
 \code{\link{tbl_json}} object
 }
-

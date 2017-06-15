@@ -48,7 +48,7 @@ json \%>\% json_types
 json \%>\% gather_array \%>\% json_types
 
 # Extract string values
-json \%>\% gather_array \%>\% append_values_string
+json \%>\% gather_array \%>\% append_chr
 
 # A more complex mixed type example
 json <- '["a", 1, true, null, {"name": "value"}]'
@@ -61,7 +61,7 @@ json <- '[["a", "b", "c"], ["a", "d"], ["b", "c"]]'
 
 # Extract both levels
 json \%>\% gather_array("index.1") \%>\% gather_array("index.2") \%>\%
-  append_values_string
+  append_chr
 
 # Some JSON begins as an array
 commits \%>\% gather_array
@@ -77,4 +77,3 @@ commits \%>\% gather_array \%>\% spread_all(recursive = FALSE) \%>\% glimpse
          \code{\link[tidyr]{gather}} to gather name-value pairs in a data
          frame
 }
-

@@ -17,4 +17,3 @@ a character vector of formatted JSON
 \description{
 Convert the JSON in an tbl_json object back to a JSON string
 }
-

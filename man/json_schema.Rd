@@ -72,4 +72,3 @@ issues \%>\% gather_array \%>\% slice(1:10) \%>\%
 \code{\link{json_structure}} to recursively structure all
          documents into a single data frame
 }
-
