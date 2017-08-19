@@ -18,8 +18,11 @@ knitr::opts_chunk$set(
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tidyjson)](https://cran.r-project.org/package=tidyjson)
 [![Build Status](https://travis-ci.org/jeremystan/tidyjson.svg?branch=master)](https://travis-ci.org/jeremystan/tidyjson)
-[![Coverage Status](https://img.shields.io/codecov/c/github/jeremystan/tidyjson/master.svg)](https://codecov.io/github/jeremystan/tidyjson?branch=master)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/colearendt/tidyjson?branch=master&svg=true)](https://ci.appveyor.com/project/colearendt/tidyjson)
+
+[![Coverage Status](https://codecov.io/github/jeremystan/tidyjson/coverage.svg?branch=master)](https://codecov.io/github/jeremystan/tidyjson?branch=master) 
+[![CRAN Activity](http://cranlogs.r-pkg.org/badges/tidyjson)](https://cran.r-project.org/web/packages/tidyjson/index.html)
+[![CRAN History](http://cranlogs.r-pkg.org/badges/grand-total/tidyjson)](https://cran.r-project.org/web/packages/tidyjson/index.html)
 
 ![tidyjson graphs](https://cloud.githubusercontent.com/assets/2284427/18217882/1b3b2db4-7114-11e6-8ba3-07938f1db9af.png)
 
