@@ -25,7 +25,7 @@ is_json_factory <- function(desired.types) {
 #'
 #' # Test a simple example
 #' json <- '[1, "string", true, [1, 2], {"name": "value"}, null]' %>% gather_array
-#' json %>% is_json_dbl
+#' json %>% is_json_number
 #' json %>% is_json_array
 #' json %>% is_json_scalar
 #'
@@ -46,36 +46,15 @@ NULL
 
 #' @rdname is_json
 #' @export
-is_json_chr <- is_json_factory('string')
+is_json_string <- is_json_factory('string')
 
 #' @rdname is_json
 #' @export
-is_json_string  <- function(.x) {
-  .Deprecated('is_json_chr')
-  is_json_chr(.x)
-}
+is_json_number <- is_json_factory('number')
 
 #' @rdname is_json
 #' @export
-is_json_dbl <- is_json_factory('number')
-
-#' @rdname is_json
-#' @export
-is_json_number  <- function(.x) {
-  .Deprecated('is_json_dbl')
-  is_json_dbl(.x)
-}
-
-#' @rdname is_json
-#' @export
-is_json_lgl <- is_json_factory('logical')
-
-#' @rdname is_json
-#' @export
-is_json_logical <- function(.x) {
-  .Deprecated('is_json_lgl')
-  is_json_lgl(.x)
-}
+is_json_logical <- is_json_factory('logical')
 
 #' @rdname is_json
 #' @export

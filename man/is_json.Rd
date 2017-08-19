@@ -2,11 +2,8 @@
 % Please edit documentation in R/is_json.R
 \name{is_json}
 \alias{is_json}
-\alias{is_json_chr}
 \alias{is_json_string}
-\alias{is_json_dbl}
 \alias{is_json_number}
-\alias{is_json_lgl}
 \alias{is_json_logical}
 \alias{is_json_null}
 \alias{is_json_array}
@@ -14,15 +11,9 @@
 \alias{is_json_scalar}
 \title{Predicates to test for specific JSON types in \code{\link{tbl_json}} objects}
 \usage{
-is_json_chr(.x)
-
 is_json_string(.x)
 
-is_json_dbl(.x)
-
 is_json_number(.x)
-
-is_json_lgl(.x)
 
 is_json_logical(.x)
 
@@ -49,7 +40,7 @@ filter complex JSON by type before applying \code{\link{gather_object}} or
 
 # Test a simple example
 json <- '[1, "string", true, [1, 2], {"name": "value"}, null]' \%>\% gather_array
-json \%>\% is_json_dbl
+json \%>\% is_json_number
 json \%>\% is_json_array
 json \%>\% is_json_scalar
 

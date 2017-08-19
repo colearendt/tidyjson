@@ -38,17 +38,17 @@ dplyr_issues <- as.tbl_json(baseurl)
 dplyr_issues %>% json_schema %>% prettify
 ```
 
-After exploring the structure of the data, we decide we want to look at a high level overview of the isssues we have.  Note that we can grab nested object detail by declaring a more complex path like `json_chr('assignee','login')`.  This avoids the tendency to use `enter_object()` where it is not necessary.
+After exploring the structure of the data, we decide we want to look at a high level overview of the isssues we have.  Note that we can grab nested object detail by declaring a more complex path like `jstring('assignee','login')`.  This avoids the tendency to use `enter_object()` where it is not necessary.
 
 ```{r gitapi_highlevel, echo=TRUE}
 
 highlevel <- dplyr_issues %>% gather_array('index') %>% 
-  spread_values(id=json_dbl('id')
-                , assignee=json_chr('assignee','login')
-                , comments=json_dbl('comments')
-                , title=json_chr('title')
-                , state=json_chr('state')
-                , number=json_dbl('number')
+  spread_values(id=jnumber('id')
+                , assignee=jstring('assignee','login')
+                , comments=jnumber('comments')
+                , title=jstring('title')
+                , state=jstring('state')
+                , number=jnumber('number')
                 )
 
 print(highlevel)
@@ -78,10 +78,10 @@ manyissues <- tidyjson::bind_rows(manyissues)
 
 ## Summarize status & users that create issues
 manyissues %>% gather_array('issue') %>% spread_values(
-  login=json_chr('user','login')
-  , comments=json_dbl('comments')
-  , issuenum = json_dbl('number')
-  , state = json_chr('state')
+  login=jstring('user','login')
+  , comments=jnumber('comments')
+  , issuenum = jnumber('number')
+  , state = jstring('state')
 ) %>% group_by(login, state) %>% summarize(issuecount=n()) %>% ungroup() %>%
   spread(state, issuecount, fill=0) %>%
   mutate(total=closed+open) %>%
@@ -106,7 +106,7 @@ Let's explore the array, but store executionTime for later reference:
 
 ```{r citibike_prep, echo=TRUE}
 citibike_list <- citibike %>% 
-  spread_values(execution=json_chr(executionTime)) %>%
+  spread_values(execution=jstring(executionTime)) %>%
   enter_object('stationBeanList') %>% gather_array('arrayid')
 
 citibike_list %>%
@@ -118,12 +118,12 @@ citibike_list %>%
 The percentage availablity of bikes should be linearly correlated.  I.e. 25% bikes available means 75% of docks available.
 ```{r citibike_available, echo=TRUE}
 citibike_available <- citibike_list %>% 
-  spread_values(id=json_dbl(id)
-                , location=json_chr(location)
-                , lastCommunication=json_chr(lastCommunicationTime)
-                , availableBikes=json_dbl(availableBikes)
-                , availableDocks=json_dbl(availableDocks)
-                , totalDocks=json_dbl(totalDocks)) %>%
+  spread_values(id=jnumber(id)
+                , location=jstring(location)
+                , lastCommunication=jstring(lastCommunicationTime)
+                , availableBikes=jnumber(availableBikes)
+                , availableDocks=jnumber(availableDocks)
+                , totalDocks=jnumber(totalDocks)) %>%
   mutate(openDockPct=availableDocks / totalDocks
          , bikeDockPct=availableBikes / totalDocks
          , timeSinceUpdateMinutes=as.integer(as_datetime(execution)-as_datetime(lastCommunication))/60
@@ -151,8 +151,8 @@ ggplot(citibike_available, aes(availableBikes, availableDocks, col=timeSinceUpda
 Remember that our object is still a tbl_json object, so we can go back and grab additional keys if necessary.  What if we wanted to map the data for easier use while we explore the city?
 ```{r citibike_map_prep, ECHO=TRUE}
 citibike_map <- citibike_available %>%
-  spread_values(lat=json_dbl(latitude)
-                , long=json_dbl(longitude))
+  spread_values(lat=jnumber(latitude)
+                , long=jnumber(longitude))
 
 citibike_map %>% group_by(is.na(lat),is.na(long)) %>% summarize(n())
 ```
@@ -165,16 +165,16 @@ One last point of note.  What if we got a bad response and our pipeline above wa
 
 ```{r citibike_error_test, ECHO=TRUE}
 citibike_list_0 <- '{}' %>% 
-  spread_values(execution=json_chr(executionTime)) %>%
+  spread_values(execution=jstring(executionTime)) %>%
   enter_object('stationBeanList') %>% gather_array('arrayid')
 
 citibike_available_0 <- citibike_list_0 %>% 
-  spread_values(id=json_dbl(id)
-                , location=json_chr(location)
-                , lastCommunication=json_chr(lastCommunicationTime)
-                , availableBikes=json_dbl(availableBikes)
-                , availableDocks=json_dbl(availableDocks)
-                , totalDocks=json_dbl(totalDocks)) %>%
+  spread_values(id=jnumber(id)
+                , location=jstring(location)
+                , lastCommunication=jstring(lastCommunicationTime)
+                , availableBikes=jnumber(availableBikes)
+                , availableDocks=jnumber(availableDocks)
+                , totalDocks=jnumber(totalDocks)) %>%
   mutate(openDockPct=availableDocks / totalDocks
          , bikeDockPct=availableBikes / totalDocks
          , timeSinceUpdateMinutes=as.integer(as_datetime(execution)-as_datetime(lastCommunication))/60

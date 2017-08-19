@@ -130,15 +130,15 @@ test_that('functions as the identity on a simple pipeline', {
 
 test_that('functions as the identity on a more advanced pipeline', {
   x <- commits %>% gather_array() %>% spread_values(
-    sha=json_chr('sha')
-    , name=json_chr('commit','author','name')
-    , msg=json_chr('commit','message')
-    , comment_count=json_dbl('commit','comment_count')
-    , committer.name=json_chr('commit','committer','name')
-    , committer.date=json_chr('commit','committer','date')
-    , tree.sha=json_chr('committ','tree','sha')
-    , tree.url=json_chr('committ','tree','url')
-    , url=json_chr('url')
+    sha=jstring('sha')
+    , name=jstring('commit','author','name')
+    , msg=jstring('commit','message')
+    , comment_count=jnumber('commit','comment_count')
+    , committer.name=jstring('commit','committer','name')
+    , committer.date=jstring('commit','committer','date')
+    , tree.sha=jstring('committ','tree','sha')
+    , tree.url=jstring('committ','tree','url')
+    , url=jstring('url')
   )
   
   expect_identical(
@@ -266,7 +266,7 @@ test_that("works in a pipeline", {
 
     expect_identical(
       df %>% as.tbl_json(json.column = "json") %>%
-        spread_values(name = json_chr("name")) %>%
+        spread_values(name = jstring("name")) %>%
         dplyr::filter(age == 32) %>%
         `[[`("name"),
       "bob"
@@ -320,10 +320,10 @@ test_that("[ column filtering doesn't change the JSON", {
       '{"name": "bob", "children": [{"name": "george"}]}',
       '{"name": "susan", "children": [{"name": "sally"}, {"name": "bobby"}]}'
         ) %>% as.tbl_json %>%
-      spread_values("parent" = json_chr("name")) %>%
+      spread_values("parent" = jstring("name")) %>%
       enter_object("children") %>%
       gather_array %>%
-      spread_values("child" = json_chr("name"))
+      spread_values("child" = jstring("name"))
 
     expect_identical(
       attr(x, "JSON"),
@@ -338,7 +338,7 @@ test_that('handles "drop" like a tbl_df', {
   mydata <- as.tbl_json('[{"name": "Frodo", "occupation": "Ring Bearer"}
                         ,{"name": "Aragorn", "occupation": "Ranger"}]') %>%
     gather_array() %>%
-    spread_values(name=json_chr('name'), occupation=json_chr('occupation'))
+    spread_values(name=jstring('name'), occupation=jstring('occupation'))
    
   expect_is(mydata[,],'tbl_json')
   expect_is(mydata[,'name'],'tbl_json')
@@ -359,10 +359,10 @@ test_that('as_tibble drops the JSON attribute and tbl_json class', {
 test_that('as_data_frame functions like as_tibble', {
   
   jtidy <- issues %>% gather_array() %>% spread_values(
-    url=json_chr('url')
-    , body=json_chr('body')
-    , user.id=json_dbl('user.id')
-    , user.login=json_chr('user.login')
+    url=jstring('url')
+    , body=jstring('body')
+    , user.id=jnumber('user.id')
+    , user.login=jstring('user.login')
   )
   
   expect_identical(attr(dplyr::as_data_frame(jtidy),'JSON'),NULL)
@@ -393,11 +393,11 @@ test_that("dplyr::filter works in a more complex pipeline", {
       '{"name": "susan", "children": [{"name": "sally"}, {"name": "bobby"}]}'
         )
     susan.children <- json %>% as.tbl_json %>%
-      spread_values(name = json_chr("name")) %>%
+      spread_values(name = jstring("name")) %>%
       dplyr::filter(name == "susan") %>%
       enter_object("children") %>%
       gather_array %>%
-      spread_values(child = json_chr("name"))
+      spread_values(child = jstring("name"))
 
     expect_identical(susan.children$child, c("sally", "bobby"))
 
@@ -426,7 +426,7 @@ test_that("dplyr::mutate works with a simple example", {
 
     expect_identical(
       x %>%
-        spread_values(name = json_chr("name")) %>%
+        spread_values(name = jstring("name")) %>%
         dplyr::mutate(fullname = paste(name, "green")),
       tbl_json(
         dplyr::data_frame(
@@ -447,11 +447,11 @@ test_that("dplyr::mutate works in a more complex pipeline", {
       '{"name": "susan", "children": [{"name": "sally"}, {"name": "bobby"}]}')
 
     children <- json %>% as.tbl_json %>%
-      spread_values(name = json_chr("name")) %>%
+      spread_values(name = jstring("name")) %>%
       dplyr::mutate(parent.rank = rank(name)) %>%
       enter_object("children") %>%
       gather_array %>%
-      spread_values(child = json_chr("name"))
+      spread_values(child = jstring("name"))
 
     expect_identical(children$parent.rank, c(1, 2, 2))
     expect_identical(children$child, c("george", "sally", "bobby"))
@@ -526,8 +526,8 @@ test_that("bind_rows works with tbl_json", {
   people_df <- people %>%
     gather_array %>%
     spread_values(
-      name = json_chr("name"),
-      age = json_dbl("age"))
+      name = jstring("name"),
+      age = jnumber("age"))
   
   z <- people_df %>% bind_rows(people_df)
   

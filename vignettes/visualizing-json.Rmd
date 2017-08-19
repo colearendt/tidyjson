@@ -301,7 +301,7 @@ Let's look at the most complex example:
 most_complex <- companies[which(co_length$complexity == max(co_length$complexity))]
 
 most_complex_name <- most_complex %>% 
-  spread_values(name = json_chr(name)) %>% 
+  spread_values(name = jstring(name)) %>% 
   extract2("name")
 ``` 
 
@@ -348,9 +348,9 @@ rounds <- companies %>%
   enter_object(funding_rounds) %>%
   gather_array %>%
   spread_values(
-    round = json_chr(round_code),
-    currency = json_chr(raised_currency_code),
-    raised = json_dbl(raised_amount)
+    round = jstring(round_code),
+    currency = jstring(raised_currency_code),
+    raised = jnumber(raised_amount)
   )
 rounds %>% head
 ```
@@ -362,9 +362,9 @@ geos <- companies %>%
   enter_object(offices) %>%
   gather_array %>%
   spread_values(
-    country = json_chr(country_code),
-    state = json_chr(state_code),
-    description = json_chr(description)
+    country = jstring(country_code),
+    state = jstring(state_code),
+    description = jstring(description)
   )
 geos %>% head
 ```

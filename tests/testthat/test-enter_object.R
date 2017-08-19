@@ -50,7 +50,7 @@ test_that("filter removes records with missing path", {
     )
 
     expect_identical(
-      json %>% spread_values(name = json_chr("name")) %>%
+      json %>% spread_values(name = jstring("name")) %>%
         enter_object("attributes"),
       tbl_json(
         data.frame(
@@ -69,7 +69,7 @@ test_that("works if no paths exist", {
     json <- '{"name": "bob"}'
 
     expect_identical(
-      json %>% spread_values(name = json_chr("name")) %>%
+      json %>% spread_values(name = jstring("name")) %>%
         enter_object("attributes"),
       tbl_json(
         data.frame(

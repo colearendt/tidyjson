@@ -2,7 +2,7 @@
 % Please edit documentation in R/spread_values.R
 \name{json_factory}
 \alias{json_factory}
-\title{Factory that creates the json_* functions below}
+\title{Factory that creates the j* functions below}
 \usage{
 json_factory(map.function)
 }
@@ -10,5 +10,5 @@ json_factory(map.function)
 \item{map.function}{function to map to collapse}
 }
 \description{
-Factory that creates the json_* functions below
+Factory that creates the j* functions below
 }

@@ -5,9 +5,9 @@ test_that("works for a simple example", {
   json <- '[1, "string", true, [1, 2], {"name": "value"}, null]' %>%
     gather_array
 
-  expect_identical(json %>% is_json_dbl  %>% which, 1L)
-  expect_identical(json %>% is_json_chr  %>% which, 2L)
-  expect_identical(json %>% is_json_lgl %>% which, 3L)
+  expect_identical(json %>% is_json_number  %>% which, 1L)
+  expect_identical(json %>% is_json_string  %>% which, 2L)
+  expect_identical(json %>% is_json_logical %>% which, 3L)
   expect_identical(json %>% is_json_array   %>% which, 4L)
   expect_identical(json %>% is_json_object  %>% which, 5L)
   expect_identical(json %>% is_json_null    %>% which, 6L)
@@ -30,14 +30,4 @@ test_that("works with filter", {
     json %>% slice(5)
   )
 
-})
-
-test_that('deprecated functions warn appropriately', {
-  deptxt <- function(func,alt) {
-    paste0(func,'.*deprecated.*',alt,'.*instead')
-  }
-  
-  expect_warning(is_json_string('"a"'),deptxt('is_json_string','is_json_chr'))
-  expect_warning(is_json_number('2'),deptxt('is_json_number','is_json_dbl'))
-  expect_warning(is_json_logical('true'),deptxt('is_json_logical','is_json_lgl'))
 })
