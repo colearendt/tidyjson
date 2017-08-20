@@ -17,4 +17,3 @@ x and y row-binded together with appropriate JSON attribute
 \description{
 Bind two tbl_json objects together and preserve JSON attribute
 }
-

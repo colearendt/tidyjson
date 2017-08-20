@@ -14,4 +14,3 @@ append_values_type(json, type)
 \description{
 get list of values from json
 }
-

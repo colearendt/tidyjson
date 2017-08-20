@@ -5,7 +5,7 @@ test_that("simple string works", {
   expect_identical(
     '"a"' %>% json_structure,
     tbl_json(
-      data_frame(
+      dplyr::data_frame(
         document.id = 1L,
         parent.id = NA_character_,
         level = 0L,
@@ -27,7 +27,7 @@ test_that("simple object works", {
   expect_identical(
     '{"name": "value"}' %>% json_structure,
     tbl_json(
-      data_frame(
+      dplyr::data_frame(
         document.id = c(1L, 1L),
         parent.id = c(NA_character_, "1"),
         level = c(0L, 1L),
@@ -49,7 +49,7 @@ test_that("simple array works", {
   expect_identical(
     '[1, 2]' %>% json_structure,
     tbl_json(
-      data_frame(
+      dplyr::data_frame(
         document.id = c(1L, 1L, 1L),
         parent.id = c(NA_character_, "1", "1"),
         level = c(0L, 1L, 1L),
@@ -71,7 +71,7 @@ test_that("nested object works", {
   expect_identical(
     '{"k1": {"k2": "value"}}' %>% json_structure,
     tbl_json(
-      data_frame(
+      dplyr::data_frame(
         document.id = c(1L, 1L, 1L),
         parent.id = c(NA_character_, "1", "1.1"),
         level = c(0L, 1L, 2L),
@@ -95,7 +95,7 @@ test_that("works with empty values appropriately", {
   expect_identical(
     'null' %>% json_structure,
     tbl_json(
-      data_frame(
+      dplyr::data_frame(
         document.id = 1L,
         parent.id = NA_character_,
         level = 0L,
@@ -117,7 +117,7 @@ test_that("works with tbl_json already", {
   expect_identical(
     c('"a"', '"b"') %>% as.tbl_json %>% json_structure,
     tbl_json(
-      data_frame(
+      dplyr::data_frame(
         document.id = c(1L, 2L),
         parent.id = rep(NA_character_, 2),
         level = rep(0L, 2),
@@ -153,4 +153,30 @@ test_that("works with empty JSON", {
   expect_identical(character(0) %>% json_structure %>% nrow, 0L)
   expect_identical('null' %>% json_structure %>% nrow, 1L)
 
+})
+
+
+test_that("imputes document.id when not present", {
+  j1 <- dplyr::data_frame(id=1, json='"a"') %>% 
+    as.tbl_json(json.column = 'json') %>% json_structure()
+  j2 <- dplyr::data_frame(id=1, json='["a"]') %>% 
+    as.tbl_json(json.column = 'json') %>% json_structure()
+  j3 <- dplyr::data_frame(id=1, json='{"a":1}') %>% 
+    as.tbl_json(json.column = 'json') %>% json_structure()
+  
+  expect_identical(names(j1), names(j2))
+  expect_identical(names(j1), names(j3))
+  expect_identical(nrow(j2),nrow(j3))
+  expect_identical(as.character(j2$type), c('array','string'))
+  expect_identical(as.character(j3$type), c('object','number'))
+})
+
+test_that("imputed document.id works", {
+  j <- dplyr::data_frame(id=1, json='[{"a":1},{"a":2}]') %>% 
+    as.tbl_json(json.column='json') %>% gather_array() %>%
+    json_structure()
+  
+  expect_identical(j$document.id, c(1L,2L,1L,2L))
+  expect_identical(as.character(j$type),c('object','object','number','number'))
+  expect_identical(j$child.id,c('1','1','1.1','1.2'))
 })

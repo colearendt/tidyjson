@@ -14,4 +14,3 @@ my_unlist(l, recursive = FALSE)
 \description{
 Unlists while preserving NULLs and only unlisting lists with one value
 }
-

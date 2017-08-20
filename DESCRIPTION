@@ -1,6 +1,6 @@
 Package: tidyjson
 Title: Tidy Complex JSON
-Version: 0.2.1.9000
+Version: 0.2.1.9001
 Author: Jeremy Stanley <jeremy.stanley@gmail.com>
 Maintainer: Jeremy Stanley <jeremy.stanley@gmail.com>
 Description: Turn complex JSON data into tidy data frames.
@@ -28,8 +28,9 @@ Suggests:
     listviewer,
     igraph,
     RColorBrewer,
-    covr
+    covr,
+    lubridate
 VignetteBuilder: knitr
 URL: https://github.com/jeremystan/tidyjson
 BugReports: https://github.com/jeremystan/tidyjson/issues
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

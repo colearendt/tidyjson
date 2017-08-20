@@ -2,7 +2,9 @@
 tidyjson
 ========
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tidyjson)](https://cran.r-project.org/package=tidyjson) [![Build Status](https://travis-ci.org/jeremystan/tidyjson.svg?branch=master)](https://travis-ci.org/jeremystan/tidyjson) [![Coverage Status](https://img.shields.io/codecov/c/github/jeremystan/tidyjson/master.svg)](https://codecov.io/github/jeremystan/tidyjson?branch=master)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tidyjson)](https://cran.r-project.org/package=tidyjson) [![Build Status](https://travis-ci.org/jeremystan/tidyjson.svg?branch=master)](https://travis-ci.org/jeremystan/tidyjson) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/colearendt/tidyjson?branch=master&svg=true)](https://ci.appveyor.com/project/colearendt/tidyjson)
+
+[![Coverage Status](https://codecov.io/github/jeremystan/tidyjson/coverage.svg?branch=master)](https://codecov.io/github/jeremystan/tidyjson?branch=master) [![CRAN Activity](http://cranlogs.r-pkg.org/badges/tidyjson)](https://cran.r-project.org/web/packages/tidyjson/index.html) [![CRAN History](http://cranlogs.r-pkg.org/badges/grand-total/tidyjson)](https://cran.r-project.org/web/packages/tidyjson/index.html)
 
 ![tidyjson graphs](https://cloud.githubusercontent.com/assets/2284427/18217882/1b3b2db4-7114-11e6-8ba3-07938f1db9af.png)
 
@@ -26,51 +28,50 @@ devtools::install_github("jeremystan/tidyjson")
 Examples
 --------
 
-The following example takes a character vector of 500 documents in the `worldbank` dataset and spreads out all objects into new columns
+The following example takes a character vector of 500 documents in the `worldbank` dataset and spreads out all objects.
+Every JSON object key gets its own column with types inferred, so long as the key does not represent an array. When `recursive=TRUE` (the default behavior), `spread_all` does this recursively for nested objects and creates column names using the `sep` parameter (i.e. `{"a":{"b":1}}` with `sep='.'` would generate a single column: `a.b`).
 
 ``` r
+library(dplyr)
 library(tidyjson)
-suppressMessages(library(dplyr))
 
 worldbank %>% spread_all
 #> # A tbl_json: 500 x 8 tibble with a "JSON" attribute
-#>     `attr(., "JSON")` document.id    boardapprovaldate
-#>                 <chr>       <int>                <chr>
-#> 1  {"_id":{"$oid":...           1 2013-11-12T00:00:00Z
-#> 2  {"_id":{"$oid":...           2 2013-11-04T00:00:00Z
-#> 3  {"_id":{"$oid":...           3 2013-11-01T00:00:00Z
-#> 4  {"_id":{"$oid":...           4 2013-10-31T00:00:00Z
-#> 5  {"_id":{"$oid":...           5 2013-10-31T00:00:00Z
-#> 6  {"_id":{"$oid":...           6 2013-10-31T00:00:00Z
-#> 7  {"_id":{"$oid":...           7 2013-10-29T00:00:00Z
-#> 8  {"_id":{"$oid":...           8 2013-10-29T00:00:00Z
-#> 9  {"_id":{"$oid":...           9 2013-10-29T00:00:00Z
-#> 10 {"_id":{"$oid":...          10 2013-10-29T00:00:00Z
+#>           `attr(., "JSON")` document.id    boardapprovaldate
+#>                       <chr>       <int>                <chr>
+#>  1 "{\"_id\":{\"$oid\":..."           1 2013-11-12T00:00:00Z
+#>  2 "{\"_id\":{\"$oid\":..."           2 2013-11-04T00:00:00Z
+#>  3 "{\"_id\":{\"$oid\":..."           3 2013-11-01T00:00:00Z
+#>  4 "{\"_id\":{\"$oid\":..."           4 2013-10-31T00:00:00Z
+#>  5 "{\"_id\":{\"$oid\":..."           5 2013-10-31T00:00:00Z
+#>  6 "{\"_id\":{\"$oid\":..."           6 2013-10-31T00:00:00Z
+#>  7 "{\"_id\":{\"$oid\":..."           7 2013-10-29T00:00:00Z
+#>  8 "{\"_id\":{\"$oid\":..."           8 2013-10-29T00:00:00Z
+#>  9 "{\"_id\":{\"$oid\":..."           9 2013-10-29T00:00:00Z
+#> 10 "{\"_id\":{\"$oid\":..."          10 2013-10-29T00:00:00Z
 #> # ... with 490 more rows, and 6 more variables: closingdate <chr>,
 #> #   countryshortname <chr>, project_name <chr>, regionname <chr>,
 #> #   totalamt <dbl>, `_id.$oid` <chr>
 ```
 
-However, some objects in `worldbank` are arrays, this example shows how to quickly summarize the top level structure of a JSON collection
+Some objects in `worldbank` are arrays, which are not handled by `spread_all`. This example shows how to quickly summarize the top level structure of a JSON collection
 
 ``` r
 worldbank %>% gather_object %>% json_types %>% count(name, type)
-#> Source: local data frame [8 x 3]
-#> Groups: name [?]
-#> 
+#> # A tibble: 8 x 3
 #>                  name   type     n
 #>                 <chr> <fctr> <int>
-#> 1                 _id object   500
-#> 2   boardapprovaldate string   500
-#> 3         closingdate string   370
-#> 4    countryshortname string   500
+#> 1   boardapprovaldate string   500
+#> 2         closingdate string   370
+#> 3    countryshortname string   500
+#> 4                 _id object   500
 #> 5 majorsector_percent  array   500
 #> 6        project_name string   500
 #> 7          regionname string   500
 #> 8            totalamt number   500
 ```
 
-In order to capture the data in `majorsector_percent` we can use `enter_object` to enter into that object, `gather_array` to stack the array and `spread_all` to capture the object names under the array.
+In order to capture the data in the `majorsector_percent` array, we can use `enter_object` to enter into that object, `gather_array` to stack the array and `spread_all` to capture the object items under the array.
 
 ``` r
 worldbank %>%
@@ -79,18 +80,18 @@ worldbank %>%
   spread_all %>%
   select(-document.id, -array.index)
 #> # A tbl_json: 1,405 x 2 tibble with a "JSON" attribute
-#>     `attr(., "JSON")`                                    Name Percent
-#>                 <chr>                                   <chr>   <dbl>
-#> 1  {"Name":"Educat...                               Education      46
-#> 2  {"Name":"Educat...                               Education      26
-#> 3  {"Name":"Public... Public Administration, Law, and Justice      16
-#> 4  {"Name":"Educat...                               Education      12
-#> 5  {"Name":"Public... Public Administration, Law, and Justice      70
-#> 6  {"Name":"Public... Public Administration, Law, and Justice      30
-#> 7  {"Name":"Transp...                          Transportation     100
-#> 8  {"Name":"Health...        Health and other social services     100
-#> 9  {"Name":"Indust...                      Industry and trade      50
-#> 10 {"Name":"Indust...                      Industry and trade      40
+#>          `attr(., "JSON")`                                    Name Percent
+#>                      <chr>                                   <chr>   <dbl>
+#>  1 "{\"Name\":\"Educat..."                               Education      46
+#>  2 "{\"Name\":\"Educat..."                               Education      26
+#>  3 "{\"Name\":\"Public..." Public Administration, Law, and Justice      16
+#>  4 "{\"Name\":\"Educat..."                               Education      12
+#>  5 "{\"Name\":\"Public..." Public Administration, Law, and Justice      70
+#>  6 "{\"Name\":\"Public..." Public Administration, Law, and Justice      30
+#>  7 "{\"Name\":\"Transp..."                          Transportation     100
+#>  8 "{\"Name\":\"Health..."        Health and other social services     100
+#>  9 "{\"Name\":\"Indust..."                      Industry and trade      50
+#> 10 "{\"Name\":\"Indust..."                      Industry and trade      40
 #> # ... with 1,395 more rows
 ```
 
@@ -101,7 +102,7 @@ API
 
 -   `spread_all()` for spreading all object values into new columns, with nested objects having concatenated names
 
--   `spread_values()` for specifying a subset of object values to spread into new columns using the `jstring()`, `jnumber()` and `jlogical()` functions
+-   `spread_values()` for specifying a subset of object values to spread into new columns using the `json_chr()`, `json_dbl()` and `json_lgl()` functions. It is possible to specify multiple parameters to extract data from nested objects (i.e. `json_chr('a','b')`).
 
 ### Object navigation
 

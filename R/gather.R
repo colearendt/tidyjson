@@ -12,8 +12,8 @@ gather_factory <- function(default.column.name, default.column.empty,
 
   function(.x, column.name = default.column.name) {
 
-    assert_that(!("..name" %in% names(.x)))
-    assert_that(!("..json" %in% names(.x)))
+    assertthat::assert_that(!("..name" %in% names(.x)))
+    assertthat::assert_that(!("..json" %in% names(.x)))
 
     if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
@@ -36,13 +36,13 @@ gather_factory <- function(default.column.name, default.column.empty,
       stop(sprintf("%s records are not %ss", sum(bad_type), required.type))
 
     y <- .x %>%
-      tbl_df %>%
-      mutate(
-        ..name = json %>% map(expand.fun),
+      dplyr::as_tibble() %>%
+      dplyr::mutate(
+        ..name = json %>% purrr::map(expand.fun),
         ..json = json %>%
-          map(~data_frame(..json = as.list(.)))
+          purrr::map(~dplyr::data_frame(..json = as.list(.)))
       ) %>%
-      unnest(..name, ..json, .drop = FALSE)
+      tidyr::unnest(..name, ..json, .drop = FALSE)
 
     # Check to see if column.name exists, otherwise, increment until not
     if (column.name %in% names(y)) {
@@ -58,10 +58,10 @@ gather_factory <- function(default.column.name, default.column.empty,
     }
 
     # Rename
-    y <- y %>% rename_(.dots = setNames("..name", column.name))
+    y <- y %>% dplyr::rename_(.dots = setNames("..name", column.name))
 
     # Construct tbl_json
-    tbl_json(y %>% select(-..json), y$..json)
+    tbl_json(y %>% dplyr::select(-..json), y$..json)
 
   }
 

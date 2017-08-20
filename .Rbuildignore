@@ -5,3 +5,8 @@
 ^codecov\.yml$
 ^README\.Rmd$
 ^README-.*\.png$
+^packrat/
+^\.Rprofile$
+^working/
+^appveyor\.yml$
+^revdep/

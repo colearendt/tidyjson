@@ -12,4 +12,3 @@ wrap_dplyr_verb(dplyr.verb)
 \description{
 Wrapper for extending dplyr verbs to tbl_json objects
 }
-

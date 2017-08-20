@@ -115,6 +115,21 @@ test_that("preserves a NULL column", {
 }
 )
 
+
+test_that('gather_object handles non-object columns gracefully',{
+  skip('does not presently work')
+  
+  j <- "{\"a\":[1],\"b\":[2],\"c\":{\"a\":[1,2,3,4,5],\"b\":[2],\"c\":{\"a\":[1],\"d\":[3],\"e\":[]}},\"d\":{\"y\":[3],\"z\":[2]}}"
+  
+  t1 <- j %>% gather_object() %>% json_types()
+  
+  t1 %>% filter(name=='c') %>% gather_object('next') %>% gather_object() 
+  
+  json <- '{"a":{"b":1,"c":2},"d":3}'
+  
+  json %>% gather_object() %>% gather_object()
+})
+
 context("gather_keys")
 
 test_that("gather_keys throws a warning", {

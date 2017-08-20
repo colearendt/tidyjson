@@ -41,4 +41,3 @@ commits \%>\% gather_array \%>\% json_complexity \%$\% table(complexity)
 \seealso{
 \code{\link{json_lengths}} to compute the length of each value
 }
-
