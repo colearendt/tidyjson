@@ -4,6 +4,19 @@ language: R
 sudo: false
 cache: packages
 
+os:
+  - linux
+  - osx
+
+r:
+- oldrel
+- release
+- devel
+
+matrix:
+  allow_failures:
+  - r: devel
+
 r_packages:
   - covr
   

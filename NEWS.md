@@ -25,14 +25,6 @@
 * Fix json_structure() failure if `document.id` missing by imputing 
 the missing `document.id`.  (#86)
 
-## Deprecated functions
-
-* `jstring()`, `jnumber()`, `jlogical()` -> use `json_chr()`, `json_dbl()`, `json_lgl()` instead (#93)
-
-* `is_json_string()`,`is_json_number()`,`is_json_logical()` -> use `is_json_chr()`, `is_json_dbl()`, `is_json_lgl()` instead (#93)
-
-* `append_values_string()`, `append_values_number()`, `append_values_logical()` -> use `append_chr()`, `append_dbl()`, `append_lgl()` instead (#93)
-
 # tidyjson 0.2.1.9000
 
 ## New functions

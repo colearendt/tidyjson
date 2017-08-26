@@ -1,4 +1,4 @@
-context("json_chr")
+context("jstring")
 
 test_that("works with simple input", {
 
@@ -7,11 +7,11 @@ test_that("works with simple input", {
       fromJSON('{"name": {"first": "susan", "last": "jones"}}')
     )
 
-    expect_identical(json_chr("name", "first")(json), c("bob", "susan"))
-    expect_identical(json_chr("name", "last")(json), c("smith", "jones"))
+    expect_identical(jstring("name", "first")(json), c("bob", "susan"))
+    expect_identical(jstring("name", "last")(json), c("smith", "jones"))
 
-    expect_identical(json_chr("name", "first", recursive=TRUE)(json), c("bob", "susan"))
-    expect_identical(json_chr("name", "last", recursive=TRUE)(json), c("smith", "jones"))
+    expect_identical(jstring("name", "first", recursive=TRUE)(json), c("bob", "susan"))
+    expect_identical(jstring("name", "last", recursive=TRUE)(json), c("smith", "jones"))
 
   }
 )
@@ -23,8 +23,8 @@ test_that("works with unquoted strings", {
     fromJSON('{"name": {"first": "susan", "last": "jones"}}')
   )
 
-  expect_identical(json_chr(name, first)(json), c("bob", "susan"))
-  expect_identical(json_chr(name, last)(json), c("smith", "jones"))
+  expect_identical(jstring(name, first)(json), c("bob", "susan"))
+  expect_identical(jstring(name, last)(json), c("smith", "jones"))
 
 }
 )
@@ -39,13 +39,13 @@ test_that("handles missing input properly", {
       fromJSON('{}')
     )
 
-    expect_identical(json_chr("name")(json),
+    expect_identical(jstring("name")(json),
       c("bob", "", NA_character_, NA_character_, NA_character_)
     )
   }
 )
 
-context("json_dbl")
+context("jnumber")
 
 test_that("handles missing input properly", {
 
@@ -56,13 +56,13 @@ test_that("handles missing input properly", {
       fromJSON('{}')
     )
 
-    expect_identical(json_dbl("age")(json),
+    expect_identical(jnumber("age")(json),
       c(32, NA_real_, NA_real_, NA_real_)
     )
   }
 )
 
-context("json_lgl")
+context("jlogical")
 
 test_that("handles missing input properly", {
 
@@ -74,10 +74,10 @@ test_that("handles missing input properly", {
       fromJSON('{}')
     )
 
-    expect_identical(json_lgl("is.past")(json),
+    expect_identical(jlogical("is.past")(json),
       c(TRUE, FALSE, NA, NA, NA)
     )
-    expect_identical(json_lgl("is.past", recursive=TRUE)(json),
+    expect_identical(jlogical("is.past", recursive=TRUE)(json),
       c(TRUE, FALSE, NA, NA, NA)
     )
 
@@ -101,9 +101,9 @@ test_that("extract various values", {
     expect_identical(
       json %>%
         spread_values(
-          name = json_chr("name"),
-          age = json_dbl("age"),
-          customer = json_lgl("customer")
+          name = jstring("name"),
+          age = jnumber("age"),
+          customer = jlogical("customer")
         ),
       expected_value
     )
@@ -122,7 +122,7 @@ test_that("extract down a path", {
 
     expect_identical(
       json %>%
-        spread_values(first.name = json_chr("name", "first")),
+        spread_values(first.name = jstring("name", "first")),
       expected_value
     )
   }
@@ -138,7 +138,7 @@ test_that("correctly handles character(0)", {
       list())
 
     expect_identical(
-      character(0) %>% spread_values(value = json_chr("name")),
+      character(0) %>% spread_values(value = jstring("name")),
       empty)
   }
 )
@@ -154,7 +154,7 @@ test_that("correctly handles {}", {
         stringsAsFactors = FALSE),
       list(nl))
 
-    expect_identical('{}' %>% spread_values(value = json_chr("name")), empty)
+    expect_identical('{}' %>% spread_values(value = jstring("name")), empty)
   }
 )
 
@@ -168,30 +168,20 @@ test_that("correctly handles []", {
         stringsAsFactors = FALSE),
       list(list()))
 
-    expect_identical('[]' %>% spread_values(value = json_chr("name")), empty)
+    expect_identical('[]' %>% spread_values(value = jstring("name")), empty)
   }
 )
 
 test_that('correctly handles over-specified path', {
   json <- '{ "a" : 1 , "b" : "text", "c" : true }' 
   
-  expect_equal(json %>% spread_values(a = json_dbl("a", "b")) %>% .$a, as.numeric(NA))
+  expect_equal(json %>% spread_values(a = jnumber("a", "b")) %>% .$a, as.numeric(NA))
   
-  expect_equal(json %>% spread_values(b = json_chr('b','c')) %>% .$b, as.character(NA))
+  expect_equal(json %>% spread_values(b = jstring('b','c')) %>% .$b, as.character(NA))
   
-  expect_equal(json %>% spread_values(c = json_lgl('c','d')) %>% .$c, as.logical(NA))
+  expect_equal(json %>% spread_values(c = jlogical('c','d')) %>% .$c, as.logical(NA))
 })
 
-
-test_that('deprecated functions warn appropriately', {
-  deptxt <- function(func,alt) {
-    paste0(func,'.*deprecated.*',alt,'.*instead')
-  }
-  j <- '{"a":"one","b":2,"c":true}'
-  expect_warning(j %>% spread_values(a=jstring(a)),deptxt('jstring','json_chr'))
-  expect_warning(j %>% spread_values(b=jnumber(b)),deptxt('jnumber','json_dbl'))
-  expect_warning(j %>% spread_values(c=jlogical(c)),deptxt('jlogical','json_lgl'))
-})
 
 context("recursive option")
 
@@ -202,9 +192,9 @@ test_that("recursive works for simple input", {
       fromJSON('{"name": {"first": "susan", "last": "jones"}}')
     )
 
-    expect_identical(json_chr("name", "first", recursive=TRUE)(json),
+    expect_identical(jstring("name", "first", recursive=TRUE)(json),
                      c("bob", "susan"))
-    expect_identical(json_chr("name", "last", recursive=TRUE)(json),
+    expect_identical(jstring("name", "last", recursive=TRUE)(json),
                      c("smith", "jones"))
 
   }
@@ -217,9 +207,9 @@ test_that("recursive works for complex input", {
       fromJSON('{"name": {"first": "susan", "last": "jones"}}')
     )
 
-    expect_identical(json_chr("name", "first", recursive=TRUE)(json),
+    expect_identical(jstring("name", "first", recursive=TRUE)(json),
                      c("bob", "susan"))
-    expect_identical(json_chr("name", "last", recursive=TRUE)(json),
+    expect_identical(jstring("name", "last", recursive=TRUE)(json),
                      c("smith", "jones"))
 
     json <- list(
@@ -227,8 +217,8 @@ test_that("recursive works for complex input", {
       fromJSON('{"price": 30}')
     )
 
-    expect_error(json_dbl("price")(json))
-    expect_identical(json_dbl("price", recursive=TRUE)(json), c(30, 30))
+    expect_error(jnumber("price")(json))
+    expect_identical(jnumber("price", recursive=TRUE)(json), c(30, 30))
 
   }
 )
@@ -240,9 +230,9 @@ test_that("recursive works for complex input and 2 levels of recursion", {
       fromJSON('{"name": {"first": "susan", "last": "jones"}}')
     )
 
-    expect_identical(json_chr("name", "first", recursive=TRUE)(json),
+    expect_identical(jstring("name", "first", recursive=TRUE)(json),
                      c("bob", "susan"))
-    expect_identical(json_chr("name", "last", recursive=TRUE)(json),
+    expect_identical(jstring("name", "last", recursive=TRUE)(json),
                      c("smith", "jones"))
 
     json <- list(
@@ -250,8 +240,8 @@ test_that("recursive works for complex input and 2 levels of recursion", {
       fromJSON('{"price": 30}')
     )
 
-    expect_error(json_dbl("price")(json))
-    expect_identical(json_dbl("price", recursive=TRUE)(json), c(30, 30))
+    expect_error(jnumber("price")(json))
+    expect_identical(jnumber("price", recursive=TRUE)(json), c(30, 30))
   }
 )
 
@@ -262,14 +252,14 @@ test_that("recursive returns an error when multiple values are present", {
       fromJSON('{"name": {"first": "susan", "last": "jones"}}')
     )
 
-    expect_error(json_chr("name", "first", recursive=TRUE)(json))
+    expect_error(jstring("name", "first", recursive=TRUE)(json))
 
     json <- list(
       fromJSON('{"price": {"value" : {"value1" : 30, "value2": 30}}}'),
       fromJSON('{"price": 30}')
     )
 
-    expect_error(json_dbl("price", recursive=TRUE)(json))
+    expect_error(jnumber("price", recursive=TRUE)(json))
 
   }
 )
@@ -280,7 +270,7 @@ test_that("recursive works when nulls are present", {
               '{"name": {"last": "jones"}}')
 
     expect_identical(
-       (json %>% spread_values(name = json_chr("name", "first", recursive=TRUE)))$name,
+       (json %>% spread_values(name = jstring("name", "first", recursive=TRUE)))$name,
        c("bob", NA_character_))
 
     json <- c('{"name": {"first": {"string1": "bob", "string2": "robert"}}, "last": "smith"}',
@@ -294,22 +284,22 @@ test_that("either throws an error when type converting", {
 
   # Regular
   expect_error(
-    '{"name": "1"}' %>% spread_values(num = json_dbl("name"))
+    '{"name": "1"}' %>% spread_values(num = jnumber("name"))
   )
 
   # Recursive
   expect_error(
-    '{"k1": {"k2": "1"}}' %>% spread_values(num = json_dbl("k1", recursive = TRUE))
+    '{"k1": {"k2": "1"}}' %>% spread_values(num = jnumber("k1", recursive = TRUE))
   )
 
 })
 
 test_that("works with x, json as input", {
 
-  expect_identical('{"x": 1}' %>% spread_values(x = json_chr("x")),
-                   '{"x": 1}' %>% spread_values(y = json_chr("x")) %>% rename(x = y))
+  expect_identical('{"x": 1}' %>% spread_values(x = jstring("x")),
+                   '{"x": 1}' %>% spread_values(y = jstring("x")) %>% rename(x = y))
 
-  expect_identical('{"json": 1}' %>% spread_values(json = json_chr("json")),
-                   '{"json": 1}' %>% spread_values(y = json_chr("json")) %>% rename(json = y))
+  expect_identical('{"json": 1}' %>% spread_values(json = jstring("json")),
+                   '{"json": 1}' %>% spread_values(y = jstring("json")) %>% rename(json = y))
 
 })

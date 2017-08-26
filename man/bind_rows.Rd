@@ -25,7 +25,7 @@ is meant to mask dplyr::bind_rows (although it is called directly).
 a <- as.tbl_json('{"a": 1, "b": 2}')
 b <- as.tbl_json('{"a": 3, "b": 4}')
 
-bind_rows(a,b) \%>\% spread_values(a=json_dbl(a),b=json_dbl(b))
+bind_rows(a,b) \%>\% spread_values(a=jnumber(a),b=jnumber(b))
 
 ## as a list
 bind_rows(list(a,b)) \%>\% spread_all()
