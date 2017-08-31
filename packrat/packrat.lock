@@ -1,6 +1,6 @@
 PackratFormat: 1.4
 PackratVersion: 0.4.8.1
-RVersion: 3.4.0
+RVersion: 3.4.1
 Repos: CRAN=https://mirrors.nics.utk.edu/cran/
 
 Package: BH
@@ -231,6 +231,11 @@ Source: CRAN
 Version: 0.6
 Hash: aa3d5b7912b5fed4b546ed5cd2a1760b
 
+Package: hms
+Source: CRAN
+Version: 0.3
+Hash: 3fca8a1c97e6cfb297fe3f4690f82c58
+
 Package: htmltools
 Source: CRAN
 Version: 0.3.6
@@ -391,6 +396,12 @@ Source: CRAN
 Version: 0.2.2.2
 Hash: faada139260184912fea03f3fea13842
 Requires: Rcpp, lazyeval, magrittr, tibble
+
+Package: readr
+Source: CRAN
+Version: 1.1.1
+Hash: 36bb0e1dc92b38dc4ebf419fdfa5cc7f
+Requires: BH, R6, Rcpp, hms, tibble
 
 Package: registry
 Source: CRAN
