@@ -2,6 +2,6 @@
 
 |package     |version | check_time|
 |:-----------|:-------|----------:|
-|fingertipsR |0.1.0   |      455.5|
+|fingertipsR |0.1.0   |        426|
 
 

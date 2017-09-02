@@ -10,7 +10,7 @@
 |language |en_US                        |
 |collate  |en_US.UTF-8                  |
 |tz       |America/New_York             |
-|date     |2017-08-29                   |
+|date     |2017-08-31                   |
 
 ## Packages
 
@@ -33,7 +33,7 @@
 |rmarkdown    |   |1.6        |2017-06-15 |cran (@1.6)                    |
 |testthat     |   |1.0.2      |2016-04-23 |cran (@1.0.2)                  |
 |tibble       |   |1.3.4      |2017-08-22 |cran (@1.3.4)                  |
-|tidyjson     |   |0.2.1.9001 |2017-08-29 |local (colearendt/tidyjson@NA) |
+|tidyjson     |   |0.2.1.9001 |2017-08-31 |local (colearendt/tidyjson@NA) |
 |tidyr        |   |0.7.0      |2017-08-16 |cran (@0.7.0)                  |
 |viridis      |   |0.4.0      |2017-03-27 |cran (@0.4.0)                  |
 |wordcloud    |   |2.5        |2014-06-13 |cran (@2.5)                    |
@@ -54,7 +54,7 @@ Bug reports: https://github.com/PublicHealthEngland/fingertipsR/issues
 
 ```
 checking tests ... ERROR
-  Running ‘testthat.R’ [33s/249s]
+  Running ‘testthat.R’ [23s/221s]
 Running the tests in ‘tests/testthat.R’ failed.
 Last 13 lines of output:
   4: In gather_array(.) :
@@ -81,11 +81,9 @@ See ‘/home/carendt/r/tidyjson/revdep/checks/fingertipsR.Rcheck/00install.out�
 checking re-building of vignette outputs ... WARNING
 Error in re-building vignettes:
   ...
-Warning in engine$weave(file, quiet = quiet, encoding = enc) :
-  Pandoc (>= 1.12.3) and/or pandoc-citeproc not available. Falling back to R Markdown v1.
-Quitting from lines 72-74 (lifeExpectancy.Rmd) 
+Quitting from lines 135-150 (lifeExpectancy.Rmd) 
 Error: processing vignette 'lifeExpectancy.Rmd' failed with diagnostics:
-there is no package called 'webshot'
+Faceting variables must have at least one value
 Execution halted
 
 ```
