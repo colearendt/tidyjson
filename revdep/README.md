@@ -1,53 +1,45 @@
-# Setup
+# Platform
 
-## Platform
-
-|setting  |value                        |
+|field    |value                        |
 |:--------|:----------------------------|
-|version  |R version 3.4.0 (2017-04-21) |
+|version  |R version 3.4.1 (2017-06-30) |
+|os       |Ubuntu 14.04.5 LTS           |
 |system   |x86_64, linux-gnu            |
-|ui       |RStudio (1.0.143)            |
+|ui       |X11                          |
 |language |en_US                        |
 |collate  |en_US.UTF-8                  |
 |tz       |America/New_York             |
-|date     |2017-05-22                   |
+|date     |2017-09-02                   |
 
-## Packages
+# Dependencies
 
-|package      |*  |version    |date       |source                         |
-|:------------|:--|:----------|:----------|:------------------------------|
-|assertthat   |   |0.2.0      |2017-04-11 |cran (@0.2.0)                  |
-|covr         |   |2.2.2      |2017-01-05 |cran (@2.2.2)                  |
-|dplyr        |   |0.5.0      |2016-06-24 |cran (@0.5.0)                  |
-|forcats      |   |0.2.0      |2017-01-23 |cran (@0.2.0)                  |
-|ggplot2      |   |2.2.1      |2016-12-30 |cran (@2.2.1)                  |
-|igraph       |   |1.0.1      |2015-06-26 |cran (@1.0.1)                  |
-|jsonlite     |   |1.4        |2017-04-08 |cran (@1.4)                    |
-|knitr        |   |1.16       |2017-05-18 |cran (@1.16)                   |
-|listviewer   |   |1.4.0      |2016-11-03 |cran (@1.4.0)                  |
-|magrittr     |   |1.5        |2014-11-22 |cran (@1.5)                    |
-|needs        |   |0.0.3      |2016-03-28 |cran (@0.0.3)                  |
-|purrr        |   |0.2.2.2    |2017-05-11 |cran (@0.2.2.2)                |
-|RColorBrewer |   |1.1-2      |2014-12-07 |cran (@1.1-2)                  |
-|rmarkdown    |   |1.5        |2017-04-26 |cran (@1.5)                    |
-|testthat     |*  |1.0.2      |2016-04-23 |cran (@1.0.2)                  |
-|tibble       |   |1.3.1      |2017-05-17 |cran (@1.3.1)                  |
-|tidyjson     |*  |0.2.1.9000 |2017-05-22 |local (colearendt/tidyjson@NA) |
-|tidyr        |   |0.6.3      |2017-05-15 |cran (@0.6.3)                  |
-|viridis      |   |0.4.0      |2017-03-27 |cran (@0.4.0)                  |
-|wordcloud    |   |2.5        |2014-06-13 |cran (@2.5)                    |
+|package    |old      |new        |Δ  |
+|:----------|:--------|:----------|:--|
+|tidyjson   |0.2.2    |0.2.1.9001 |*  |
+|assertthat |0.2.0    |0.2.0      |   |
+|BH         |1.65.0-1 |1.65.0-1   |   |
+|bindr      |0.1      |0.1        |   |
+|bindrcpp   |0.2      |0.2        |   |
+|dplyr      |0.7.2    |0.7.2      |   |
+|glue       |1.1.1    |1.1.1      |   |
+|jsonlite   |1.5      |1.5        |   |
+|magrittr   |1.5      |1.5        |   |
+|pkgconfig  |2.0.1    |2.0.1      |   |
+|plogr      |0.1-1    |0.1-1      |   |
+|purrr      |NA       |0.2.3      |*  |
+|R6         |2.2.2    |2.2.2      |   |
+|Rcpp       |0.12.12  |0.12.12    |   |
+|rlang      |0.1.2    |0.1.2      |   |
+|stringi    |NA       |1.1.5      |*  |
+|tibble     |1.3.4    |1.3.4      |   |
+|tidyr      |NA       |0.7.0      |*  |
+|tidyselect |NA       |0.2.0      |*  |
 
-# Check results
+# Revdeps
 
-1 packages
+## All (1)
 
-|package          |version | errors| warnings| notes|
-|:----------------|:-------|------:|--------:|-----:|
-|googleAnalyticsR |0.4.0   |      0|        0|     0|
-
-## googleAnalyticsR (0.4.0)
-Maintainer: Mark Edmondson <m@sunholo.com>  
-Bug reports: https://github.com/MarkEdmondson1234/googleAnalyticsR/issues
-
-0 errors | 0 warnings | 0 notes
+|package                                |version |error |warning |note |
+|:--------------------------------------|:-------|:-----|:-------|:----|
+|[fingertipsR](problems.md#fingertipsr) |0.1.0   |1     |2       |     |
 
