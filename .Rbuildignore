@@ -1,5 +1,6 @@
 ^\.travis\.yml$
 ^cran-comments\.md$
+^cran-output\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^codecov\.yml$
@@ -10,3 +11,4 @@
 ^working/
 ^appveyor\.yml$
 ^revdep/
+
