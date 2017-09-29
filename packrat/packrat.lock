@@ -326,8 +326,8 @@ Requires: htmltools, jsonlite, yaml
 
 Package: httpuv
 Source: CRAN
-Version: 1.3.3
-Hash: fb52e8c4b8c89f8a3a3c5da33149c020
+Version: 1.3.5
+Hash: 2cc5284565b71276d1faf3d5c043fe4e
 Requires: Rcpp
 
 Package: httr
@@ -378,6 +378,16 @@ Package: lazyeval
 Source: CRAN
 Version: 0.2.0
 Hash: 3d6e7608e65bbf5cb170dab1e3c9ed8b
+
+Package: lineprof
+Source: github
+Version: 0.1.9001
+Hash: 3f767ccf0b4741ac925caae05a75fd43
+Requires: Rcpp, shiny, stringr
+GithubRepo: lineprof
+GithubUsername: hadley
+GithubRef: master
+GithubSha1: 972e71dca0087ed8452e21f914fd612376075d5b
 
 Package: listviewer
 Source: CRAN
@@ -477,6 +487,12 @@ Source: CRAN
 Version: 2.0.0.1
 Hash: cfb7e4911fb7451f16f812580571652f
 Requires: R6, assertthat, crayon, debugme
+
+Package: profvis
+Source: CRAN
+Version: 0.3.3
+Hash: 41076859eb76a7514acc5ef9ca73949c
+Requires: htmlwidgets, stringr
 
 Package: progress
 Source: github
@@ -617,8 +633,8 @@ Requires: clisymbols, withr
 
 Package: shiny
 Source: CRAN
-Version: 1.0.3
-Hash: f133585c72ea31592f663e68c6ff0b3e
+Version: 1.0.5
+Hash: 4d47532a807122bfd6bc3818310f9d2e
 Requires: R6, digest, htmltools, httpuv, jsonlite, mime, sourcetools,
     xtable
 
@@ -660,6 +676,15 @@ Source: CRAN
 Version: 0.6.3
 Hash: ab001782aeb1a20618d240e91188d23a
 Requires: Rcpp, dplyr, lazyeval, magrittr, stringi, tibble
+
+Package: ulimit
+Source: github
+Version: 0.0-3
+Hash: 96243b172b2a205dc2a037294dfbbe73
+GithubRepo: ulimit
+GithubUsername: krlmlr
+GithubRef: master
+GithubSha1: dfed47f89bdc6adaceb0fd0e3bc68443448a2530
 
 Package: viridis
 Source: CRAN
