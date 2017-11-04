@@ -3,12 +3,9 @@
 \docType{import}
 \name{\%>\%}
 \alias{\%>\%}
-\title{Pipe operator}
+\title{Objects exported from other packages}
 \usage{
 lhs \%>\% rhs
-}
-\description{
-Pipe operator
 }
 \keyword{internal}
 \description{

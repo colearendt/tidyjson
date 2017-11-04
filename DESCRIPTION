@@ -21,7 +21,6 @@ Suggests:
     testthat,
     ggplot2,
     rmarkdown,
-    needs,
     forcats,
     wordcloud,
     viridis,

@@ -1,5 +1,3 @@
-#' Pipe operator
-#'
 #' @name %>%
 #' @rdname pipe
 #' @keywords internal
@@ -8,9 +6,7 @@
 #' @export
 magrittr::`%>%`
 
-#' Convert object to tbl_df
-#' 
-#' Exported from dplyr package.  Converts an object
+#' @details Exported from dplyr package.  Converts an object
 #' to a pure tibble (revert to tbl_df class and drops
 #' tbl_json class/attributes).
 #' 
@@ -21,8 +17,16 @@ magrittr::`%>%`
 #' @seealso as_tibble.tbl_json
 #' @keywords internal
 #' @export
-#' @usage as_tibble(data)
+#' @usage as_tibble(x)
 dplyr::as_tibble
+
+#' @name filter
+#' @rdname filter
+#' @seealso http://r.789695.n4.nabble.com/R-CMD-check-warning-with-S3-method-td4692255.html
+#' @details This needs to be re-exported, since `dplyr` implements a generic that 
+#' is not a generic in the `stats` package, and `tidyjson` provides a method for that generic
+#' @export
+dplyr::filter
 
 #' @export
 #' @rdname as_tibble
