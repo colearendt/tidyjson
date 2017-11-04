@@ -400,7 +400,7 @@ Now we can visualize the results
 ```{r}
 round_prep <- rounds_by_geo #%>% 
   dplyr::filter(!is.na(state)) %>%
-  dplyr::mutate(
+  mutate(
     round = round %>% forcats::fct_collapse(
       "angel" = c("seed", "angel"),
       "d-f"   = c("d", "e", "f"),
@@ -408,7 +408,7 @@ round_prep <- rounds_by_geo #%>%
                   "debt_round", "unattributed")
     ) %>% forcats::fct_relevel("angel", "a", "b", "c", "d-f", "other")
   ) %>%
-  dplyr::mutate(
+  mutate(
     state = state %>% forcats::fct_lump(2)
   ) 
 
