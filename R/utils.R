@@ -15,10 +15,10 @@ magrittr::`%>%`
 #' @aliases as_data_frame
 #' @aliases tbl_df
 #' @seealso as_tibble.tbl_json
+#' @importFrom tibble as_tibble
 #' @keywords internal
 #' @export
-#' @usage as_tibble(x)
-dplyr::as_tibble
+tibble::as_tibble
 
 #' @name filter
 #' @rdname filter

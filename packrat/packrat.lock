@@ -22,13 +22,15 @@ Package: Matrix
 Source: CRAN
 Version: 1.2-9
 Hash: 2ebcd58cfc6ac9afedc39c1795a704c8
+Requires: lattice
 
 Package: NMF
 Source: CRAN
 Version: 0.20.6
 Hash: 632aad207ab2e551b33990c9f09ab8af
-Requires: RColorBrewer, colorspace, digest, doParallel, foreach,
-    ggplot2, gridBase, pkgmaker, registry, reshape2, rngtools, stringr
+Requires: RColorBrewer, cluster, colorspace, digest, doParallel,
+    foreach, ggplot2, gridBase, pkgmaker, registry, reshape2, rngtools,
+    stringr
 
 Package: R6
 Source: CRAN
@@ -160,7 +162,7 @@ Requires: foreach, iterators
 Package: dplyr
 Source: CRAN
 Version: 0.7.4
-Hash: 601cf010e386727408901d6cdd03916f
+Hash: 0a6b851f060705e7d2f09441645fba0b
 Requires: BH, R6, Rcpp, assertthat, bindrcpp, glue, magrittr,
     pkgconfig, plogr, rlang, tibble
 
@@ -191,7 +193,8 @@ Package: ggplot2
 Source: CRAN
 Version: 2.2.1
 Hash: 46e5cb78836848aa44655e577433f54b
-Requires: digest, gtable, lazyeval, plyr, reshape2, scales, tibble
+Requires: MASS, digest, gtable, lazyeval, plyr, reshape2, scales,
+    tibble
 
 Package: git2r
 Source: CRAN
@@ -252,12 +255,13 @@ Package: igraph
 Source: CRAN
 Version: 1.1.2
 Hash: 07d33f151f94269a4573d354104e81aa
-Requires: irlba, magrittr, pkgconfig
+Requires: Matrix, irlba, magrittr, pkgconfig
 
 Package: irlba
 Source: CRAN
 Version: 2.3.1
 Hash: e3d9d719dff18ad0359ac861fa80cfd1
+Requires: Matrix
 
 Package: iterators
 Source: CRAN

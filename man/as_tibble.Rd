@@ -7,9 +7,6 @@
 \alias{reexports}
 \alias{as_data_frame}
 \title{Objects exported from other packages}
-\usage{
-as_tibble(x)
-}
 \details{
 Exported from dplyr package.  Converts an object
 to a pure tibble (revert to tbl_df class and drops
@@ -24,6 +21,8 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{dplyr}{\code{\link[dplyr]{as_tibble}}, \code{\link[dplyr]{as_data_frame}}}
+  \item{dplyr}{\code{\link[dplyr]{as_data_frame}}}
+
+  \item{tibble}{\code{\link[tibble]{as_tibble}}}
 }}
 

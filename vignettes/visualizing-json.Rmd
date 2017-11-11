@@ -398,7 +398,7 @@ rounds_by_geo <- inner_join(rounds_usd, hqs, by = "document.id") %>% tidyjson::a
 Now we can visualize the results
 
 ```{r}
-round_prep <- rounds_by_geo #%>% 
+round_prep <- rounds_by_geo %>% 
   dplyr::filter(!is.na(state)) %>%
   mutate(
     round = round %>% forcats::fct_collapse(
