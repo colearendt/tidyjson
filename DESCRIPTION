@@ -30,8 +30,7 @@ Suggests:
     igraph,
     RColorBrewer,
     covr,
-    lubridate,
-    listviewier
+    lubridate
 VignetteBuilder: knitr
 URL: https://github.com/jeremystan/tidyjson
 BugReports: https://github.com/jeremystan/tidyjson/issues
