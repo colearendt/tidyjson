@@ -72,6 +72,7 @@ library(RColorBrewer)
 library(wordcloud)
 library(viridis)
 library(listviewer)
+
 set.seed(1)
 ```
 
@@ -390,32 +391,33 @@ rounds_usd <- rounds %>%
   filter(!is.na(raised)) %>%
   select(document.id, round, raised)
 
-rounds_by_geo <- inner_join(rounds_usd, hqs, by = "document.id") %>% as_tibble
+rounds_by_geo <- inner_join(rounds_usd, hqs, by = "document.id") %>% tidyjson::as_tibble()
 ```
 
 Now we can visualize the results
 
 ```{r}
-rounds_by_geo %>%
-  filter(!is.na(state)) %>%
+round_prep <- rounds_by_geo %>% 
+  dplyr::filter(!is.na(state)) %>%
   mutate(
-    round = round %>% fct_collapse(
+    round = round %>% forcats::fct_collapse(
       "angel" = c("seed", "angel"),
       "d-f"   = c("d", "e", "f"),
       "other" = c("grant", "partial", "post_ipo_equity", "private_equity", 
                   "debt_round", "unattributed")
-    ) %>% fct_relevel("angel", "a", "b", "c", "d-f", "other")
+    ) %>% forcats::fct_relevel("angel", "a", "b", "c", "d-f", "other")
   ) %>%
   mutate(
-    state = state %>% fct_lump(2)
-  ) %>%
-  ggplot(aes(state, raised, fill = state)) +
-    geom_violin() +
-    scale_y_log10() + 
-    annotation_logticks(side = 'l') +
-    facet_grid(. ~ round) +
-    theme(legend.position = "bottom") +
-    labs(x = "", y = "Amount Raised (USD)")
+    state = state %>% forcats::fct_lump(2)
+  ) 
+
+g <- ggplot(round_prep, aes(state, raised, fill = state)) +
+  geom_violin() +
+  scale_y_log10() + 
+  annotation_logticks(side = 'l') +
+  facet_grid(. ~ round) +
+  theme(legend.position = "bottom") +
+  labs(x = "", y = "Amount Raised (USD)")
 ```
 
 Which shows a few interesting things:

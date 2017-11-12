@@ -6,11 +6,8 @@
 \alias{as_data_frame}
 \alias{reexports}
 \alias{as_data_frame}
-\title{Convert object to tbl_df}
-\usage{
-as_tibble(data)
-}
-\description{
+\title{Objects exported from other packages}
+\details{
 Exported from dplyr package.  Converts an object
 to a pure tibble (revert to tbl_df class and drops
 tbl_json class/attributes).
@@ -24,6 +21,8 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{dplyr}{\code{\link[dplyr]{as_tibble}}, \code{\link[dplyr]{as_data_frame}}}
+  \item{dplyr}{\code{\link[dplyr]{as_data_frame}}}
+
+  \item{tibble}{\code{\link[tibble]{as_tibble}}}
 }}
 
