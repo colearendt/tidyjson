@@ -12,7 +12,7 @@
 
 ## Bug fixes and minor changes
 
-* `DROP=TRUE` caused an error.  Altered behavior to be consistent with `tbl_df` (throw a warning and do nothing)
+* `DROP=TRUE` caused an error.  Altered behavior to be consistent with `tbl_df`
 
 * Fix `spread_all(recursive=FALSE)` bug that caused an error (#65)
 
