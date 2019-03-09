@@ -62,10 +62,17 @@ Before we start, let's load `tidyjson` along with other data manipulation and
 visualization libraries, and set a seed so we get consistent results.
 
 ```{r, message = FALSE}
-library(needs)
-needs(jsonlite, dplyr, purrr, magrittr, forcats,
-      ggplot2, igraph, RColorBrewer, wordcloud, viridis,
-      listviewer)
+library(jsonlite)
+library(dplyr)
+library(purrr)
+library(magrittr)
+library(forcats)
+library(ggplot2)
+library(igraph)
+library(RColorBrewer)
+library(wordcloud)
+library(viridis)
+library(listviewer)
 set.seed(1)
 ```
 
@@ -126,7 +133,7 @@ function in tidyjson which gives us a `data.frame` where each row corresponds
 to an object, array or scalar in the JSON document.
 
 ```{r}
-co_struct <- companies %>% json_structure
+co_struct <- companies %>% json_structure()
 
 co_struct %>% sample_n(5)
 ```
@@ -384,7 +391,7 @@ rounds_usd <- rounds %>%
   filter(!is.na(raised)) %>%
   select(document.id, round, raised)
 
-rounds_by_geo <- inner_join(rounds_usd, hqs, by = "document.id")
+rounds_by_geo <- inner_join(rounds_usd, hqs, by = "document.id") %>% as_tibble()
 ```
 
 Now we can visualize the results

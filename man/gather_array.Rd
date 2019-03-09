@@ -77,4 +77,3 @@ commits \%>\% gather_array \%>\% spread_all(recursive = FALSE) \%>\% glimpse
          \code{\link[tidyr]{gather}} to gather name-value pairs in a data
          frame
 }
-

@@ -46,15 +46,15 @@ NULL
 
 #' @rdname is_json
 #' @export
-is_json_string  <- is_json_factory("string")
+is_json_string <- is_json_factory('string')
 
 #' @rdname is_json
 #' @export
-is_json_number  <- is_json_factory("number")
+is_json_number <- is_json_factory('number')
 
 #' @rdname is_json
 #' @export
-is_json_logical <- is_json_factory("logical")
+is_json_logical <- is_json_factory('logical')
 
 #' @rdname is_json
 #' @export

@@ -50,10 +50,10 @@ allowed_json_types <-
 determine_types <- function(json_list) {
 
   # Get classes
-  classes <- map_chr(json_list, class)
+  classes <- purrr::map_chr(json_list, class)
 
   # Check existence of names
-  names <- map_lgl(json_list, function(x) !is.null(attr(x, "names")))
+  names <- purrr::map_lgl(json_list, function(x) !is.null(attr(x, "names")))
 
   # Check if it's a list
   is_list <- classes == "list"

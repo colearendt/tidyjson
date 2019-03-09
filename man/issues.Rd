@@ -46,4 +46,3 @@ labels \%>\%
   group_by(name) \%>\%
   summarize(num.issues = n_distinct(id))
 }
-

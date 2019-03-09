@@ -41,4 +41,3 @@ key_employees \%>\%
   arrange(desc(n)) \%>\%
   top_n(10)
 }
-

@@ -32,3 +32,14 @@ test_that("throws an error on length > 1 input", {
   expect_error(path(list("a", "b")))
 
 })
+
+
+test_that("works with a vector input", {
+  skip('Vector input not yet supported in path')
+  
+  v <- c('a','b','c')
+  
+  expect_identical(path(v)
+                   , structure(c('a','b','c'),class='path')
+                   )
+})

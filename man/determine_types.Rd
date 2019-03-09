@@ -15,4 +15,3 @@ a factor with levels json_types
 \description{
 Determines the types of a list of parsed JSON
 }
-

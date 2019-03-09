@@ -43,7 +43,7 @@
 #'   )
 #'
 #' # Another document, this time with a middle name (and no age)
-#' json2 <- '{"name": {"first": "Ann", "middle": "A", "last": "Smith"}, "age": 23}'
+#' json2 <- '{"name": {"first": "Ann", "middle": "A", "last": "Smith"}}'
 #'
 #' # spread_values still gives the same column structure
 #' c(json, json2) %>%
@@ -67,7 +67,7 @@ spread_values <- function(.x, ...) {
   new_values <- invoke_map(lst(...), .x = list(NULL), json)
 
   # Add on new values
-  y <- bind_cols(.x, new_values)
+  y <- dplyr::bind_cols(.x, new_values)
 
   tbl_json(y, json)
 
@@ -76,7 +76,7 @@ spread_values <- function(.x, ...) {
 #' Factory that creates the j* functions below
 #'
 #' @param map.function function to map to collapse
-jfactory <- function(map.function) {
+json_factory <- function(map.function) {
 
   replace_nulls_na <- function(x)
     if (is.null(x)) NA else x
@@ -91,8 +91,8 @@ jfactory <- function(map.function) {
     function(json) {
 
       json %>%
-        map(path %>% as.list) %>%
-        map(replace_nulls_na) %>%
+        purrr::map(path %>% as.list) %>%
+        purrr::map(replace_nulls_na) %>%
         map.function(recursive.fun)
 
     }
@@ -108,7 +108,7 @@ jfactory <- function(map.function) {
 #'
 #' @seealso \code{\link{spread_values}} for using these functions to spread
 #'          the values of a JSON object into new columns
-#' @name jfunctions
+#' @name json_functions
 #' @param ... a quoted or unquoted sequence of strings designating the object
 #'            name sequence you wish to follow to find a value
 #' @param recursive logical indicating whether second level and beyond objects
@@ -117,14 +117,14 @@ jfactory <- function(map.function) {
 #' @return a function that can operate on parsed JSON data
 NULL
 
-#' @rdname jfunctions
+#' @rdname json_functions
 #' @export
-jstring <- jfactory(map_chr)
+jstring <- json_factory(map_chr)
 
-#' @rdname jfunctions
+#' @rdname json_functions
 #' @export
-jnumber <- jfactory(map_dbl)
+jnumber <- json_factory(map_dbl)
 
-#' @rdname jfunctions
+#' @rdname json_functions
 #' @export
-jlogical <- jfactory(map_lgl)
+jlogical <- json_factory(map_lgl)

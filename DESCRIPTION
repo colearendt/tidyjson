@@ -1,8 +1,10 @@
 Package: tidyjson
 Title: Tidy Complex JSON
-Version: 0.2.1.9000
-Author: Jeremy Stanley <jeremy.stanley@gmail.com>
-Maintainer: Jeremy Stanley <jeremy.stanley@gmail.com>
+Version: 0.2.1.9001
+Authors@R: c(
+    person("Jeremy", "Stanley", , "jeremy.stanley@gmail.com", c("aut")),
+    person("Cole", "Arendt", , "cole@rstudio.com", c("aut", "cre"))
+  )
 Description: Turn complex JSON data into tidy data frames.
 Depends:
     R (>= 3.1.0)
@@ -21,15 +23,15 @@ Suggests:
     testthat,
     ggplot2,
     rmarkdown,
-    needs,
     forcats,
     wordcloud,
     viridis,
     listviewer,
     igraph,
     RColorBrewer,
-    covr
+    covr,
+    lubridate
 VignetteBuilder: knitr
-URL: https://github.com/jeremystan/tidyjson
-BugReports: https://github.com/jeremystan/tidyjson/issues
-RoxygenNote: 5.0.1
+URL: https://github.com/colearendt/tidyjson
+BugReports: https://github.com/colearendt/tidyjson/issues
+RoxygenNote: 6.1.1

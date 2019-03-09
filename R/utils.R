@@ -3,10 +3,30 @@
 #' @name %>%
 #' @rdname pipe
 #' @keywords internal
-#' @export
 #' @importFrom magrittr %>%
 #' @usage lhs \%>\% rhs
-NULL
+#' @export
+magrittr::`%>%`
+
+#' Convert object to tbl_df
+#' 
+#' Exported from dplyr package.  Converts an object
+#' to a pure tibble (revert to tbl_df class and drops
+#' tbl_json class/attributes).
+#' 
+#' @name as_tibble
+#' @rdname as_tibble
+#' @aliases as_data_frame
+#' @aliases tbl_df
+#' @seealso as_tibble.tbl_json
+#' @keywords internal
+#' @export
+#' @usage as_tibble(data)
+dplyr::as_tibble
+
+#' @export
+#' @rdname as_tibble
+dplyr::as_data_frame
 
 #' Bind two tbl_json objects together and preserve JSON attribute
 #'
@@ -16,8 +36,71 @@ NULL
 rbind_tbl_json <- function(x, y) {
 
   tbl_json(
-    bind_rows(x %>% unclass, y %>% unclass),
+    dplyr::bind_rows(x %>% unclass, y %>% unclass),
     c(attr(x, "JSON"), attr(y, "JSON"))
   )
 
+}
+
+
+#' List or Dots
+#' 
+#' Handles dots or a list, coercing into a list
+#' so that the output is easy to handle
+#' 
+#' @param ... Either a list or the `...` of a function call
+#' 
+#' @return The input object coerced into a list for easier use
+list_or_dots <- function (...) 
+{
+  dots <- list(...)
+  data_lists <- vapply(dots, is_data_list, logical(1))
+  dots[data_lists] <- lapply(dots[data_lists], list)
+  unlist(dots, recursive = FALSE)
+}
+
+#' 
+#' List Check
+#' 
+#' Checks whether a list is being provided
+#' 
+#' @param x Input object
+#' 
+#' @return Boolean.  Indicates whether x is a list
+#' 
+is_data_list <- function (x) 
+{
+  if (is.data.frame(x) || is.null(x)) 
+    return(TRUE)
+  if (!is.list(x)) 
+    return(FALSE)
+  if (!is.null(names(x)) && length(x) == 0) 
+    return(TRUE)
+  if (any(!has_names(x))) 
+    return(FALSE)
+  is_1d <- vapply(x, is_1d, logical(1))
+  if (any(!is_1d)) 
+    return(FALSE)
+  n <- vapply(x, length, integer(1))
+  if (any(n != n[1])) 
+    return(FALSE)
+  TRUE
+}
+
+#' Check for Names
+#' 
+#' Checks the input object for the existence of names
+#' 
+#' @param x Input object
+#' 
+#' @return Boolean.  Indicates whether x has names
+has_names <- function (x) 
+{
+  nms <- names(x)
+  if (is.null(nms)) {
+    rep(FALSE, length(x))
+  }
+  else {
+    !is.na(nms) & nms != ""
+  }
 }

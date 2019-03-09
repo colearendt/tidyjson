@@ -42,4 +42,3 @@ wb_sectors \%>\%
   arrange(desc(n)) \%>\%           # Arrange descending
   top_n(10)                      # Take the top 10
 }
-

@@ -4,8 +4,29 @@ language: R
 sudo: false
 cache: packages
 
+os:
+  - linux
+  - osx
+
+r:
+- oldrel
+- release
+- devel
+
+matrix:
+  allow_failures:
+  - r: devel
+
 r_packages:
   - covr
+  
+script: 
+  - |
+    travis_wait 60 R CMD build --no-build-vignettes --no-manual --no-resave-data . 
+    travis_wait 60 R CMD check --no-build-vignettes --no-manual tidyjson*tar.gz
 
 after_success:
   - Rscript -e 'library(covr); codecov()'
+
+after_script:
+ - ./travis-tool.sh dump_logs

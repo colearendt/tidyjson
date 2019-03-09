@@ -86,7 +86,7 @@ test_that("handles missing input properly", {
 
 context("spread_values")
 
-test_that("exctract various values", {
+test_that("extract various values", {
 
     json <- '{"name": "bob", "age": 32, "customer": true}'
     expected_value <- tbl_json(
@@ -171,6 +171,17 @@ test_that("correctly handles []", {
     expect_identical('[]' %>% spread_values(value = jstring("name")), empty)
   }
 )
+
+test_that('correctly handles over-specified path', {
+  json <- '{ "a" : 1 , "b" : "text", "c" : true }' 
+  
+  expect_equal(json %>% spread_values(a = jnumber("a", "b")) %>% .$a, as.numeric(NA))
+  
+  expect_equal(json %>% spread_values(b = jstring('b','c')) %>% .$b, as.character(NA))
+  
+  expect_equal(json %>% spread_values(c = jlogical('c','d')) %>% .$c, as.logical(NA))
+})
+
 
 context("recursive option")
 

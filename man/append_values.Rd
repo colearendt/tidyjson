@@ -2,9 +2,9 @@
 % Please edit documentation in R/append_values.R
 \name{append_values}
 \alias{append_values}
-\alias{append_values_logical}
-\alias{append_values_number}
 \alias{append_values_string}
+\alias{append_values_number}
+\alias{append_values_logical}
 \title{Appends all JSON values with a specified type as a new column}
 \usage{
 append_values_string(.x, column.name = type, force = TRUE,
@@ -68,4 +68,3 @@ recipes \%>\%
 \code{\link{gather_object}} to gather an object first,
    \code{\link{spread_all}} to spread values into new columns
 }
-

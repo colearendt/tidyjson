@@ -35,4 +35,3 @@ c('{"a": 1}', '[1, 2]', '"a"', '1', 'true', 'null') \%>\% json_types
 library(dplyr)
 companies[1:10] \%>\% gather_object \%>\% json_types \%>\% count(type)
 }
-
