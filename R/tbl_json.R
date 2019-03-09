@@ -282,11 +282,12 @@ as.character.tbl_json <- function(x, ...) {
 #' @param ... additional parameters
 #' @return a tbl_df object (with no tbl_json component)
 #' 
+#' @export
 as_tibble.tbl_json <- function(x, ...) {
   attr(x,'JSON') <- NULL
-  class(x) <- class(x)[class(x) != 'tbl_json']
-  
-  x
+  as_tibble(
+    structure(x, class = class(tibble::tibble()))
+  )
 }
 
 #' @rdname as_tibble.tbl_json
