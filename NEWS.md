@@ -4,6 +4,31 @@
 
 * Add `bind_rows()` support.  Though currently not an S3 implementation, it behaves as much like the `dplyr` variant as possible, preserving the `attr(.,'JSON')` components if all components are `tbl_json` objects. (#58)
 
+## Documentation Changes
+
+* "Using Multiple APIs" vignette added to show support for using tidyjson with multiple APIs (#85)
+
+* Updated README.md to better explain `spread_all()` (#92)
+
+## Bug fixes and minor changes
+
+* `DROP=TRUE` caused an error.  Altered behavior to be consistent with `tbl_df`
+
+* Fix `spread_all(recursive=FALSE)` bug that caused an error (#65)
+
+* Alter `spread_all()` behavior to recursively check for deduplication of names (and thus avoid an error) (#76)
+
+* Add named support for the `NSE` versions of dplyr functions (`filter()`,`mutate()`,`slice()`, etc.) since the `SE` variants are no longer called behind-the-scenes since `dplyr 0.6.0`.  (#97)
+
+* Fix errors with `print.tbl_json()` when the JSON attribute is missing
+
+* Fix json_structure() failure if `document.id` missing by imputing 
+the missing `document.id`.  (#86)
+
+# tidyjson 0.2.1.9000
+
+## New functions
+
 * `json_complexity()` computes the "complexity" (recursively unlisted length) of JSON data (#5)
 
 * `json_structure()` recursively structures arbitrary JSON data into a single data frame (#2)
@@ -49,9 +74,9 @@ the missing `document.id`.  (#86)
 
 * `tbl_json` objects now print with a tidy character representation of the JSON attribute (#61)
 
-* Use [purrr](https://github.com/jeremystan/purrr) for most list based internal operations (#1)
+* Use [purrr](https://github.com/tidyverse/purrr) for most list based internal operations (#1)
 
-* Use [tidyr](https://github.com/hadley/tidyr) for `gather_array` and `gather_object` functions (#28)
+* Use [tidyr](https://github.com/tidyverse/tidyr) for `gather_array` and `gather_object` functions (#28)
 
 * Imported the magrittr `%>%` operator (#17)
 
@@ -66,7 +91,7 @@ the missing `document.id`.  (#86)
 
 ## Other changes
 
-* Migrated development to [jeremystan](https://github.com/jeremystan/tidyjson) from [sailthru](https://github.com/sailthru/tidyjson)
+* Migrated development to [colearendt](https://github.com/colearendt/tidyjson) from [jeremystan](https://github.com/jeremystan/tidyjson) and [sailthru](https://github.com/sailthru/tidyjson)
 
 ## Deprecated functions
 

@@ -5,7 +5,6 @@
 \alias{as_tibble}
 \alias{as_data_frame}
 \alias{reexports}
-\alias{as_data_frame}
 \title{Objects exported from other packages}
 \details{
 Exported from dplyr package.  Converts an object

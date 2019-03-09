@@ -2,7 +2,6 @@
 % Please edit documentation in R/tbl_json.R
 \name{tbl_json}
 \alias{tbl_json}
-\alias{tbl_json}
 \alias{as.tbl_json}
 \alias{as.tbl_json.tbl_json}
 \alias{as.tbl_json.character}
@@ -42,8 +41,6 @@ is.tbl_json(.x)
 a \code{\link{tbl_json}} object
 }
 \description{
-Combines structured JSON (as a data.frame) with remaining JSON
-
 Constructs a \code{tbl_json} object, for further downstream manipulation
 by other tidyjson functions. Methods exist to convert JSON stored in
 character strings without any other associated data, as a separate
