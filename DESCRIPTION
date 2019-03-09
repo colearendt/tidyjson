@@ -30,6 +30,6 @@ Suggests:
     covr,
     lubridate
 VignetteBuilder: knitr
-URL: https://github.com/jeremystan/tidyjson
-BugReports: https://github.com/jeremystan/tidyjson/issues
+URL: https://github.com/colearendt/tidyjson
+BugReports: https://github.com/colearendt/tidyjson/issues
 RoxygenNote: 6.1.1
