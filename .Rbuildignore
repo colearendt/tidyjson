@@ -1,3 +1,4 @@
+^LICENSE\.md$
 ^\.travis\.yml$
 ^cran-comments\.md$
 ^.*\.Rproj$
