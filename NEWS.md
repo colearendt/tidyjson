@@ -1,4 +1,4 @@
-# tidyjson 0.2.3
+# tidyjson dev
 
 ## New functions
 
