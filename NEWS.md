@@ -25,6 +25,24 @@
 * Fix json_structure() failure if `document.id` missing by imputing 
 the missing `document.id`.  (#86)
 
+* `enter_object` and the `jstring`, `jnumber` and `jlogical` functions now accept unqoted strings to specify their path (#26)
+
+* `tbl_json` objects now print with a tidy character representation of the JSON attribute (#61)
+
+* Use [purrr](https://github.com/tidyverse/purrr) for most list based internal operations (#1)
+
+* Use [tidyr](https://github.com/tidyverse/tidyr) for `gather_array` and `gather_object` functions (#28)
+
+* Imported the magrittr `%>%` operator (#17)
+
+* Fixed `dplyr::slice()` not working correctly with `tbl_json` objects (#18)
+
+* First argument to verbs is `.x` rather than `x` to avoid name conflicts in NSE (#23)
+
+* Fixed `spread_values()` to not coerce types (#24)
+
+* `gather_array()` and `gather_object()` can be called repeatedly in the same pipeline with the same `column.name` argument, and will simply append an integer identifer to the new columns (#38)
+
 # tidyjson 0.2.1.9000
 
 ## New functions
@@ -54,40 +72,6 @@ the missing `document.id`.  (#86)
 * Significant updates to all documentation and examples for clarity (#42)
 
 * Updated "Introduction to tidyjson" vignette to be more concise and use new functionality (#74)
-
-## Bug fixes and minor changes
-
-* `DROP=TRUE` caused an error.  Altered behavior to be consistent with `tbl_df` (throw a warning and do nothing)
-
-* Fix `spread_all(recursive=FALSE)` bug that caused an error (#65)
-
-* Alter `spread_all()` behavior to recursively check for deduplication of names (and thus avoid an error) (#76)
-
-* Add named support for the `NSE` versions of dplyr functions (`filter()`,`mutate()`,`slice()`, etc.) since the `SE` variants are no longer called behind-the-scenes since `dplyr 0.6.0`.  (#97)
-
-* Fix errors with `print.tbl_json()` when the JSON attribute is missing
-
-* Fix json_structure() failure if `document.id` missing by imputing 
-the missing `document.id`.  (#86)
-
-* `enter_object` and the `jstring`, `jnumber` and `jlogical` functions now accept unqoted strings to specify their path (#26)
-
-* `tbl_json` objects now print with a tidy character representation of the JSON attribute (#61)
-
-* Use [purrr](https://github.com/tidyverse/purrr) for most list based internal operations (#1)
-
-* Use [tidyr](https://github.com/tidyverse/tidyr) for `gather_array` and `gather_object` functions (#28)
-
-* Imported the magrittr `%>%` operator (#17)
-
-* Fixed `dplyr::slice()` not working correctly with `tbl_json` objects (#18)
-
-* First argument to verbs is `.x` rather than `x` to avoid name conflicts in NSE (#23)
-
-* Fixed `spread_values()` to not coerce types (#24)
-
-* `gather_array()` and `gather_object()` can be called repeatedly in the same pipeline with the same `column.name` argument, and will simply append an integer identifer to the new columns (#38)
-
 
 ## Other changes
 
