@@ -12,7 +12,6 @@ vignette: >
 knitr::opts_chunk$set(collapse = T, comment = "#>")
 knitr::opts_chunk$set(fig.width = 7, fig.height = 5)
 options(tibble.print_min = 4L, tibble.print_max = 4L)
-library(tidyjson)
 ```
 
 JSON is a very simple data standard that, through nested data structures, can
@@ -73,6 +72,7 @@ library(RColorBrewer)
 library(wordcloud)
 library(viridis)
 library(listviewer)
+
 set.seed(1)
 ```
 
@@ -133,9 +133,9 @@ function in tidyjson which gives us a `data.frame` where each row corresponds
 to an object, array or scalar in the JSON document.
 
 ```{r}
-co_struct <- companies %>% json_structure()
+co_struct <- companies %>% sample(5) %>% json_structure
 
-co_struct %>% sample_n(5)
+print(co_struct)
 ```
 
 We can then aggregate all of the object names across the entire collection, 
@@ -296,7 +296,7 @@ plot_json_graph_panel <- function(json, nrow, ncol, ...) {
 And let's look at several simultaneously:
 
 ```{r, fig.height = 8}
-plot_json_graph_panel(companies, 7, 6, legend = FALSE, show.labels = FALSE,
+plot_json_graph_panel(companies %>% sample(5), 7, 6, legend = FALSE, show.labels = FALSE,
                       vertex.size = 4)
 ```
 
@@ -397,26 +397,27 @@ rounds_by_geo <- inner_join(rounds_usd, hqs, by = "document.id") %>% as_tibble()
 Now we can visualize the results
 
 ```{r}
-rounds_by_geo %>%
-  filter(!is.na(state)) %>%
+round_prep <- rounds_by_geo %>% 
+  dplyr::filter(!is.na(state)) %>%
   mutate(
-    round = round %>% fct_collapse(
+    round = round %>% forcats::fct_collapse(
       "angel" = c("seed", "angel"),
       "d-f"   = c("d", "e", "f"),
       "other" = c("grant", "partial", "post_ipo_equity", "private_equity", 
                   "debt_round", "unattributed")
-    ) %>% fct_relevel("angel", "a", "b", "c", "d-f", "other")
+    ) %>% forcats::fct_relevel("angel", "a", "b", "c", "d-f", "other")
   ) %>%
   mutate(
-    state = state %>% fct_lump(2)
-  ) %>%
-  ggplot(aes(state, raised, fill = state)) +
-    geom_violin() +
-    scale_y_log10() + 
-    annotation_logticks(side = 'l') +
-    facet_grid(. ~ round) +
-    theme(legend.position = "bottom") +
-    labs(x = "", y = "Amount Raised (USD)")
+    state = state %>% forcats::fct_lump(2)
+  ) 
+
+g <- ggplot(round_prep, aes(state, raised, fill = state)) +
+  geom_violin() +
+  scale_y_log10() + 
+  annotation_logticks(side = 'l') +
+  facet_grid(. ~ round) +
+  theme(legend.position = "bottom") +
+  labs(x = "", y = "Amount Raised (USD)")
 ```
 
 Which shows a few interesting things:

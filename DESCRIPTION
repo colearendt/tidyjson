@@ -1,10 +1,10 @@
 Package: tidyjson
 Title: Tidy Complex JSON
-Version: 0.2.1.9001
+Version: 0.2.3.9000
 Authors@R: c(
-    person("Jeremy", "Stanley", , "jeremy.stanley@gmail.com", c("aut")),
-    person("Cole", "Arendt", , "cole@rstudio.com", c("aut", "cre"))
-  )
+	person("Jeremy","Stanley",,"jeremy.stanley@gmail.com",c("aut","cre")),
+	person("Cole","Arendt",, "cole.arendt@outlook.com",c("aut"))
+	)
 Description: Turn complex JSON data into tidy data frames.
 Depends:
     R (>= 3.1.0)
@@ -12,9 +12,9 @@ Imports:
     assertthat,
     jsonlite,
     purrr,
-    dplyr,
+    dplyr (>= 0.7.0),
     magrittr,
-    tidyr,
+    tidyr (>= 0.7.0),
     tibble
 License: MIT + file LICENSE
 LazyData: true

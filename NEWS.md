@@ -1,4 +1,4 @@
-# tidyjson 0.2.1.9001
+# tidyjson dev
 
 ## New functions
 
@@ -43,7 +43,11 @@ the missing `document.id`.  (#86)
 
 * `gather_object()` replaces `gather_keys()`, with default `column.name` of `name` instead of `key` (#66). This more closely matches the [JSON standard](http://www.json.org/), which refers to objects as name-value pairs, and is now consistent with `gather_array()`.
 
-## Documentation changes
+## Documentation Changes
+
+* "Using Multiple APIs" vignette added to show support for using tidyjson with multiple APIs (#85)
+
+* Updated README.md to better explain `spread_all()` (#92)
 
 * "Visualizing JSON" vignette for visualizing the structure of complex JSON data, like the `companies` example (#4)
 

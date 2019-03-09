@@ -1,6 +1,7 @@
 ^LICENSE\.md$
 ^\.travis\.yml$
 ^cran-comments\.md$
+^cran-output\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^codecov\.yml$

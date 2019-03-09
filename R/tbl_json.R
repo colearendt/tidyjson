@@ -291,6 +291,8 @@ as_tibble.tbl_json <- function(x, ...) {
 }
 
 #' @rdname as_tibble.tbl_json
+#' 
+#' @export
 as_data_frame.tbl_json <- function(x, ...) {
   as_tibble.tbl_json(x,...)
 }
