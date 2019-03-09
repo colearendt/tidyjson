@@ -57,9 +57,9 @@ the missing `document.id`.  (#86)
 
 * `tbl_json` objects now print with a tidy character representation of the JSON attribute (#61)
 
-* Use [purrr](https://github.com/jeremystan/purrr) for most list based internal operations (#1)
+* Use [purrr](https://github.com/tidyverse/purrr) for most list based internal operations (#1)
 
-* Use [tidyr](https://github.com/hadley/tidyr) for `gather_array` and `gather_object` functions (#28)
+* Use [tidyr](https://github.com/tidyverse/tidyr) for `gather_array` and `gather_object` functions (#28)
 
 * Imported the magrittr `%>%` operator (#17)
 
@@ -73,7 +73,7 @@ the missing `document.id`.  (#86)
 
 ## Other changes
 
-* Migrated development to [jeremystan](https://github.com/jeremystan/tidyjson) from [sailthru](https://github.com/sailthru/tidyjson)
+* Migrated development to [colearendt](https://github.com/colearendt/tidyjson) from [jeremystan](https://github.com/jeremystan/tidyjson) and [sailthru](https://github.com/sailthru/tidyjson)
 
 ## Deprecated functions
 
