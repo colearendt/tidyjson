@@ -276,7 +276,7 @@ as.character.tbl_json <- function(x, ...) {
 #' ready to move on to other tools.
 #' 
 #' Note that as.tbl calls tbl_df under the covers, which in turn
-#' calls as_data_frame.  As a result, this should take care of all cases.
+#' calls as_tibble.  As a result, this should take care of all cases.
 #' 
 #' @param x a tbl_json object
 #' @param ... additional parameters
