@@ -83,7 +83,7 @@ test_that("column.name works and doesn't clobber existing name", {
       mutate(name = 1L) %>%
       gather_object("new"),
     tbl_json(
-      data_frame(
+      dplyr::tibble(
         document.id = rep(1L, 2),
         name = rep(1L, 2),
         new = c("name1", "name2")
@@ -103,7 +103,7 @@ test_that("preserves a NULL column", {
       mutate(col = list(NULL)) %>%
       gather_object,
     tbl_json(
-      data_frame(
+      dplyr::tibble(
         document.id = rep(1L, 2),
         col = rep(list(NULL), 2),
         name = c("name1", "name2")
@@ -150,7 +150,7 @@ test_that("can call repeatedly without having to change column.name", {
   expect_identical(
     suppressWarnings('{"n1": {"n2": 1}}' %>% gather_object %>% gather_object),
     tbl_json(
-      data_frame(
+      dplyr::tibble(
         document.id = 1L,
         name        = "n1",
         name.2      = "n2"

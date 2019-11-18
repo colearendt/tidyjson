@@ -124,7 +124,7 @@ json_schema <- function(.x, type = c("string", "value")) {
 
 list_to_tbl_json <- function(l) {
 
-  tbl_json(dplyr::data_frame(document.id = 1L), list(l))
+  tbl_json(dplyr::tibble(document.id = 1L), list(l))
 
 }
 
@@ -143,7 +143,7 @@ json_schema_array <- function(json, type) {
 
 collapse_array <- function(schema) {
 
-  dplyr::data_frame(schemas = schema) %>%
+  dplyr::tibble(schemas = schema) %>%
     dplyr::mutate(json = schemas) %>%
     as.tbl_json(json.column = "json") %>%
     json_types %>%

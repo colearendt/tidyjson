@@ -166,7 +166,7 @@ test_that("purrr::map_chr works as expected", {
 test_that('print.tbl_df works as expected', {
 
   skip('tests failing due to upstream print.tbl_df')
-  z <- dplyr::data_frame(col='"a"')
+  z <- dplyr::tibble(col='"a"')
   
   expect_identical(capture.output(print(z))
                    , c(
@@ -234,7 +234,7 @@ test_that('does not throw an error', {
 
 context("tbl_json: as.tbl_json.data.frame")
 
-test_that("works for a data.frame and data_frame created objects", {
+test_that("works for a data.frame and tibble created objects", {
 
     df <- data.frame(
       document.id = 1:2,
@@ -245,8 +245,8 @@ test_that("works for a data.frame and data_frame created objects", {
       as.tbl_json(df, json.column = "json"),
       as.tbl_json(df$json)
     )
-    # data_frame
-    df <- dplyr::data_frame(
+    # tibble
+    df <- dplyr::tibble(
       document.id = 1:2,
       json = c('{"name": "bob"}', '{"name": "susan"}'))
     expect_identical(
@@ -259,7 +259,7 @@ test_that("works for a data.frame and data_frame created objects", {
 
 test_that("works in a pipeline", {
 
-    df <- dplyr::data_frame(
+    df <- dplyr::tibble(
       age = c(32, 45),
       json = c('{"name": "bob"}', '{"name": "susan"}')
     )
@@ -366,8 +366,8 @@ test_that('as_data_frame functions like as_tibble', {
     , user.login=jstring('user.login')
   )
   
-  expect_identical(attr(dplyr::as_data_frame(jtidy),'JSON'),NULL)
-  expect_false('tbl_json' %in% class(dplyr::as_data_frame(jtidy)))
+  expect_identical(attr(dplyr::as_tibble(jtidy),'JSON'),NULL)
+  expect_false('tbl_json' %in% class(dplyr::as_tibble(jtidy)))
 })
 
 context("tbl_json: dplyr NSE verbs")
@@ -430,7 +430,7 @@ test_that("dplyr::mutate works with a simple example", {
         spread_values(name = jstring("name")) %>%
         dplyr::mutate(fullname = paste(name, "green")),
       tbl_json(
-        dplyr::data_frame(
+        dplyr::tibble(
           document.id = c(1L, 2L),
           name = c("bob", "susan"),
           fullname = c("bob green", "susan green")),
@@ -540,8 +540,8 @@ test_that("bind_rows works with tbl_json", {
 })
 
 test_that("bind_rows falls back to normal behavior if not tbl_json", {
-  a <- dplyr::data_frame(a=c(1,2), b=c('one','two'))
-  c <- dplyr::data_frame(a=c(3,4), b=c('three','four'))
+  a <- dplyr::tibble(a=c(1,2), b=c('one','two'))
+  c <- dplyr::tibble(a=c(3,4), b=c('three','four'))
   
   out <- bind_rows(a,c)
   expect_equal(nrow(out), nrow(a) + nrow(c))

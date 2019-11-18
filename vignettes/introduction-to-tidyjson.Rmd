@@ -297,7 +297,7 @@ can use then `json.column` argument to `as.tbl_json` to specify which column
 contains the JSON of interest:
 
 ```{r}
-df <- data_frame(id = 1:2, json = list('[1, 2]', '[3, 4]'))
+df <- tibble(id = 1:2, json = list('[1, 2]', '[3, 4]'))
 df %>% as.tbl_json(json.column = "json")
 ```
 

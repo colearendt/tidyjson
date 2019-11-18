@@ -5,7 +5,7 @@ test_that("works for simple example", {
   expect_identical(
     '{"a": 1, "b": "x", "c": true}' %>% spread_all,
     tbl_json(
-      dplyr::data_frame(
+      dplyr::tibble(
         document.id = 1L,
         a = 1,
         b = "x",
@@ -22,7 +22,7 @@ test_that("spreads a null column", {
   expect_identical(
     '{"a": null}' %>% spread_all,
     tbl_json(
-      dplyr::data_frame(
+      dplyr::tibble(
         document.id = 1L,
         a = NA
       ),
@@ -43,7 +43,7 @@ test_that("handles a more complex document", {
   expect_identical(
     json %>% spread_all,
     tbl_json(
-      dplyr::data_frame(
+      dplyr::tibble(
         document.id = 1L:3L,
         a = c("x", NA_character_, NA_character_),
         b = c(1, NA_integer_, NA_integer_),
@@ -102,7 +102,7 @@ test_that("recursive names work", {
   expect_identical(
     json %>% spread_all,
     tbl_json(
-      dplyr::data_frame(
+      dplyr::tibble(
         document.id = 1L,
         k1 = 1,
         k6 = 4,
@@ -149,7 +149,7 @@ test_that("works with multiple duplicated columns", {
   expect_identical(
     suppressWarnings(json %>% spread_all),
     tbl_json(
-      dplyr::data_frame(document.id = 1L, key = "a", key.2 = "b", key.3 = "c"),
+      dplyr::tibble(document.id = 1L, key = "a", key.2 = "b", key.3 = "c"),
       list(jsonlite::fromJSON(json, simplifyVector = FALSE))
     )
   )
@@ -159,13 +159,13 @@ test_that("works with multiple duplicated columns", {
 
 test_that("works when column names are duplicated from data frame", {
 
-  df <- dplyr::data_frame(key = 1L, json = '{"key": "a", "key": "b"}') %>%
+  df <- dplyr::tibble(key = 1L, json = '{"key": "a", "key": "b"}') %>%
     as.tbl_json(json.column = "json")
 
   expect_identical(
     suppressWarnings(df %>% spread_all),
     tbl_json(
-      dplyr::data_frame(key = 1L, key.2 = "a", key.3 = "b"),
+      dplyr::tibble(key = 1L, key.2 = "a", key.3 = "b"),
       attr(df, "JSON")
     )
   )

@@ -117,7 +117,7 @@ should_json_structure_expand_more <- function(s, this.level) {
 json_structure_empty <- function() {
 
   tbl_json(
-    dplyr::data_frame(
+    dplyr::tibble(
       document.id = integer(0),
       parent.id = character(0),
       level = integer(0),
@@ -136,7 +136,7 @@ json_structure_empty <- function() {
 json_structure_level <- function(s) {
 
   new_s <- json_structure_empty()
-  new_s <- new_s %>% dplyr::select_(.dots=names(s)[names(s) %in% names(new_s)])
+  new_s <- new_s %>% dplyr::select(!!!names(s)[names(s) %in% names(new_s)])
 
   # Expand any objects
   if (any(s$type == "object")) {

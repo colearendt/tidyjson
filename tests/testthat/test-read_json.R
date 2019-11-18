@@ -8,7 +8,7 @@ test_that("read_json correctly infers a .json file", {
     expect_identical(
       json %>% gather_array(),
       tbl_json(
-          data_frame(document.id = 1L, array.index = 1L:8L),
+          dplyr::tibble(document.id = 1L, array.index = 1L:8L),
           attr(json, "JSON")[[1]])
     )
 })
@@ -21,7 +21,7 @@ test_that("read_json correctly infers a .jsonl file", {
     expect_identical(
       json,
       tbl_json(
-          data_frame(document.id = 1:8),
+          dplyr::tibble(document.id = 1:8),
           attr(json, "JSON"))
     )
 })
@@ -55,7 +55,7 @@ test_that("read_json uses given format", {
     expect_identical(
       json,
       tbl_json(
-          data_frame(document.id = 1:8),
+          dplyr::tibble(document.id = 1:8),
           attr(json, "JSON"))
     )
 })
