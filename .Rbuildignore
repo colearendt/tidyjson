@@ -12,3 +12,6 @@
 ^working/
 ^appveyor\.yml$
 ^revdep/
+^tidyjson\.Rcheck$
+^tidyjson.*\.tar\.gz$
+^tidyjson.*\.tgz$
