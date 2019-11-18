@@ -174,7 +174,7 @@ wrap_dplyr_verb <- function(dplyr.verb) {
     y <- dplyr.verb(dplyr::as_tibble(.data), ...)
 
     # Reconstruct tbl_json without ..JSON column
-    tbl_json(dplyr::select_(y, "-..JSON"), y$..JSON)
+    tbl_json(dplyr::select(y, -..JSON), y$..JSON)
 
   }
 }
