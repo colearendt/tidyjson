@@ -40,9 +40,9 @@ gather_factory <- function(default.column.name, default.column.empty,
       dplyr::mutate(
         ..name = json %>% purrr::map(expand.fun),
         ..json = json %>%
-          purrr::map(~dplyr::data_frame(..json = as.list(.)))
+          purrr::map(~dplyr::tibble(..json = as.list(.)))
       ) %>%
-      tidyr::unnest(..name, ..json, .drop = FALSE)
+      tidyr::unnest(c(..name, ..json))
 
     # Check to see if column.name exists, otherwise, increment until not
     if (column.name %in% names(y)) {
