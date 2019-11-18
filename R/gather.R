@@ -58,10 +58,20 @@ gather_factory <- function(default.column.name, default.column.empty,
     }
 
     # Rename
-    y <- y %>% dplyr::rename_(.dots = setNames("..name", column.name))
+    y <- y %>% dplyr::rename(!!!setNames("..name", column.name))
 
+    # hotfix ..json names
+    # https://github.com/tidyverse/tidyr/issues/802
+    json_out <- y$..json
+    if (
+      !is.null(names(json_out)) &&
+      all(
+        is.na(nchar(names(json_out))) ||
+        nchar(names(json_out)) == 0
+        )
+      ) names(json_out) <- NULL
     # Construct tbl_json
-    tbl_json(y %>% dplyr::select(-..json), y$..json)
+    tbl_json(y %>% dplyr::select(-..json), json_out)
 
   }
 
