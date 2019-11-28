@@ -21,5 +21,5 @@ if(getRversion() >= "2.15.1")  {
                            "..name", "..json", "setNames",
                            ".", "schemas", "complexity",
                            "..id", "..name1", "..name2", "..type",
-                           "..value", "..suffix", "all.null"))
+                           "..value", "..suffix", "all.null", "..JSON"))
 }
