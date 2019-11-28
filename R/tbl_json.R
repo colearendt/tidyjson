@@ -174,7 +174,7 @@ wrap_dplyr_verb <- function(dplyr.verb) {
     y <- dplyr.verb(dplyr::as_tibble(.data), ...)
 
     # Reconstruct tbl_json without ..JSON column
-    tbl_json(dplyr::select_(y, "-..JSON"), y$..JSON)
+    tbl_json(dplyr::select(y, -..JSON), y$..JSON)
 
   }
 }
@@ -276,7 +276,7 @@ as.character.tbl_json <- function(x, ...) {
 #' ready to move on to other tools.
 #' 
 #' Note that as.tbl calls tbl_df under the covers, which in turn
-#' calls as_data_frame.  As a result, this should take care of all cases.
+#' calls as_tibble.  As a result, this should take care of all cases.
 #' 
 #' @param x a tbl_json object
 #' @param ... additional parameters

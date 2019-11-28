@@ -124,7 +124,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
   y_number  <- spread_type(y, "number",  append_values_number)
   y_logical <- spread_type(y, "logical", append_values_logical)
 
-  ## Build data_frame component
+  ## Build tibble component
   z <- dplyr::as_tibble(.x) %>%
     dplyr::left_join(y_string,  by = "..id") %>%
     dplyr::left_join(y_number,  by = "..id") %>%
@@ -167,7 +167,7 @@ spread_type <- function(.x, this.type, append.fun) {
   any_type <- any(.x$..type == this.type)
 
   if (!any_type)
-    return(dplyr::data_frame(..id = integer(0)))
+    return(dplyr::tibble(..id = integer(0)))
 
   .x %>%
     dplyr::filter(..type == this.type) %>%

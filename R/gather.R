@@ -40,9 +40,9 @@ gather_factory <- function(default.column.name, default.column.empty,
       dplyr::mutate(
         ..name = json %>% purrr::map(expand.fun),
         ..json = json %>%
-          purrr::map(~dplyr::data_frame(..json = as.list(.)))
+          purrr::map(~dplyr::tibble(..json = as.list(.)))
       ) %>%
-      tidyr::unnest(..name, ..json, .drop = FALSE)
+      tidyr::unnest(c(..name, ..json))
 
     # Check to see if column.name exists, otherwise, increment until not
     if (column.name %in% names(y)) {
@@ -58,10 +58,22 @@ gather_factory <- function(default.column.name, default.column.empty,
     }
 
     # Rename
-    y <- y %>% dplyr::rename_(.dots = setNames("..name", column.name))
+    y <- y %>% dplyr::rename(!!!setNames("..name", column.name))
 
+    # hotfix ..json names
+    # https://github.com/tidyverse/tidyr/issues/802
+    json_out <- y$..json
+    if (
+      !is.null(names(json_out)) &&
+      (
+        all(
+          is.na(nchar(names(json_out))) ||
+          nchar(names(json_out)) == 0
+        ) || length(names(json_out)) == 0
+      )
+      ) names(json_out) <- NULL
     # Construct tbl_json
-    tbl_json(y %>% dplyr::select(-..json), y$..json)
+    tbl_json(y %>% dplyr::select(-..json), json_out)
 
   }
 

@@ -167,7 +167,7 @@ test_that("column.name works and doesn't clobber existing index", {
       mutate(array.index = 1L) %>%
       gather_array("new"),
     tbl_json(
-      data_frame(
+      dplyr::tibble(
         document.id = rep(1L, 2),
         array.index = rep(1L, 2),
         new = c(1L, 2L)
@@ -187,7 +187,7 @@ test_that("preserves a NULL column", {
       mutate(col = list(NULL)) %>%
       gather_array,
     tbl_json(
-      data_frame(
+      tibble(
         document.id = rep(1L, 2),
         col = rep(list(NULL), 2),
         array.index = c(1L, 2L)
@@ -204,7 +204,7 @@ test_that("can call repeatedly without having to change column.name", {
   expect_identical(
     suppressWarnings('[[1, 2], [3, 4]]' %>% gather_array %>% gather_array),
     tbl_json(
-      data_frame(
+      dplyr::tibble(
         document.id = rep(1L, 4),
         array.index   = c(1L, 1L, 2L, 2L),
         array.index.2 = c(1L, 2L, 1L, 2L)

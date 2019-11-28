@@ -9,3 +9,6 @@ packrat/lib*/
 packrat/src/
 working/
 .Rprofile
+tidyjson.Rcheck/
+tidyjson*.tar.gz
+tidyjson*.tgz

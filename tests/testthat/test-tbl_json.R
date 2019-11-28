@@ -166,7 +166,7 @@ test_that("purrr::map_chr works as expected", {
 test_that('print.tbl_df works as expected', {
 
   skip('tests failing due to upstream print.tbl_df')
-  z <- dplyr::data_frame(col='"a"')
+  z <- dplyr::tibble(col='"a"')
   
   expect_identical(capture.output(print(z))
                    , c(
@@ -234,7 +234,7 @@ test_that('does not throw an error', {
 
 context("tbl_json: as.tbl_json.data.frame")
 
-test_that("works for a data.frame and data_frame created objects", {
+test_that("works for a data.frame and tibble created objects", {
 
     df <- data.frame(
       document.id = 1:2,
@@ -245,8 +245,8 @@ test_that("works for a data.frame and data_frame created objects", {
       as.tbl_json(df, json.column = "json"),
       as.tbl_json(df$json)
     )
-    # data_frame
-    df <- dplyr::data_frame(
+    # tibble
+    df <- dplyr::tibble(
       document.id = 1:2,
       json = c('{"name": "bob"}', '{"name": "susan"}'))
     expect_identical(
@@ -259,7 +259,7 @@ test_that("works for a data.frame and data_frame created objects", {
 
 test_that("works in a pipeline", {
 
-    df <- dplyr::data_frame(
+    df <- dplyr::tibble(
       age = c(32, 45),
       json = c('{"name": "bob"}', '{"name": "susan"}')
     )
@@ -366,8 +366,8 @@ test_that('as_data_frame functions like as_tibble', {
     , user.login=jstring('user.login')
   )
   
-  expect_identical(attr(dplyr::as_data_frame(jtidy),'JSON'),NULL)
-  expect_false('tbl_json' %in% class(dplyr::as_data_frame(jtidy)))
+  expect_identical(attr(dplyr::as_tibble(jtidy),'JSON'),NULL)
+  expect_false('tbl_json' %in% class(dplyr::as_tibble(jtidy)))
 })
 
 context("tbl_json: dplyr NSE verbs")
@@ -430,7 +430,7 @@ test_that("dplyr::mutate works with a simple example", {
         spread_values(name = jstring("name")) %>%
         dplyr::mutate(fullname = paste(name, "green")),
       tbl_json(
-        dplyr::data_frame(
+        dplyr::tibble(
           document.id = c(1L, 2L),
           name = c("bob", "susan"),
           fullname = c("bob green", "susan green")),
@@ -540,8 +540,8 @@ test_that("bind_rows works with tbl_json", {
 })
 
 test_that("bind_rows falls back to normal behavior if not tbl_json", {
-  a <- dplyr::data_frame(a=c(1,2), b=c('one','two'))
-  c <- dplyr::data_frame(a=c(3,4), b=c('three','four'))
+  a <- dplyr::tibble(a=c(1,2), b=c('one','two'))
+  c <- dplyr::tibble(a=c(3,4), b=c('three','four'))
   
   out <- bind_rows(a,c)
   expect_equal(nrow(out), nrow(a) + nrow(c))
@@ -551,12 +551,12 @@ test_that("bind_rows falls back to normal behavior if not tbl_json", {
 
 context('tbl_json: dplyr SE verbs')
 
-test_that('dplyr::filter_ works', {
+test_that('dplyr::filter works with programming', {
   json <- '[{"a": "fun", "b": 2},{"a": "blam", "b": 3}]'
-  v <- c('a == "fun"')
+  v <- c(rlang::quo(a == "fun"))
   
   f <- json %>% gather_array %>% spread_all %>%
-    dplyr::filter_(.dots=v)
+    dplyr::filter(!!!v)
   
   expect_identical(f$a,c('fun'))
   expect_identical(f$b,c(2))
@@ -564,66 +564,67 @@ test_that('dplyr::filter_ works', {
   expect_is(f,'tbl_json')
 })
 
-test_that('dplyr::mutate_ works', {
+test_that('dplyr::mutate works with programming', {
   json <- '{ "one": "zip", "two": "zap", "three": "zzz" }'
-  v <- c(four='paste(one,two,sep="/")', five='three')
+  v <- c(four=rlang::quo(paste(one,two,sep="/")), five=rlang::quo(three))
   
-  f <- json %>% spread_all %>% dplyr::mutate_(.dots=v)
+  f <- json %>% spread_all %>% dplyr::mutate(!!!v)
   
   expect_identical(f$four,'zip/zap')
   expect_identical(f$five, 'zzz')
   expect_is(f,'tbl_json')
 })
 
-test_that('dplyr::rename_ works', {
+test_that('dplyr::rename works with programming', {
   json <- '{ "first": "bill", "last":"bo" }'
   v <- c(firstName='first', lastName='last')
   
-  f <- json %>% spread_all %>% dplyr::rename_(.dots=v)
+  f <- json %>% spread_all %>% dplyr::rename(!!!v)
   
   expect_identical(names(f),c('document.id','firstName','lastName'))
   expect_is(f,'tbl_json')
 })
 
-test_that('dplyr::select_ works', {
+test_that('dplyr::select works with programming', {
   json <- '{ "hill": "top", "valley": "floor", "mountain": "top" }'
   v <- c(Hill='hill','valley')
   
-  f <- json %>% spread_all %>% dplyr::select_(.dots=v)
+  f <- json %>% spread_all %>% dplyr::select(!!!v)
   
   expect_identical(names(f),c('Hill','valley'))
   expect_is(f,'tbl_json')
 })
 
-test_that('dplyr::arrange_ works', {
+test_that('dplyr::arrange works with programming', {
   json <- '[{ "somewhere": "over" },{"somewhere": "fun"}, {"somewhere": "else"}]'
   v <- c('somewhere')
   
-  f <- json %>% gather_array %>% spread_all %>% dplyr::arrange_(.dots=v)
+  # as.name currently required by dplyr::arrange
+  f <- json %>% gather_array %>% spread_all %>% dplyr::arrange(!!as.name(v))
   
   expect_identical(f$somewhere,c('else','fun','over'))
   expect_identical(f$array.index, c(3L,2L,1L))
   expect_is(f,'tbl_json')
 })
 
-test_that('dplyr::transmute_ works', {
+test_that('dplyr::transmute works with programming', {
   json <- '{ "first": "frodo", "last": "baggins"}'
   v <- c(firstName='first')
   
-  f <- json %>% spread_all %>% dplyr::transmute_(.dots=v)
+  f <- json %>% spread_all %>% dplyr::transmute(!!!v)
   
   expect_identical(names(f), 'firstName')
   expect_is(f,'tbl_json')
 })
 
-test_that('dplyr::slice_ works', {
+test_that('dplyr::slice works with programming', {
   json <- '[{"id":7, "obj":"a"}
   ,{"id":8, "obj":"a"}
   ,{"id":9, "obj":"b"}
   ,{"id":10, "obj":"c"}]'
-  v <- '1'
+  v <- 1
   
-  f <- json %>% gather_array %>% spread_all %>% slice_(.dots=v)
+  f <- json %>% gather_array %>% spread_all %>% slice(!!v)
   expect_identical(nrow(f),1L)
   expect_identical(f$id,7)
   expect_is(f,'tbl_json')
