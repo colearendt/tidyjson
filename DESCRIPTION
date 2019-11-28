@@ -30,7 +30,8 @@ Suggests:
     igraph,
     RColorBrewer,
     covr,
-    lubridate
+    lubridate,
+    rlang
 VignetteBuilder: knitr
 URL: https://github.com/colearendt/tidyjson
 BugReports: https://github.com/colearendt/tidyjson/issues
