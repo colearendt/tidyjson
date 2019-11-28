@@ -1,6 +1,6 @@
 Package: tidyjson
 Title: Tidy Complex JSON
-Version: 0.2.3.9001
+Version: 0.2.4
 Authors@R: c(
 	person("Jeremy","Stanley",,"jeremy.stanley@gmail.com",c("aut")),
 	person("Cole","Arendt",, "cole@rstudio.com",c("aut", "cre"))
