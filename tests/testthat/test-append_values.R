@@ -184,7 +184,7 @@ test_that("correctly handles append when trying to append an array", {
 
 test_that("recursive works as expected", {
 
-   data <- '{"item1": {"price" : 30}, "item2" : 40, "item3" : 30}' %>% gather_object
+   data <- '{"item1": {"price" : 30}, "item2" : 40, "item3" : 30}' %>% gather_object()
    expected_na <- c(NA_real_, 40, 30)
    expected_val <- c(30, 40, 30)
 
@@ -201,7 +201,7 @@ test_that("recursive works as expected", {
      (data %>% append_values_number(force=FALSE, recursive=TRUE))$number)
 
    data <- '{"item1": {"price" : {"usd" : {"real" : 30}}}, "item2" : 40, "item3" : 30}' %>%
-              gather_object
+              gather_object()
 
    expect_identical(
      (data %>% append_values_number(recursive=FALSE))$number,
@@ -210,7 +210,7 @@ test_that("recursive works as expected", {
      (data %>% append_values_number(recursive=TRUE))$number,
      expected_val)
 
-   data <- '{"item1": {"price" : 30, "qty" : 1}, "item2" : 40, "item3" : 30}' %>% gather_object
+   data <- '{"item1": {"price" : 30, "qty" : 1}, "item2" : 40, "item3" : 30}' %>% gather_object()
 
    expect_identical(
      (data %>% append_values_number(recursive=FALSE))$number,

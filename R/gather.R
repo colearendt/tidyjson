@@ -67,7 +67,7 @@ gather_factory <- function(default.column.name, default.column.empty,
       !is.null(names(json_out)) &&
       (
         all(
-          is.na(nchar(names(json_out))) ||
+          is.na(nchar(names(json_out))) |
           nchar(names(json_out)) == 0
         ) || length(names(json_out)) == 0
       )

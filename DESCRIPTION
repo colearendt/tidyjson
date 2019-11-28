@@ -1,9 +1,9 @@
 Package: tidyjson
 Title: Tidy Complex JSON
-Version: 0.2.3.9000
+Version: 0.2.3.9001
 Authors@R: c(
-	person("Jeremy","Stanley",,"jeremy.stanley@gmail.com",c("aut","cre")),
-	person("Cole","Arendt",, "cole.arendt@outlook.com",c("aut"))
+	person("Jeremy","Stanley",,"jeremy.stanley@gmail.com",c("aut")),
+	person("Cole","Arendt",, "cole@rstudio.com",c("aut", "cre"))
 	)
 Description: Turn complex JSON data into tidy data frames.
 Depends:
@@ -30,7 +30,8 @@ Suggests:
     igraph,
     RColorBrewer,
     covr,
-    lubridate
+    lubridate,
+    rlang
 VignetteBuilder: knitr
 URL: https://github.com/colearendt/tidyjson
 BugReports: https://github.com/colearendt/tidyjson/issues

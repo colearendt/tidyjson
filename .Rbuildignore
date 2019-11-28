@@ -15,3 +15,5 @@
 ^tidyjson\.Rcheck$
 ^tidyjson.*\.tar\.gz$
 ^tidyjson.*\.tgz$
+^doc$
+^Meta$

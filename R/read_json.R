@@ -11,7 +11,7 @@
 #' @export
 read_json <- function(path, format = c("json", "jsonl", "infer")) {
 
-  if (format == "infer" || length(format) > 1) {
+  if (length(format) > 1 || identical(format,"infer")) {
     format <- tail(strsplit(path, "[.]")[[1]], 1)
   }
   if (format == "json") {
