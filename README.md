@@ -11,17 +11,15 @@ Status](https://ci.appveyor.com/api/projects/status/github/colearendt/tidyjson?b
 [![Coverage
 Status](https://codecov.io/github/colearendt/tidyjson/coverage.svg?branch=master)](https://codecov.io/github/colearendt/tidyjson?branch=master)
 [![CRAN
-Activity](http://cranlogs.r-pkg.org/badges/tidyjson)](https://cran.r-project.org/web/packages/tidyjson/index.html)
+Activity](http://cranlogs.r-pkg.org/badges/tidyjson)](https://CRAN.R-project.org/package=tidyjson)
 [![CRAN
-History](http://cranlogs.r-pkg.org/badges/grand-total/tidyjson)](https://cran.r-project.org/web/packages/tidyjson/index.html)
+History](http://cranlogs.r-pkg.org/badges/grand-total/tidyjson)](https://CRAN.R-project.org/package=tidyjson)
 
 ![tidyjson
 graphs](https://cloud.githubusercontent.com/assets/2284427/18217882/1b3b2db4-7114-11e6-8ba3-07938f1db9af.png)
 
-tidyjson provides tools for turning complex [json](http://www.json.org/)
-into
-[tidy](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
-data.
+tidyjson provides tools for turning complex [json](http://www.json.org/) into
+tidy data.
 
 Installation
 ------------
