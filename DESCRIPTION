@@ -12,9 +12,9 @@ Imports:
     assertthat,
     jsonlite,
     purrr,
-    dplyr (>= 0.7.0),
+    dplyr (>= 0.8.3),
     magrittr,
-    tidyr (>= 0.7.0),
+    tidyr (>= 1.0.0),
     tibble
 License: MIT + file LICENSE
 LazyData: true
