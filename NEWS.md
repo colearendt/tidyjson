@@ -1,4 +1,4 @@
-# tidyjson dev
+# tidyjson 0.2.4
 
 ## New functions
 
@@ -11,6 +11,8 @@
 * Updated README.md to better explain `spread_all()` (#92)
 
 ## Bug fixes and minor changes
+
+* Improve compatibility with newer `dplyr` and `tidyr`
 
 * `DROP=TRUE` caused an error.  Altered behavior to be consistent with `tbl_df`
 
@@ -25,7 +27,7 @@
 * Fix json_structure() failure if `document.id` missing by imputing 
 the missing `document.id`.  (#86)
 
-# tidyjson 0.2.1.9000
+# tidyjson 0.2.2
 
 ## New functions
 
