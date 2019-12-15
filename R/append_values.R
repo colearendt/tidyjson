@@ -77,9 +77,9 @@ append_values_factory <- function(type, as.value) {
           loc <- names(new_val) != ""
           new_val[loc] <- NA
        }
-       new_val <- new_val %>% as.value
+       new_val <- new_val %>% as.value()
        assertthat::assert_that(length(new_val) == nrow(.x))
-       .x[column.name] <- new_val
+       .x <- dplyr::mutate(.x, !!column.name := new_val)
     }
 
     # return as appropriate class type
@@ -129,3 +129,7 @@ append_values_number <- append_values_factory("number", as.numeric)
 #' @export
 #' @rdname append_values
 append_values_logical <- append_values_factory("logical", as.logical)
+
+#' @export
+#' @rdname append_values
+append_values <- append_values_factory("list", as.list)
