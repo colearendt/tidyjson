@@ -132,4 +132,8 @@ append_values_logical <- append_values_factory("logical", as.logical)
 
 #' @export
 #' @rdname append_values
+append_values_list <- append_values_factory("list", as.list)
+
+#' @export
+#' @rdname append_values
 append_values <- append_values_factory("list", as.list)
