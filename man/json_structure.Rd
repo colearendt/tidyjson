@@ -27,30 +27,30 @@ The columns in the \code{\link{tbl_json}} returend are defined as
   \item \code{document.id} 1L if \code{.x} is a single JSON string, otherwise
         the index of \code{.x}.
 
-\item \code{parent.id} the string identifier of the parent node for this
+  \item \code{parent.id} the string identifier of the parent node for this
         child.
 
-\item \code{level} what level of the hierarchy this child resides at,
+  \item \code{level} what level of the hierarchy this child resides at,
         starting at \code{0L} for the root and incrementing for each level
         of nested array or object.
 
-\item \code{index} what index of the parent object / array this child
+  \item \code{index} what index of the parent object / array this child
         resides at (from \code{gather_array} for arrays).
 
-\item \code{child.id} a unique ID for this leaf in this document,
+  \item \code{child.id} a unique ID for this leaf in this document,
         represented as <parent>.<index> where <parent> is the ID for the
         parent and <index> is this index.
 
-\item \code{seq} the sequence of names / indices that led to this child
+  \item \code{seq} the sequence of names / indices that led to this child
         (parents that are arrays are excluded) as a list, where character
         strings denote objects and integers denote array positions
 
-\item \code{name} if this is the value of an object, what was the name that
+  \item \code{name} if this is the value of an object, what was the name that
         it is listed under (from \code{\link{gather_object}}).
 
-\item \code{type} the type of this object (from \code{\link{json_types}}).
+  \item \code{type} the type of this object (from \code{\link{json_types}}).
 
-\item \code{length} the length of this object (from
+  \item \code{length} the length of this object (from
         \code{\link{json_lengths}}).
 }
 }
