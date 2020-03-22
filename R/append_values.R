@@ -46,6 +46,7 @@ NULL
 #' Creates the append_values_* functions
 #' @param type the JSON type that will be appended
 #' @param as.value function to force coercion to numeric, string, or logical
+#' @keywords internal
 append_values_factory <- function(type, as.value) {
 
   function(.x, column.name = type, force = TRUE, recursive = FALSE) {

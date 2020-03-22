@@ -7,6 +7,7 @@
 #'   in the tbl_df
 #' @param required.type the json_types type that must be present in every
 #'   element of the JSON for this to succeed
+#' @keywords internal
 gather_factory <- function(default.column.name, default.column.empty,
                            expand.fun, required.type) {
 

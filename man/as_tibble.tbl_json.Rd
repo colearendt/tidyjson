@@ -7,7 +7,7 @@
 \usage{
 \method{as_tibble}{tbl_json}(x, ...)
 
-\method{as_data_frame}{tbl_json}(x, ...)
+as_data_frame.tbl_json(x, ...)
 }
 \arguments{
 \item{x}{a tbl_json object}
@@ -25,5 +25,5 @@ ready to move on to other tools.
 }
 \details{
 Note that as.tbl calls tbl_df under the covers, which in turn
-calls as_data_frame.  As a result, this should take care of all cases.
+calls as_tibble.  As a result, this should take care of all cases.
 }

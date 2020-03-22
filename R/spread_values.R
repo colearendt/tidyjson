@@ -76,6 +76,7 @@ spread_values <- function(.x, ...) {
 #' Factory that creates the j* functions below
 #'
 #' @param map.function function to map to collapse
+#' @keywords internal
 json_factory <- function(map.function) {
 
   replace_nulls_na <- function(x)

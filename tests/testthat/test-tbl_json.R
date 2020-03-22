@@ -61,6 +61,24 @@ test_that("correctly structures an array", {
   )
 })
 
+test_that("[ works with various indexing", {
+  obj <- as.tbl_json(c('{"name": "value"}', '{"name": "other"}')) %>%
+    json_types()
+  # column indexing
+  expect_equal(obj[0], obj[,0])
+  expect_equal(obj[1], obj[,1])
+  expect_equal(obj[-1], obj[,-1])
+  expect_equal(obj[0:2], obj)
+  
+  # no indexing
+  expect_equal(obj, obj[])
+  
+  # row indexing
+  expect_equal(obj[1,], obj[1,1:2])
+  expect_equal(obj[-1,], obj[2,])
+  expect_equal(obj[1:2,], obj)
+})
+
 test_that("throws error on invalid json", {
 
     expect_error(as.tbl_json(''))
@@ -459,6 +477,20 @@ test_that("dplyr::mutate works in a more complex pipeline", {
 
   }
 )
+
+test_that("dplyr::transmute works", {
+  obj <- as.tbl_json(c('{"name": "value"}', '{"name": "string"}'))
+  
+  prep <- obj %>% gather_object %>% append_values_string()
+  
+  use_transmute <- prep %>% transmute(string = paste0(string, "_hi"))
+  
+  expect_is(use_transmute, "tbl_json")
+  expect_identical(nrow(use_transmute), 2L)
+  expect_identical(ncol(use_transmute), 1L)
+  
+  expect_identical(use_transmute$string, c("value_hi", "string_hi"))
+})
 
 test_that("dplyr::slice works", {
 

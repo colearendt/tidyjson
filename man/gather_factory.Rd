@@ -4,8 +4,12 @@
 \alias{gather_factory}
 \title{Factory to create gather functions}
 \usage{
-gather_factory(default.column.name, default.column.empty, expand.fun,
-  required.type)
+gather_factory(
+  default.column.name,
+  default.column.empty,
+  expand.fun,
+  required.type
+)
 }
 \arguments{
 \item{default.column.name}{the desired name of the default added column}
@@ -22,3 +26,4 @@ element of the JSON for this to succeed}
 \description{
 Factory to create gather functions
 }
+\keyword{internal}

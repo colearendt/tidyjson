@@ -47,6 +47,7 @@ allowed_json_types <-
 #' Determines the types of a list of parsed JSON
 #' @param json_list a list of parsed JSON
 #' @return a factor with levels json_types
+#' @keywords internal
 determine_types <- function(json_list) {
 
   # Get classes

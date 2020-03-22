@@ -15,3 +15,4 @@ Boolean.  Indicates whether x has names
 \description{
 Checks the input object for the existence of names
 }
+\keyword{internal}

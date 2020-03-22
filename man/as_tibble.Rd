@@ -4,6 +4,7 @@
 \name{as_tibble}
 \alias{as_tibble}
 \alias{as_data_frame}
+\alias{tbl_df}
 \alias{reexports}
 \title{Objects exported from other packages}
 \details{
