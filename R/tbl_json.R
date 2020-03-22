@@ -143,15 +143,30 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
 `[.tbl_json` <- function(.x, i, j,
   drop = FALSE) {
 
+  n_real_args <- nargs() - !missing(drop)
+  
   # Extract JSON to subset later
   json <- attr(.x, "JSON")
   
-  # Subset x
-  .x <- NextMethod('[')
+  # "column" selection behavior
+  if (n_real_args <= 2L) {
+    if (!missing(drop)) 
+      warning("drop ignored")
+    if (missing(i)) {
+      return(.x)
+    }
+  
+    # Subset x
+    .x <- NextMethod('[')
+  } else {
+    
+    # Subset x
+    .x <- NextMethod('[')
+    # If i is not missing, subset json as well
+    if (!missing(i)) {
+      json <- json[i]
+    }
 
-  # If i is not missing, subset json as well
-  if (!missing(i)) {
-    json <- json[i]
   }
 
   tbl_json(.x, json)
