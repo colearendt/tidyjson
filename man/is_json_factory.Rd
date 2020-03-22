@@ -15,3 +15,4 @@ a function
 \description{
 Factory to create \code{is_json} functions
 }
+\keyword{internal}

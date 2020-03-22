@@ -3,8 +3,4 @@
 \docType{package}
 \name{tidyjson}
 \alias{tidyjson}
-\alias{tidyjson-package}
 \title{tidyjson.}
-\description{
-tidyjson.
-}
