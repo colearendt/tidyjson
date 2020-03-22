@@ -61,6 +61,24 @@ test_that("correctly structures an array", {
   )
 })
 
+test_that("[ works with various indexing", {
+  obj <- as.tbl_json(c('{"name": "value"}', '{"name": "other"}')) %>%
+    json_types()
+  # column indexing
+  expect_equal(obj[0], obj[,0])
+  expect_equal(obj[1], obj[,1])
+  expect_equal(obj[-1], obj[,-1])
+  expect_equal(obj[0:2], obj)
+  
+  # no indexing
+  expect_equal(obj, obj[])
+  
+  # row indexing
+  expect_equal(obj[1,], obj[1,1:2])
+  expect_equal(obj[-1,], obj[2,])
+  expect_equal(obj[1:2,], obj)
+})
+
 test_that("throws error on invalid json", {
 
     expect_error(as.tbl_json(''))
