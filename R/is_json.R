@@ -1,6 +1,7 @@
 #' Factory to create \code{is_json} functions
 #' @param desired.types character vector of types we want to check for
 #' @return a function
+#' @keywords internal
 is_json_factory <- function(desired.types) {
 
   function(.x) {
