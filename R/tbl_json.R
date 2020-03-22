@@ -189,7 +189,12 @@ wrap_dplyr_verb <- function(dplyr.verb) {
     y <- dplyr.verb(dplyr::as_tibble(.data), ...)
 
     # Reconstruct tbl_json without ..JSON column
-    tbl_json(dplyr::select(y, -..JSON), y$..JSON)
+    if ("..JSON" %in% names(y)) {
+      tbl_json(dplyr::select(y, -..JSON), y$..JSON)
+    } else {
+      # some operations drop the ..JSON column (i.e. transmute)
+      tbl_json(y, .data$..JSON)
+    }
 
   }
 }
