@@ -221,6 +221,10 @@ mutate_.tbl_json <- wrap_dplyr_verb(dplyr::mutate_)
 mutate.tbl_json <- wrap_dplyr_verb(dplyr::mutate)
 
 #' @export
+#' @method transmute tbl_json
+transmute.tbl_json <- wrap_dplyr_verb(dplyr::transmute)
+
+#' @export
 slice_.tbl_json <- wrap_dplyr_verb(dplyr::slice_)
 
 #' @export
