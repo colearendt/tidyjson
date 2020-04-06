@@ -17,3 +17,5 @@
 ^tidyjson.*\.tgz$
 ^doc$
 ^Meta$
+^renv$
+^renv\.lock$
