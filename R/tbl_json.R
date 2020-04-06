@@ -69,7 +69,6 @@ tbl_json <- function(df, json.list, drop.null.json = FALSE) {
   assertthat::assert_that(is.data.frame(df))
   assertthat::assert_that(is.list(json.list) || is.vector(json.list))
   assertthat::assert_that(nrow(df) == length(json.list))
-  assertthat::assert_that(!("..JSON" %in% names(df)))
 
   # Remove any row.names
   row.names(df) <- NULL
@@ -80,6 +79,8 @@ tbl_json <- function(df, json.list, drop.null.json = FALSE) {
     df <- df[!nulls, , drop = FALSE]
     json.list <- json.list[!nulls]
   }
+  
+  df$..JSON <- json.list
 
   structure(df, JSON = json.list, class = c("tbl_json", "tbl_df", "tbl", "data.frame"))
 }
@@ -146,7 +147,7 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
   n_real_args <- nargs() - !missing(drop)
   
   # Extract JSON to subset later
-  json <- attr(.x, "JSON")
+  json <- .x[["..JSON"]]
   
   # "column" selection behavior
   if (n_real_args <= 2L) {
@@ -178,13 +179,6 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
 wrap_dplyr_verb <- function(dplyr.verb) {
 
   function(.data, ...) {
-
-    # Check if reserved ..JSON name already in data.frame
-    if ("..JSON" %in% names(.data))
-      stop("'..JSON' in the column names of tbl_json object being filtered")
-
-    # Assign JSON to the data.frame so it is treated as any other column
-    .data$..JSON <- attr(.data, "JSON")
 
     # Apply the transformation
     y <- dplyr.verb(dplyr::as_tibble(.data), ...)
@@ -282,9 +276,9 @@ bind_rows <- function(...) {
 #' @export
 as.character.tbl_json <- function(x, ...) {
 
-  json <- attr(x, "JSON")
+  json <- x[["..JSON"]]
   if (is.null(json)) {
-    warning("attr(.,'JSON') has been removed from this tbl_json object")
+    warning("the ..JSON column has been removed from this tbl_json object")
     json <- list()
   }
   json %>% purrr::map_chr(jsonlite::toJSON,
@@ -309,7 +303,7 @@ as.character.tbl_json <- function(x, ...) {
 #' 
 #' @export
 as_tibble.tbl_json <- function(x, ...) {
-  attr(x,'JSON') <- NULL
+  ..JSON <- NULL
   as_tibble(
     structure(x, class = class(tibble::tibble()))
   )
@@ -344,13 +338,13 @@ print.tbl_json <- function(x, ..., json.n = 20, json.width = 15) {
 
   # Add the json
   .y <- dplyr::as_tibble(x)
-  json_name <- 'attr(., "JSON")'
+  json_name <- '..JSON'
   .y[json_name] <- rep("...", nrow(x))
   .y[[json_name]][seq_len(length(json))] <- json
 
   # Re-arrange columns
   ncol_y <- ncol(.y)
-  .y <- .y[, c(ncol_y, seq_len(ncol_y - 1))]
+  .y <- .y[, c("..JSON", names(.y)[names(.y) != "..JSON"])]
 
   # Print trunc_mat version
   out <- capture.output(print(.y))
