@@ -176,12 +176,12 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
 #' Wrapper for extending dplyr verbs to tbl_json objects
 #' @param dplyr.verb a dplyr::verb such as filter, arrange
 #' @keywords internal
-wrap_dplyr_verb <- function(dplyr.verb) {
+wrap_dplyr_verb <- function(dplyr.verb, generic) {
 
   function(.data, ...) {
 
     # Apply the transformation
-    y <- dplyr.verb(dplyr::as_tibble(.data), ...)
+    y <- NextMethod(generic, .data)
 
     # Reconstruct tbl_json without ..JSON column
     if ("..JSON" %in% names(y)) {
@@ -195,36 +195,39 @@ wrap_dplyr_verb <- function(dplyr.verb) {
 }
 
 #' @export
-filter_.tbl_json <- wrap_dplyr_verb(dplyr::filter_)
+select.tbl_json <- wrap_dplyr_verb(dplyr::select, "select")
+
+#' @export
+filter_.tbl_json <- wrap_dplyr_verb(dplyr::filter_, "filter_")
 
 #' @export
 #' @method filter tbl_json
-filter.tbl_json <- wrap_dplyr_verb(dplyr::filter)
+filter.tbl_json <- wrap_dplyr_verb(dplyr::filter, "filter")
 
 #' @export
-arrange_.tbl_json <- wrap_dplyr_verb(dplyr::arrange_)
+arrange_.tbl_json <- wrap_dplyr_verb(dplyr::arrange_, "arrange_")
 
 #' @export
 #' @method arrange tbl_json
-arrange.tbl_json <- wrap_dplyr_verb(dplyr::arrange)
+arrange.tbl_json <- wrap_dplyr_verb(dplyr::arrange, "arrange")
 
 #' @export
-mutate_.tbl_json <- wrap_dplyr_verb(dplyr::mutate_)
+mutate_.tbl_json <- wrap_dplyr_verb(dplyr::mutate_, "mutate_")
 
 #' @export
 #' @method mutate tbl_json
-mutate.tbl_json <- wrap_dplyr_verb(dplyr::mutate)
+mutate.tbl_json <- wrap_dplyr_verb(dplyr::mutate, "mutate")
 
 #' @export
 #' @method transmute tbl_json
-transmute.tbl_json <- wrap_dplyr_verb(dplyr::transmute)
+transmute.tbl_json <- wrap_dplyr_verb(dplyr::transmute, "transmute")
 
 #' @export
-slice_.tbl_json <- wrap_dplyr_verb(dplyr::slice_)
+slice_.tbl_json <- wrap_dplyr_verb(dplyr::slice_, "slice_")
 
 #' @export
 #' @method slice tbl_json
-slice.tbl_json <- wrap_dplyr_verb(dplyr::slice)
+slice.tbl_json <- wrap_dplyr_verb(dplyr::slice, "slice")
 
 #' 
 #' Bind Rows (tidyjson)
