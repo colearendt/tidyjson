@@ -32,7 +32,7 @@ json_complexity <- function(.x, column.name = "complexity") {
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
   # Extract json
-  json <- attr(.x, "JSON")
+  json <- .x[["..JSON"]]
 
   # Determine lengths
   lengths <- json %>% purrr::map(unlist, recursive = TRUE) %>% purrr::map_int(length)

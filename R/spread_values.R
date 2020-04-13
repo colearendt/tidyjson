@@ -61,7 +61,7 @@ spread_values <- function(.x, ...) {
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
   # Get JSON
-  json <- attr(.x, "JSON")
+  json <- .x[["..JSON"]]
 
   # Get new values
   new_values <- invoke_map(lst(...), .x = list(NULL), json)

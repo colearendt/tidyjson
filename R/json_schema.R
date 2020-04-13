@@ -64,7 +64,7 @@ json_schema <- function(.x, type = c("string", "value")) {
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
   .x <- .x %>% json_types
-  json <- attr(.x, "JSON")
+  json <- .x[["..JSON"]]
 
   schema <- list_along(json)
 
@@ -132,7 +132,7 @@ json_schema_array <- function(json, type) {
 
   x <- json %>% list_to_tbl_json %>% gather_array
 
-  schemas <- attr(x, "JSON") %>% map(list_to_tbl_json) %>%
+  schemas <- x[["..JSON"]] %>% map(list_to_tbl_json) %>%
     map_chr(json_schema, type)
 
   schemas <- schemas %>% unique
@@ -161,7 +161,7 @@ json_schema_object <- function(json, type) {
 
   x <- json %>% list_to_tbl_json %>% gather_object
 
-  x$schemas <- attr(x, "JSON") %>% purrr::map(list_to_tbl_json) %>%
+  x$schemas <- x[["..JSON"]] %>% purrr::map(list_to_tbl_json) %>%
     purrr::map_chr(json_schema, type)
 
   schemas <- x %>% dplyr::select(name, schemas) %>% unique
