@@ -308,7 +308,7 @@ as.character.tbl_json <- function(x, ...) {
 #' 
 #' @export
 as_tibble.tbl_json <- function(x, ...) {
-  ..JSON <- NULL
+  x$..JSON <- NULL
   as_tibble(
     structure(x, class = class(tibble::tibble()))
   )
