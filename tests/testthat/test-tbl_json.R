@@ -561,20 +561,20 @@ test_that("bind_rows works with tbl_json", {
       name = jstring("name"),
       age = jnumber("age"))
   
-  z <- people_df %>% bind_rows(people_df)
+  z <- people_df %>% dplyr::bind_rows(people_df)
   
 
-  expect_is(attr(z,'JSON'),'list')
+  expect_is(z[["..JSON"]],'list')
   expect_is(z, 'tbl_json')
   expect_equal(nrow(z), nrow(people_df) * 2)
-  expect_equal(length(attr(z,'JSON')), nrow(people_df) * 2)
+  expect_equal(length(z[["..JSON"]]), nrow(people_df) * 2)
 })
 
 test_that("bind_rows falls back to normal behavior if not tbl_json", {
   a <- dplyr::tibble(a=c(1,2), b=c('one','two'))
   c <- dplyr::tibble(a=c(3,4), b=c('three','four'))
   
-  out <- bind_rows(a,c)
+  out <- dplyr::bind_rows(a,c)
   expect_equal(nrow(out), nrow(a) + nrow(c))
   expect_equal(names(out), c('a','b'))
   expect_is(out,'tbl_df')
