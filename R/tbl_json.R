@@ -231,47 +231,12 @@ slice_.tbl_json <- wrap_dplyr_verb(dplyr::slice_, "slice_")
 #' @method slice tbl_json
 slice.tbl_json <- wrap_dplyr_verb(dplyr::slice, "slice")
 
-#' 
-#' Bind Rows (tidyjson)
-#' 
-#' Since bind_rows is not currently an s3 method, this function
-#' is meant to mask dplyr::bind_rows (although it is called directly).
-#' 
-#' @return If all parameters are `tbl_json` objects, then the JSON attributes
-#' will be stacked and a `tbl_json` will be returned.  Otherwise, 
-#' `dplyr::bind_rows` is used, a message is displayed,
-#' and a `tbl_df` is returned.
-#' 
-#' @seealso [Related dplyr issue](https://github.com/tidyverse/dplyr/issues/2457)
-#' @seealso \code{\link[dplyr]{bind_rows}}
-#'  
-#' @param ... Values passed on to dplyr::bind_rows
-#' 
-#' @examples 
-#' 
-#' ## Simple example
-#' a <- as.tbl_json('{"a": 1, "b": 2}')
-#' b <- as.tbl_json('{"a": 3, "b": 4}')
-#' 
-#' bind_rows(a,b) %>% spread_values(a=jnumber(a),b=jnumber(b))
-#' 
-#' ## as a list
-#' bind_rows(list(a,b)) %>% spread_all()
-#' 
+#' @name bind_rows
+#' @rdname bind_rows
+#' @keywords internal
+#' @importFrom dplyr bind_rows
 #' @export
-#' 
-bind_rows <- function(...) {
-  r <- dplyr::bind_rows(...)
-  
-  d <- list_or_dots(...)
-  if (all(unlist(lapply(d,is.tbl_json)))) {
-    j <- unlist(lapply(d, attr, 'JSON'), recursive=FALSE)
-    return(tbl_json(r,j))
-  } else {
-    message('Some non-tbl_json objects.  Reverting to dplyr::bind_rows')
-    return(dplyr::as_tibble(r))
-  }
-}
+dplyr::bind_rows
 
 #' Convert the JSON in an tbl_json object back to a JSON string
 #'
