@@ -83,8 +83,8 @@ tbl_json <- function(df, json.list, drop.null.json = FALSE) {
   # try to make ..JSON the last column consistently
   df[["..JSON"]] <- NULL
   df[["..JSON"]] <- json.list
-
-  structure(df, JSON = json.list, class = c("tbl_json", "tbl_df", "tbl", "data.frame"))
+  
+  structure(df, class = c("tbl_json", "tbl_df", "tbl", "data.frame"))
 }
 
 #' @export
