@@ -21,3 +21,4 @@
 ^Meta$
 ^renv$
 ^renv\.lock$
+^\.github$
