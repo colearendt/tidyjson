@@ -4,7 +4,9 @@
 \name{companies}
 \alias{companies}
 \title{Startup company information for 1,000 companies}
-\format{JSON}
+\format{
+JSON
+}
 \usage{
 companies
 }
