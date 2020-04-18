@@ -4,9 +4,7 @@
 \name{issues}
 \alias{issues}
 \title{Issue data for the dplyr repo from github API}
-\format{
-JSON
-}
+\format{JSON}
 \usage{
 issues
 }
