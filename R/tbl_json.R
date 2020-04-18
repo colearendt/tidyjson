@@ -177,6 +177,7 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
 
 #' Wrapper for extending dplyr verbs to tbl_json objects
 #' @param dplyr.verb a dplyr::verb such as filter, arrange
+#' @param generic character. The name of the generic
 #' @keywords internal
 wrap_dplyr_verb <- function(dplyr.verb, generic) {
 
