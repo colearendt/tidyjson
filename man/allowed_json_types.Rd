@@ -5,9 +5,7 @@
 \alias{allowed_json_types}
 \title{Fundamental JSON types from http://json.org/, where I collapse 'true' and
 'false' into 'logical'}
-\format{
-An object of class \code{character} of length 6.
-}
+\format{An object of class \code{character} of length 6.}
 \usage{
 allowed_json_types
 }

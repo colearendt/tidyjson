@@ -4,9 +4,7 @@
 \name{worldbank}
 \alias{worldbank}
 \title{Projects funded by the World Bank}
-\format{
-JSON
-}
+\format{JSON}
 \usage{
 worldbank
 }

@@ -1,7 +1,6 @@
 ---
-output:
-  md_document:
-    variant: markdown_github
+title: 'tidyjson'
+output: github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -14,13 +13,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-# tidyjson
-
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tidyjson)](https://cran.r-project.org/package=tidyjson)
 [![Build Status](https://travis-ci.org/colearendt/tidyjson.svg?branch=master)](https://travis-ci.org/colearendt/tidyjson)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/colearendt/tidyjson?branch=master&svg=true)](https://ci.appveyor.com/project/colearendt/tidyjson)
-
 [![Coverage Status](https://codecov.io/github/colearendt/tidyjson/coverage.svg?branch=master)](https://codecov.io/github/colearendt/tidyjson?branch=master) 
+
 [![CRAN Activity](http://cranlogs.r-pkg.org/badges/tidyjson)](https://cran.r-project.org/web/packages/tidyjson/index.html)
 [![CRAN History](http://cranlogs.r-pkg.org/badges/grand-total/tidyjson)](https://cran.r-project.org/web/packages/tidyjson/index.html)
 

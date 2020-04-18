@@ -3,4 +3,8 @@
 \docType{package}
 \name{tidyjson}
 \alias{tidyjson}
-\title{tidyjson.}
+\title{tidyjson}
+\description{
+The tidyjson package provides tools to turn complex JSON data into 
+tidy tibbles and data frames.
+}

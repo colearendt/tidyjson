@@ -4,9 +4,7 @@
 \name{commits}
 \alias{commits}
 \title{Commit data for the dplyr repo from github API}
-\format{
-JSON
-}
+\format{JSON}
 \usage{
 commits
 }
