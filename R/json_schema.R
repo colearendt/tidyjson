@@ -54,9 +54,11 @@
 #' json %>% json_schema(type = "value") %>% writeLines
 #'
 #' # Schema of the first 5 github issues
-#' library(dplyr)
-#' issues %>% gather_array %>% slice(1:10) %>%
-#'   json_schema(type = "value") %>% writeLines
+#' \dontrun{
+#'   library(dplyr)
+#'   issues %>% gather_array %>% slice(1:10) %>%
+#'     json_schema(type = "value") %>% writeLines
+#' }
 json_schema <- function(.x, type = c("string", "value")) {
 
   type <- match.arg(type)
