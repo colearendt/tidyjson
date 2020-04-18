@@ -1,4 +1,7 @@
-#' tidyjson.
+#' tidyjson
+#' 
+#' The tidyjson package provides tools to turn complex JSON data into 
+#' tidy tibbles and data frames.
 #'
 #' @name tidyjson
 #' @docType package
