@@ -167,14 +167,14 @@ test_that('functions as the identity on a more advanced pipeline', {
 context("print.tbl_json")
 
 test_that("jsonlite::toJSON works as anticipated", {
-  expect_identical(jsonlite::toJSON(json_raw(as.tbl_json('"a"'))
+  expect_identical(jsonlite::toJSON(json_get(as.tbl_json('"a"'))
                                     , null='null'
                                     , auto_unbox = TRUE) %>% as.character
                    , "[\"a\"]")
 })
 
 test_that("purrr::map_chr works as expected", {
-  a <- json_raw(as.tbl_json('"a"','JSON')) %>% purrr::map_chr(jsonlite::toJSON,
+  a <- json_get(as.tbl_json('"a"','JSON')) %>% purrr::map_chr(jsonlite::toJSON,
                           null = "null",
                           auto_unbox = TRUE)
   
@@ -369,7 +369,7 @@ test_that('as_tibble drops the JSON attribute and tbl_json class', {
   
   jtidy <- issues %>% gather_array() %>% spread_all()
   
-  expect_identical(json_raw(dplyr::as_tibble(jtidy)),NULL)
+  expect_identical(json_get(dplyr::as_tibble(jtidy)),NULL)
   expect_false('tbl_json' %in% class(dplyr::as_tibble(jtidy)))
 })
 
@@ -382,7 +382,7 @@ test_that('as_data_frame functions like as_tibble', {
     , user.login=jstring('user.login')
   )
   
-  expect_identical(json_raw(dplyr::as_tibble(jtidy)),NULL)
+  expect_identical(json_get(dplyr::as_tibble(jtidy)),NULL)
   expect_false('tbl_json' %in% class(dplyr::as_tibble(jtidy)))
 })
 
@@ -496,7 +496,7 @@ test_that("dplyr::slice works", {
 
   expect_is(new, "tbl_json")
   expect_identical(nrow(new), 2L)
-  expect_identical(length(json_raw(new)), 2L)
+  expect_identical(length(json_get(new)), 2L)
 
 })
 
@@ -534,7 +534,7 @@ test_that("dplyr::sample_n works", {
   new <- '[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]' %>% gather_array %>% dplyr::sample_n(2)
 
   expect_is(new, "tbl_json")
-  expect_identical(new$array.index, json_raw(new) %>% purrr::flatten_int())
+  expect_identical(new$array.index, json_get(new) %>% purrr::flatten_int())
 
 })
 
@@ -563,10 +563,10 @@ test_that("bind_rows works with tbl_json", {
   z <- people_df %>% dplyr::bind_rows(people_df)
   
 
-  expect_is(json_raw(z),'list')
+  expect_is(json_get(z),'list')
   expect_is(z, 'tbl_json')
   expect_equal(nrow(z), nrow(people_df) * 2)
-  expect_equal(length(json_raw(z)), nrow(people_df) * 2)
+  expect_equal(length(json_get(z)), nrow(people_df) * 2)
 })
 
 test_that("bind_rows falls back to normal behavior if not tbl_json", {

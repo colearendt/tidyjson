@@ -166,7 +166,7 @@ test_that("works when column names are duplicated from data frame", {
     suppressWarnings(df %>% spread_all),
     tbl_json(
       dplyr::tibble(key = 1L, key.2 = "a", key.3 = "b"),
-     json_raw(df)
+     json_get(df)
     )
   )
   expect_warning(df %>% spread_all)
