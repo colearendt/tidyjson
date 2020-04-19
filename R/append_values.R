@@ -56,7 +56,7 @@ append_values_factory <- function(type, as.value) {
     if (force == FALSE) assertthat::assert_that(recursive == FALSE)
 
     # Extract json
-    json <- json_raw(.x)
+    json <- json_get(.x)
 
     assertthat::assert_that(length(json) == nrow(.x))
 

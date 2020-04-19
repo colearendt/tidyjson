@@ -68,7 +68,7 @@ enter_object <- function(.x, ...) {
   path <- path(...)
 
   # Extract json
-  json <- json_raw(.x)
+  json <- json_get(.x)
 
   # Access path
   json <- purrr::map(json, path %>% as.list)

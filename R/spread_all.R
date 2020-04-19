@@ -71,7 +71,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
   exist_cols <- names(.x)
 
   # Get JSON
-  json <- json_raw(.x)
+  json <- json_get(.x)
 
   # Create a new identifier
   .x <- .x %>% dplyr::mutate(..id = seq_len(n()))
@@ -110,7 +110,7 @@ spread_all <- function(.x, recursive = TRUE, sep = ".") {
       dplyr::select(-..suffix)
 
     # Re-attach JSON
-    y <- tbl_json(y_dedupe, json_raw(y))
+    y <- tbl_json(y_dedupe, json_get(y))
 
     key_freq <- y %>% dplyr::group_by(..id, ..name1) %>% dplyr::tally()
   }

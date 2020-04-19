@@ -149,7 +149,7 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
   n_real_args <- nargs() - !missing(drop)
   
   # Extract JSON to subset later
-  json <- json_raw(.x)
+  json <- json_get(.x)
   
   # "column" selection behavior
   if (n_real_args <= 2L) {
@@ -184,7 +184,7 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
 #' @return A nested list representing the JSON data
 #' 
 #' @export
-json_raw <- function(.data) {
+json_get <- function(.data) {
   .data[["..JSON"]]
 }
 
@@ -259,7 +259,7 @@ dplyr::bind_rows
 #' @export
 as.character.tbl_json <- function(x, ...) {
 
-  json <- json_raw(x)
+  json <- json_get(x)
   if (is.null(json)) {
     warning("the ..JSON column has been removed from this tbl_json object")
     json <- list()
