@@ -55,6 +55,7 @@ rbind_tbl_json <- function(x, y) {
 #' @param ... Either a list or the `...` of a function call
 #' 
 #' @return The input object coerced into a list for easier use
+#' @keywords internal
 list_or_dots <- function (...) 
 {
   dots <- list(...)
@@ -72,6 +73,7 @@ list_or_dots <- function (...)
 #' 
 #' @return Boolean.  Indicates whether x is a list
 #' 
+#' @keywords internal
 is_data_list <- function (x) 
 {
   if (is.data.frame(x) || is.null(x)) 
@@ -98,6 +100,7 @@ is_data_list <- function (x)
 #' @param x Input object
 #' 
 #' @return Boolean.  Indicates whether x has names
+#' @keywords internal
 has_names <- function (x) 
 {
   nms <- names(x)

@@ -12,3 +12,4 @@ json_factory(map.function)
 \description{
 Factory that creates the j* functions below
 }
+\keyword{internal}

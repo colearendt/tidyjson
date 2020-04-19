@@ -143,15 +143,30 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
 `[.tbl_json` <- function(.x, i, j,
   drop = FALSE) {
 
+  n_real_args <- nargs() - !missing(drop)
+  
   # Extract JSON to subset later
   json <- attr(.x, "JSON")
   
-  # Subset x
-  .x <- NextMethod('[')
+  # "column" selection behavior
+  if (n_real_args <= 2L) {
+    if (!missing(drop)) 
+      warning("drop ignored")
+    if (missing(i)) {
+      return(.x)
+    }
+  
+    # Subset x
+    .x <- NextMethod('[')
+  } else {
+    
+    # Subset x
+    .x <- NextMethod('[')
+    # If i is not missing, subset json as well
+    if (!missing(i)) {
+      json <- json[i]
+    }
 
-  # If i is not missing, subset json as well
-  if (!missing(i)) {
-    json <- json[i]
   }
 
   tbl_json(.x, json)
@@ -159,6 +174,7 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
 
 #' Wrapper for extending dplyr verbs to tbl_json objects
 #' @param dplyr.verb a dplyr::verb such as filter, arrange
+#' @keywords internal
 wrap_dplyr_verb <- function(dplyr.verb) {
 
   function(.data, ...) {
@@ -174,7 +190,12 @@ wrap_dplyr_verb <- function(dplyr.verb) {
     y <- dplyr.verb(dplyr::as_tibble(.data), ...)
 
     # Reconstruct tbl_json without ..JSON column
-    tbl_json(dplyr::select(y, -..JSON), y$..JSON)
+    if ("..JSON" %in% names(y)) {
+      tbl_json(dplyr::select(y, -..JSON), y$..JSON)
+    } else {
+      # some operations drop the ..JSON column (i.e. transmute)
+      tbl_json(y, .data$..JSON)
+    }
 
   }
 }
@@ -199,6 +220,10 @@ mutate_.tbl_json <- wrap_dplyr_verb(dplyr::mutate_)
 #' @export
 #' @method mutate tbl_json
 mutate.tbl_json <- wrap_dplyr_verb(dplyr::mutate)
+
+#' @export
+#' @method transmute tbl_json
+transmute.tbl_json <- wrap_dplyr_verb(dplyr::transmute)
 
 #' @export
 slice_.tbl_json <- wrap_dplyr_verb(dplyr::slice_)

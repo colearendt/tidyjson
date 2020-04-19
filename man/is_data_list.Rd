@@ -15,3 +15,4 @@ Boolean.  Indicates whether x is a list
 \description{
 Checks whether a list is being provided
 }
+\keyword{internal}

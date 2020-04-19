@@ -35,4 +35,4 @@ Suggests:
 VignetteBuilder: knitr
 URL: https://github.com/colearendt/tidyjson
 BugReports: https://github.com/colearendt/tidyjson/issues
-RoxygenNote: 7.0.0
+RoxygenNote: 7.1.0

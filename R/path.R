@@ -3,6 +3,7 @@
 #' @param ... a sequence of quoted or unquoted character strings specifying
 #'            JSON object names
 #' @return a \code{path} object
+#' @keywords internal
 path <- function(...) {
 
   dots <- dots(...)

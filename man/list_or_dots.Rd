@@ -16,3 +16,4 @@ The input object coerced into a list for easier use
 Handles dots or a list, coercing into a list
 so that the output is easy to handle
 }
+\keyword{internal}
