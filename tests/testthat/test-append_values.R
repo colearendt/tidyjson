@@ -222,6 +222,18 @@ test_that("recursive works as expected", {
   }
 )
 
+test_that("works for coerced types", {
+  coerce_helper <- function(input) {
+    as.tbl_json(input) %>% gather_array() %>% append_values() %>% .[["values"]]
+  }
+  
+  expect_identical(coerce_helper('["a", 4]'), c("a", "4"))
+  expect_identical(coerce_helper('[4, true, false]'), c(4L, 1L, 0L))
+  expect_identical(coerce_helper('[4.1, true, false]'), c(4.1, 1, 0))
+  expect_identical(coerce_helper('["a", true]'), c("a", "TRUE"))
+  expect_identical(coerce_helper('["a", {"a": "b"}]'), list("a", "a" = "b"))
+  expect_identical(coerce_helper('["a", {"a": "b", "b": "c"}]'), list("a", "a" = "b"))
+})
 
 
 context("my_unlist")
