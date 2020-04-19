@@ -19,7 +19,7 @@ gather_factory <- function(default.column.name, default.column.empty,
     if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
     # Get JSON
-    json <- .x[["..JSON"]]
+    json <- json_raw(.x)
 
     # Handle the case where json is just an empty list
     if (identical(json, list())) {

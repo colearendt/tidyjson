@@ -33,7 +33,7 @@ json_lengths <- function(.x, column.name = "length") {
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
   # Extract json
-  json <- .x[["..JSON"]]
+  json <- json_raw(.x)
 
   # Determine lengths
   lengths <- purrr::map_int(json, length)

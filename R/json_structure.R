@@ -194,7 +194,7 @@ json_structure_objects <- function(s) {
     )
 
   # Reconstruct tbl_json object
-  tbl_json(df_s, expand_s[["..JSON"]])
+  tbl_json(df_s, json_raw(expand_s))
 
 }
 

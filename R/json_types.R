@@ -27,7 +27,7 @@ json_types <- function(.x, column.name = "type") {
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
 
   # Extract json
-  json <- .x[["..JSON"]]
+  json <- json_raw(.x)
 
   # Determine types
   types <- determine_types(json)
