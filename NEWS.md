@@ -2,7 +2,9 @@
 
 ## Breaking
 
-* Instead of `attr(., "JSON")`, the JSON object is now a hidden column (`..JSON`)
+* Instead of `attr(., "JSON")`, the JSON object is now a hidden column (`..JSON`). To prevent
+  future backwards incompatibilities of this nature, there is now an "extractor" function to
+  pull the raw JSON object off of the `tbl_json`: `json_get()`
 
 ## Bug fixes
 
