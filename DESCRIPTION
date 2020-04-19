@@ -15,7 +15,8 @@ Imports:
     dplyr (>= 0.8.3),
     magrittr,
     tidyr (>= 1.0.0),
-    tibble
+    tibble,
+    vctrs
 License: MIT + file LICENSE
 LazyData: true
 Suggests:
