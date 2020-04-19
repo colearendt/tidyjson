@@ -175,14 +175,17 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
   tbl_json(.x, json)
 }
 
-#' Raw JSON
+#' Get JSON from a tbl_json
 #' 
-#' Retrieve the raw JSON from a tbl_json object
+#' Extract the raw JSON from a tbl_json object. This is equivalent to reading
+#' the "..JSON" hidden column. But is a helper in case of future behavior changes.
+#' This replaces previous behavior, where the raw JSON was stored in an attribute.
 #' 
 #' @param .data A tbl_json object
 #' 
 #' @return A nested list representing the JSON data
 #' 
+#' @rdname json_get
 #' @export
 json_get <- function(.data) {
   .data[["..JSON"]]
