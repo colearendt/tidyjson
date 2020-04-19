@@ -65,18 +65,18 @@ test_that("[ works with various indexing", {
   obj <- as.tbl_json(c('{"name": "value"}', '{"name": "other"}')) %>%
     json_types()
   # column indexing
-  expect_equal(obj[0], obj[,0])
-  expect_equal(obj[1], obj[,1])
-  expect_equal(obj[-1], obj[,-1])
-  expect_equal(obj[0:2], obj)
+  expect_identical(obj[0], obj[,0])
+  expect_identical(obj[1], obj[,1])
+  expect_identical(obj[-1], obj[,-1])
+  expect_identical(obj[0:2], obj)
   
   # no indexing
-  expect_equal(obj, obj[])
+  expect_identical(obj, obj[])
   
   # row indexing
-  expect_equal(obj[1,], obj[1,1:2])
-  expect_equal(obj[-1,], obj[2,])
-  expect_equal(obj[1:2,], obj)
+  expect_identical(obj[1,], obj[1,1:2])
+  expect_identical(obj[-1,], obj[2,])
+  expect_identical(obj[1:2,], obj)
 })
 
 test_that("throws error on invalid json", {
@@ -123,9 +123,9 @@ test_that("works for worldbank data", {
 
 test_that("throws informative warning message when attr(.,'JSON') is missing", {
   j <- '{"a": 1, "b": "test"}' %>% as.tbl_json()
-  attr(j,'JSON') <- NULL
+  j[["..JSON"]] <- NULL
   
-  expect_warning(j %>% as.character(),'attr.*JSON.*remove.*tbl_json')
+  expect_warning(j %>% as.character(),'\\.\\.JSON.*remove.*tbl_json')
   expect_identical(suppressWarnings(j %>% as.character()),character())
 })
 
@@ -167,14 +167,14 @@ test_that('functions as the identity on a more advanced pipeline', {
 context("print.tbl_json")
 
 test_that("jsonlite::toJSON works as anticipated", {
-  expect_identical(jsonlite::toJSON(attr(as.tbl_json('"a"'),'JSON')
+  expect_identical(jsonlite::toJSON(json_get(as.tbl_json('"a"'))
                                     , null='null'
                                     , auto_unbox = TRUE) %>% as.character
                    , "[\"a\"]")
 })
 
 test_that("purrr::map_chr works as expected", {
-  a <- attr(as.tbl_json('"a"','JSON'),'JSON') %>% purrr::map_chr(jsonlite::toJSON,
+  a <- json_get(as.tbl_json('"a"','JSON')) %>% purrr::map_chr(jsonlite::toJSON,
                           null = "null",
                           auto_unbox = TRUE)
   
@@ -313,11 +313,9 @@ test_that("tbl_json constructor works with no data", {
 )
 
 test_that("tbl_json fails if ..JSON is in the names of the data.frame", {
-
-    expect_error(tbl_json(data.frame(..JSON = character(0)), list()))
-
-  }
-)
+  skip("no longer an error")
+  expect_error(tbl_json(data.frame(..JSON = character(0)), list()))
+})
 
 test_that("[ row filtering works with a simple example", {
 
@@ -371,7 +369,7 @@ test_that('as_tibble drops the JSON attribute and tbl_json class', {
   
   jtidy <- issues %>% gather_array() %>% spread_all()
   
-  expect_identical(attr(dplyr::as_tibble(jtidy),'JSON'),NULL)
+  expect_identical(json_get(dplyr::as_tibble(jtidy)),NULL)
   expect_false('tbl_json' %in% class(dplyr::as_tibble(jtidy)))
 })
 
@@ -384,7 +382,7 @@ test_that('as_data_frame functions like as_tibble', {
     , user.login=jstring('user.login')
   )
   
-  expect_identical(attr(dplyr::as_tibble(jtidy),'JSON'),NULL)
+  expect_identical(json_get(dplyr::as_tibble(jtidy)),NULL)
   expect_false('tbl_json' %in% class(dplyr::as_tibble(jtidy)))
 })
 
@@ -487,7 +485,7 @@ test_that("dplyr::transmute works", {
   
   expect_is(use_transmute, "tbl_json")
   expect_identical(nrow(use_transmute), 2L)
-  expect_identical(ncol(use_transmute), 1L)
+  expect_identical(ncol(use_transmute), 2L)
   
   expect_identical(use_transmute$string, c("value_hi", "string_hi"))
 })
@@ -498,7 +496,7 @@ test_that("dplyr::slice works", {
 
   expect_is(new, "tbl_json")
   expect_identical(nrow(new), 2L)
-  expect_identical(length(attr(new, "JSON")), 2L)
+  expect_identical(length(json_get(new)), 2L)
 
 })
 
@@ -508,7 +506,7 @@ test_that('dplyr::select works', {
   f <- json %>% as.tbl_json %>% gather_array %>% spread_all %>%
     dplyr::select(ID=id, object)
   
-  expect_equal(names(f), c('ID','object'))
+  expect_equal(names(f), c('ID','object','..JSON'))
   expect_equal(nrow(f),2)
   expect_is(f,'tbl_json')
 })
@@ -518,7 +516,7 @@ test_that("dplyr::rename works", {
   new <- '[1, 2, 3]' %>% gather_array %>% dplyr::rename(blah = document.id)
 
   expect_is(new, "tbl_json")
-  expect_identical(names(new), c("blah", "array.index"))
+  expect_identical(names(new), c("blah", "array.index","..JSON"))
 
 })
 
@@ -527,7 +525,7 @@ test_that("dplyr::transmute works", {
   new <- '[1, 2, 3]' %>% gather_array %>% dplyr::transmute(blah = document.id)
 
   expect_is(new, "tbl_json")
-  expect_identical(names(new), "blah")
+  expect_identical(names(new), c("blah", "..JSON"))
 
 })
 
@@ -536,7 +534,7 @@ test_that("dplyr::sample_n works", {
   new <- '[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]' %>% gather_array %>% dplyr::sample_n(2)
 
   expect_is(new, "tbl_json")
-  expect_identical(new$array.index, attr(new, "JSON") %>% purrr::flatten_int())
+  expect_identical(new$array.index, json_get(new) %>% purrr::flatten_int())
 
 })
 
@@ -562,20 +560,20 @@ test_that("bind_rows works with tbl_json", {
       name = jstring("name"),
       age = jnumber("age"))
   
-  z <- people_df %>% bind_rows(people_df)
+  z <- people_df %>% dplyr::bind_rows(people_df)
   
 
-  expect_is(attr(z,'JSON'),'list')
+  expect_is(json_get(z),'list')
   expect_is(z, 'tbl_json')
   expect_equal(nrow(z), nrow(people_df) * 2)
-  expect_equal(length(attr(z,'JSON')), nrow(people_df) * 2)
+  expect_equal(length(json_get(z)), nrow(people_df) * 2)
 })
 
 test_that("bind_rows falls back to normal behavior if not tbl_json", {
   a <- dplyr::tibble(a=c(1,2), b=c('one','two'))
   c <- dplyr::tibble(a=c(3,4), b=c('three','four'))
   
-  out <- bind_rows(a,c)
+  out <- dplyr::bind_rows(a,c)
   expect_equal(nrow(out), nrow(a) + nrow(c))
   expect_equal(names(out), c('a','b'))
   expect_is(out,'tbl_df')
@@ -613,7 +611,7 @@ test_that('dplyr::rename works with programming', {
   
   f <- json %>% spread_all %>% dplyr::rename(!!!v)
   
-  expect_identical(names(f),c('document.id','firstName','lastName'))
+  expect_identical(names(f),c('document.id','firstName','lastName','..JSON'))
   expect_is(f,'tbl_json')
 })
 
@@ -623,7 +621,7 @@ test_that('dplyr::select works with programming', {
   
   f <- json %>% spread_all %>% dplyr::select(!!!v)
   
-  expect_identical(names(f),c('Hill','valley'))
+  expect_identical(names(f),c('Hill','valley','..JSON'))
   expect_is(f,'tbl_json')
 })
 
@@ -645,7 +643,7 @@ test_that('dplyr::transmute works with programming', {
   
   f <- json %>% spread_all %>% dplyr::transmute(!!!v)
   
-  expect_identical(names(f), 'firstName')
+  expect_identical(names(f), c('firstName','..JSON'))
   expect_is(f,'tbl_json')
 })
 
@@ -660,4 +658,21 @@ test_that('dplyr::slice works with programming', {
   expect_identical(nrow(f),1L)
   expect_identical(f$id,7)
   expect_is(f,'tbl_json')
+})
+
+context('json_get')
+
+test_that('json_get works', {
+  tj <- as.tbl_json('{"a": "b"}')
+  
+  expect_identical(json_get(tj), list(list("a" = "b")))
+})
+
+test_that('json_get handles error cases', {
+  tjn <- as.tbl_json('{"a": "b"}')
+  tjn[["..JSON"]] <- NULL
+  expect_identical(json_get(tjn), NULL)
+  
+  expect_identical(json_get(data.frame()), NULL)
+  expect_identical(json_get(data.frame(`..JSONA` = 1)), NULL)
 })

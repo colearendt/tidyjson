@@ -120,7 +120,7 @@ test_that("works with real examples", {
   expect_identical(
     worldbank %>% spread_all %>% names,
     c("document.id", "boardapprovaldate", "closingdate", "countryshortname",
-      "project_name", "regionname", "totalamt", "_id.$oid")
+      "project_name", "regionname", "totalamt", "_id.$oid", "..JSON")
   )
 
   expect_identical(
@@ -137,7 +137,7 @@ test_that("works with real examples", {
       "acquisition.source_description", "acquisition.acquired_year",
       "acquisition.acquired_month", "acquisition.acquired_day",
       "acquisition.acquiring_company.name",
-      "acquisition.acquiring_company.permalink")
+      "acquisition.acquiring_company.permalink", "..JSON")
   )
 
 })
@@ -166,7 +166,7 @@ test_that("works when column names are duplicated from data frame", {
     suppressWarnings(df %>% spread_all),
     tbl_json(
       dplyr::tibble(key = 1L, key.2 = "a", key.3 = "b"),
-      attr(df, "JSON")
+     json_get(df)
     )
   )
   expect_warning(df %>% spread_all)
@@ -178,12 +178,12 @@ test_that("works with recursive=FALSE when objects are present", {
   
   j <- json %>% spread_all(recursive=FALSE)
   
-  expect_identical(names(j),c('document.id','id','name'))
+  expect_identical(names(j),c('document.id','id','name', '..JSON'))
   
   i <- issues %>% gather_array() %>% spread_all(recursive=FALSE)
   
   expect_equal(nrow(i),30)
-  expect_equal(ncol(i), 19)
+  expect_equal(ncol(i), 20)
 })
 
 test_that("attr(.,JSON) remains intact", {
@@ -198,7 +198,7 @@ test_that("attr(.,JSON) remains intact", {
   
   expect_equal(j$hobby,c('a','b','c','d'))
   expect_equal(nrow(j),4)
-  expect_equal(names(j),c('document.id','id','name','a','b','hobbyid','hobby'))
+  expect_equal(names(j),c('document.id','id','name','a','b','hobbyid','hobby','..JSON'))
 })
 
 test_that("multiple iterations of deduped names work", {
@@ -206,7 +206,7 @@ test_that("multiple iterations of deduped names work", {
 
   expect_warning(json %>% spread_all(), 'results in duplicate column names')
   
-  expect_named(suppressWarnings(json %>% spread_all), c('document.id','a.b','a.b.2','a.b.2.2'))
+  expect_named(suppressWarnings(json %>% spread_all), c('document.id','a.b','a.b.2','a.b.2.2', '..JSON'))
 })
 
 test_that('Handles nulls in an array column',{

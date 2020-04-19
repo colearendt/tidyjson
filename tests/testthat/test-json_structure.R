@@ -24,9 +24,8 @@ test_that("simple string works", {
 
 test_that("simple object works", {
 
-  expect_identical(
-    '{"name": "value"}' %>% json_structure,
-    tbl_json(
+  actual <- '{"name": "value"}' %>% json_structure
+  expected <- tbl_json(
       dplyr::tibble(
         document.id = c(1L, 1L),
         parent.id = c(NA_character_, "1"),
@@ -40,6 +39,12 @@ test_that("simple object works", {
       ),
       list(list("name" = "value"), "value")
     )
+  #attr(expected, 'JSON') <- NULL
+  #row.names(actual) <- NULL
+  #row.names(expected) <- NULL
+  expect_identical(
+    actual,
+    expected
   )
 
 })

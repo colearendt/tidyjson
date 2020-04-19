@@ -26,22 +26,22 @@ understand a complex JSON dataset.
 
 ## JSON Definition
 
-For a refrehser on JSON, see the [JSON specification](http://www.json.org/), 
+For a refresher on JSON, see the [JSON specification](https://www.json.org/), 
 which is a very concise summary of how JSON is formatted. In essence, there are
 three types of JSON data structures.
 
 Per the specification, an object is a name/value pair, like 
 `'{"string": "value"}'`:
 
-![](http://www.json.org/object.gif)
+![A picture showing a JSON object's structure](`r system.file("json_object.gif", package = "tidyjson")`)
 
 An array is an ordered list, like `'[1, 2, 3]'`:
 
-![](http://www.json.org/array.gif)
+![A picture showing a JSON array's structure](`r system.file("json_array.gif", package = "tidyjson")`)
 
 A value is a string, number, logical or NULL scalar:
 
-![](http://www.json.org/value.gif)
+![A picture showing a JSON value's structure](`r system.file("json_value.gif", package = "tidyjson")`)
 
 What is particularly interesting about JSON is the following:
 
@@ -80,7 +80,7 @@ set.seed(1)
 ## Companies Data
 
 Let's work with the `companies` dataset included in the `tidyjson` package, 
-originating at [jsonstudio](http://jsonstudio.com/resources). It is a 
+originating at 'jsonstudio.' It is a 
 `r class(companies)` vector of `r length(companies) %>% format(big.mark = ',')` 
 JSON strings, each describing a startup company.
 
@@ -419,6 +419,8 @@ g <- ggplot(round_prep, aes(state, raised, fill = state)) +
   facet_grid(. ~ round) +
   theme(legend.position = "bottom") +
   labs(x = "", y = "Amount Raised (USD)")
+
+g
 ```
 
 Which shows a few interesting things:

@@ -64,9 +64,11 @@ json \%>\% json_schema \%>\% writeLines
 json \%>\% json_schema(type = "value") \%>\% writeLines
 
 # Schema of the first 5 github issues
-library(dplyr)
-issues \%>\% gather_array \%>\% slice(1:10) \%>\%
-  json_schema(type = "value") \%>\% writeLines
+\dontrun{
+  library(dplyr)
+  issues \%>\% gather_array \%>\% slice(1:10) \%>\%
+    json_schema(type = "value") \%>\% writeLines
+}
 }
 \seealso{
 \code{\link{json_structure}} to recursively structure all

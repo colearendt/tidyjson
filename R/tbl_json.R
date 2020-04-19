@@ -69,7 +69,6 @@ tbl_json <- function(df, json.list, drop.null.json = FALSE) {
   assertthat::assert_that(is.data.frame(df))
   assertthat::assert_that(is.list(json.list) || is.vector(json.list))
   assertthat::assert_that(nrow(df) == length(json.list))
-  assertthat::assert_that(!("..JSON" %in% names(df)))
 
   # Remove any row.names
   row.names(df) <- NULL
@@ -80,8 +79,12 @@ tbl_json <- function(df, json.list, drop.null.json = FALSE) {
     df <- df[!nulls, , drop = FALSE]
     json.list <- json.list[!nulls]
   }
-
-  structure(df, JSON = json.list, class = c("tbl_json", "tbl_df", "tbl", "data.frame"))
+  
+  # try to make ..JSON the last column consistently
+  df[["..JSON"]] <- NULL
+  df[["..JSON"]] <- json.list
+  
+  structure(df, class = c("tbl_json", "tbl_df", "tbl", "data.frame"))
 }
 
 #' @export
@@ -146,7 +149,7 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
   n_real_args <- nargs() - !missing(drop)
   
   # Extract JSON to subset later
-  json <- attr(.x, "JSON")
+  json <- json_get(.x)
   
   # "column" selection behavior
   if (n_real_args <= 2L) {
@@ -172,107 +175,84 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
   tbl_json(.x, json)
 }
 
+#' Get JSON from a tbl_json
+#' 
+#' Extract the raw JSON from a tbl_json object. This is equivalent to reading
+#' the "..JSON" hidden column. But is a helper in case of future behavior changes.
+#' This replaces previous behavior, where the raw JSON was stored in an attribute.
+#' 
+#' @param .data A tbl_json object
+#' 
+#' @return A nested list representing the JSON data
+#' 
+#' @rdname json_get
+#' @export
+json_get <- function(.data) {
+  .data[["..JSON"]]
+}
+
 #' Wrapper for extending dplyr verbs to tbl_json objects
 #' @param dplyr.verb a dplyr::verb such as filter, arrange
+#' @param generic character. The name of the generic
 #' @keywords internal
-wrap_dplyr_verb <- function(dplyr.verb) {
+wrap_dplyr_verb <- function(dplyr.verb, generic) {
 
   function(.data, ...) {
 
-    # Check if reserved ..JSON name already in data.frame
-    if ("..JSON" %in% names(.data))
-      stop("'..JSON' in the column names of tbl_json object being filtered")
-
-    # Assign JSON to the data.frame so it is treated as any other column
-    .data$..JSON <- attr(.data, "JSON")
-
     # Apply the transformation
-    y <- dplyr.verb(dplyr::as_tibble(.data), ...)
+    y <- NextMethod(generic, .data)
 
     # Reconstruct tbl_json without ..JSON column
     if ("..JSON" %in% names(y)) {
-      tbl_json(dplyr::select(y, -..JSON), y$..JSON)
+      return(tbl_json(dplyr::select(y, -..JSON), y$..JSON))
     } else {
       # some operations drop the ..JSON column (i.e. transmute)
-      tbl_json(y, .data$..JSON)
+      return(tbl_json(y, .data$..JSON))
     }
-
   }
 }
 
 #' @export
-filter_.tbl_json <- wrap_dplyr_verb(dplyr::filter_)
+select.tbl_json <- wrap_dplyr_verb(dplyr::select, "select")
+
+#' @export
+filter_.tbl_json <- wrap_dplyr_verb(dplyr::filter_, "filter_")
 
 #' @export
 #' @method filter tbl_json
-filter.tbl_json <- wrap_dplyr_verb(dplyr::filter)
+filter.tbl_json <- wrap_dplyr_verb(dplyr::filter, "filter")
 
 #' @export
-arrange_.tbl_json <- wrap_dplyr_verb(dplyr::arrange_)
+arrange_.tbl_json <- wrap_dplyr_verb(dplyr::arrange_, "arrange_")
 
 #' @export
 #' @method arrange tbl_json
-arrange.tbl_json <- wrap_dplyr_verb(dplyr::arrange)
+arrange.tbl_json <- wrap_dplyr_verb(dplyr::arrange, "arrange")
 
 #' @export
-mutate_.tbl_json <- wrap_dplyr_verb(dplyr::mutate_)
+mutate_.tbl_json <- wrap_dplyr_verb(dplyr::mutate_, "mutate_")
 
 #' @export
 #' @method mutate tbl_json
-mutate.tbl_json <- wrap_dplyr_verb(dplyr::mutate)
+mutate.tbl_json <- wrap_dplyr_verb(dplyr::mutate, "mutate")
 
 #' @export
 #' @method transmute tbl_json
-transmute.tbl_json <- wrap_dplyr_verb(dplyr::transmute)
+transmute.tbl_json <- wrap_dplyr_verb(dplyr::transmute, "transmute")
 
 #' @export
-slice_.tbl_json <- wrap_dplyr_verb(dplyr::slice_)
+slice_.tbl_json <- wrap_dplyr_verb(dplyr::slice_, "slice_")
 
 #' @export
 #' @method slice tbl_json
-slice.tbl_json <- wrap_dplyr_verb(dplyr::slice)
+slice.tbl_json <- wrap_dplyr_verb(dplyr::slice, "slice")
 
-#' 
-#' Bind Rows (tidyjson)
-#' 
-#' Since bind_rows is not currently an s3 method, this function
-#' is meant to mask dplyr::bind_rows (although it is called directly).
-#' 
-#' @return If all parameters are `tbl_json` objects, then the JSON attributes
-#' will be stacked and a `tbl_json` will be returned.  Otherwise, 
-#' `dplyr::bind_rows` is used, a message is displayed,
-#' and a `tbl_df` is returned.
-#' 
-#' @seealso [Related dplyr issue](https://github.com/tidyverse/dplyr/issues/2457)
-#' @seealso \code{\link[dplyr]{bind_rows}}
-#'  
-#' @param ... Values passed on to dplyr::bind_rows
-#' 
-#' @examples 
-#' 
-#' ## Simple example
-#' a <- as.tbl_json('{"a": 1, "b": 2}')
-#' b <- as.tbl_json('{"a": 3, "b": 4}')
-#' 
-#' bind_rows(a,b) %>% spread_values(a=jnumber(a),b=jnumber(b))
-#' 
-#' ## as a list
-#' bind_rows(list(a,b)) %>% spread_all()
-#' 
+#' @name bind_rows
+#' @rdname bind_rows
+#' @keywords internal
+#' @importFrom dplyr bind_rows
 #' @export
-#' 
-bind_rows <- function(...) {
-  r <- dplyr::bind_rows(...)
-  
-  d <- list_or_dots(...)
-  if (all(unlist(lapply(d,is.tbl_json)))) {
-    j <- unlist(lapply(d, attr, 'JSON'), recursive=FALSE)
-    return(tbl_json(r,j))
-  } else {
-    message('Some non-tbl_json objects.  Reverting to dplyr::bind_rows')
-    return(dplyr::as_tibble(r))
-  }
-}
+dplyr::bind_rows
 
 #' Convert the JSON in an tbl_json object back to a JSON string
 #'
@@ -282,9 +262,9 @@ bind_rows <- function(...) {
 #' @export
 as.character.tbl_json <- function(x, ...) {
 
-  json <- attr(x, "JSON")
+  json <- json_get(x)
   if (is.null(json)) {
-    warning("attr(.,'JSON') has been removed from this tbl_json object")
+    warning("the ..JSON column has been removed from this tbl_json object")
     json <- list()
   }
   json %>% purrr::map_chr(jsonlite::toJSON,
@@ -309,7 +289,7 @@ as.character.tbl_json <- function(x, ...) {
 #' 
 #' @export
 as_tibble.tbl_json <- function(x, ...) {
-  attr(x,'JSON') <- NULL
+  x$..JSON <- NULL
   as_tibble(
     structure(x, class = class(tibble::tibble()))
   )
@@ -344,13 +324,13 @@ print.tbl_json <- function(x, ..., json.n = 20, json.width = 15) {
 
   # Add the json
   .y <- dplyr::as_tibble(x)
-  json_name <- 'attr(., "JSON")'
+  json_name <- '..JSON'
   .y[json_name] <- rep("...", nrow(x))
   .y[[json_name]][seq_len(length(json))] <- json
 
   # Re-arrange columns
   ncol_y <- ncol(.y)
-  .y <- .y[, c(ncol_y, seq_len(ncol_y - 1))]
+  .y <- .y[, c("..JSON", names(.y)[names(.y) != "..JSON"])]
 
   # Print trunc_mat version
   out <- capture.output(print(.y))
