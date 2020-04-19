@@ -47,7 +47,7 @@ NULL
 #' @param type the JSON type that will be appended
 #' @param as.value function to force coercion to numeric, string, or logical
 #' @keywords internal
-append_values_factory <- function(type, as.value) {
+append_values_factory <- function(type, as.value, clear_children = TRUE) {
 
   function(.x, column.name = type, force = TRUE, recursive = FALSE) {
 
@@ -74,7 +74,7 @@ append_values_factory <- function(type, as.value) {
 
        # if new_val is a list and recursive = FALSE, then
        # need to identify values with a name and change to NA
-       if (is.list(new_val) && !recursive) {
+       if (is.list(new_val) && !recursive && clear_children) {
           loc <- names(new_val) != ""
           new_val[loc] <- NA
        }
@@ -92,6 +92,7 @@ append_values_factory <- function(type, as.value) {
 #' Unlists while preserving NULLs and only unlisting lists with one value
 #' @param l a list that we want to unlist
 #' @param recursive logical indicating whether to unlist nested lists
+#' @keywords internal
 my_unlist <- function(l, recursive = FALSE) {
   nulls <- purrr::map_int(l, length) != 1
   l[nulls] <- NA
@@ -101,6 +102,7 @@ my_unlist <- function(l, recursive = FALSE) {
 #' get list of values from json
 #' @param json extracted using attributes
 #' @param type input type (numeric, string, etc)
+#' @keywords internal
 append_values_type <- function(json, type) {
 
    # Determine type
@@ -119,6 +121,27 @@ append_values_type <- function(json, type) {
 
 }
 
+#' @rdname append_values
+#' @export
+append_values <- function(.x, column.name = "values", force = TRUE, recursive = FALSE) {
+  
+  if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)
+  
+  if (force == FALSE) assertthat::assert_that(recursive == FALSE)
+  
+  # Extract json
+  json <- json_get(.x)
+  
+  json_ptype <- vctrs::vec_ptype_common(!!!json)
+  new_val <- vctrs::vec_cast(json, json_ptype)
+  
+  assertthat::assert_that(length(new_val) == nrow(.x))
+  
+  .x <- dplyr::mutate(.x, !!column.name := new_val)
+  
+  tbl_json(.x, json)
+}
+
 #' @export
 #' @rdname append_values
 append_values_string <- append_values_factory("string", as.character)
@@ -133,8 +156,8 @@ append_values_logical <- append_values_factory("logical", as.logical)
 
 #' @export
 #' @rdname append_values
-append_values_list <- append_values_factory("list", as.list)
+append_values_list <- append_values_factory("list", as.list, clear_children = FALSE)
 
-#' @export
-#' @rdname append_values
-append_values <- append_values_factory("list", as.list)
+# #' @export
+# #' @rdname append_values
+# append_values <- append_values_factory("values", vctrs::vec_c, clear_children = FALSE)
