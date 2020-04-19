@@ -9,7 +9,7 @@ test_that("read_json correctly infers a .json file", {
       json %>% gather_array(),
       tbl_json(
           dplyr::tibble(document.id = 1L, array.index = 1L:8L),
-          attr(json, "JSON")[[1]])
+          json_get(json)[[1]])
     )
 })
 
@@ -22,7 +22,8 @@ test_that("read_json correctly infers a .jsonl file", {
       json,
       tbl_json(
           dplyr::tibble(document.id = 1:8),
-          attr(json, "JSON"))
+          json_get(json)
+      )
     )
 })
 
@@ -56,6 +57,7 @@ test_that("read_json uses given format", {
       json,
       tbl_json(
           dplyr::tibble(document.id = 1:8),
-          attr(json, "JSON"))
+         json_get(json)
+         )
     )
 })

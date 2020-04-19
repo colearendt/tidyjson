@@ -1,3 +1,17 @@
+# development
+
+## Breaking
+
+* Instead of `attr(., "JSON")`, the JSON object is now a hidden column (`..JSON`). To prevent
+  future backwards incompatibilities of this nature, there is now an "extractor" function to
+  pull the raw JSON object off of the `tbl_json`: `json_get()`
+
+## Bug fixes
+
+* Address backwards incompatibilities in `dplyr`
+
+* Remove `tidyjson::bind_rows()` in favor of re-exporting `dplyr::bind_rows()`
+
 # tidyjson 0.2.4
 
 ## New functions
