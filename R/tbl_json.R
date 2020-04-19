@@ -185,10 +185,24 @@ is.tbl_json <- function(.x) inherits(.x, "tbl_json")
 #' 
 #' @return A nested list representing the JSON data
 #' 
-#' @rdname json_get
 #' @export
 json_get <- function(.data) {
   .data[["..JSON"]]
+}
+
+#' Make the JSON data a persistent column
+#' 
+#' Extract the raw JSON from a tbl_json object. Store it in a column
+#' 
+#' @param .data A tbl_json object
+#' @param column_name Optional. The name of the output column. Default "json"
+#' 
+#' @return A tbl_json object with an added column containing the JSON data
+#' 
+#' @export
+json_get_column <- function(.data, column_name = "json") {
+  # TODO: protect against name collisions
+  .data[[column_name]] <- json_get(.data)
 }
 
 #' Wrapper for extending dplyr verbs to tbl_json objects
