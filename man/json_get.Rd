@@ -2,7 +2,7 @@
 % Please edit documentation in R/tbl_json.R
 \name{json_get}
 \alias{json_get}
-\title{Raw JSON}
+\title{Get JSON from a tbl_json}
 \usage{
 json_get(.data)
 }
@@ -13,5 +13,7 @@ json_get(.data)
 A nested list representing the JSON data
 }
 \description{
-Retrieve the raw JSON from a tbl_json object
+Extract the raw JSON from a tbl_json object. This is equivalent to reading
+the "..JSON" hidden column. But is a helper in case of future behavior changes.
+This replaces previous behavior, where the raw JSON was stored in an attribute.
 }
