@@ -26,3 +26,4 @@ element of the JSON for this to succeed}
 \description{
 Factory to create gather functions
 }
+\keyword{internal}
