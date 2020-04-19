@@ -659,3 +659,20 @@ test_that('dplyr::slice works with programming', {
   expect_identical(f$id,7)
   expect_is(f,'tbl_json')
 })
+
+context('json_get')
+
+test_that('json_get works', {
+  tj <- as.tbl_json('{"a": "b"}')
+  
+  expect_identical(json_get(tj), list(list("a" = "b")))
+})
+
+test_that('json_get handles error cases', {
+  tjn <- tj
+  tjn[["..JSON"]] <- NULL
+  expect_identical(json_get(tjn), NULL)
+  
+  expect_identical(json_get(data.frame()), NULL)
+  expect_identical(json_get(data.frame(`..JSONA` = 1)), NULL)
+})
