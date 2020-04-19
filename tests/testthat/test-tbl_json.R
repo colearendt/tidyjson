@@ -669,7 +669,7 @@ test_that('json_get works', {
 })
 
 test_that('json_get handles error cases', {
-  tjn <- tj
+  tjn <- as.tbl_json('{"a": "b"}')
   tjn[["..JSON"]] <- NULL
   expect_identical(json_get(tjn), NULL)
   
