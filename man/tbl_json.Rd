@@ -3,6 +3,7 @@
 \name{tbl_json}
 \alias{tbl_json}
 \alias{as.tbl_json}
+\alias{as_tbl_json}
 \alias{as.tbl_json.tbl_json}
 \alias{as.tbl_json.character}
 \alias{as.tbl_json.data.frame}
@@ -12,6 +13,8 @@
 tbl_json(df, json.list, drop.null.json = FALSE)
 
 as.tbl_json(.x, ...)
+
+as_tbl_json(.x, ...)
 
 \method{as.tbl_json}{tbl_json}(.x, ...)
 
