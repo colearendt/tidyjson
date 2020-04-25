@@ -91,6 +91,10 @@ tbl_json <- function(df, json.list, drop.null.json = FALSE) {
 #' @rdname tbl_json
 as.tbl_json <- function(.x, ...) UseMethod("as.tbl_json")
 
+#' @export
+#' @rdname tbl_json
+as_tbl_json <- function(.x, ...) UseMethod("as.tbl_json")
+
 
 #' @export
 #' @rdname tbl_json
@@ -192,17 +196,30 @@ json_get <- function(.data) {
 
 #' Make the JSON data a persistent column
 #' 
-#' Extract the raw JSON from a tbl_json object. Store it in a column
+#' Extract the raw JSON from a tbl_json object. Store it in a column. WARNING:
+#' column name collisions will be overwritten
 #' 
 #' @param .data A tbl_json object
-#' @param column_name Optional. The name of the output column. Default "json"
+#' @param column_name Optional. The name of the output column (either as a
+#'   string or unquoted name). Default "json"
 #' 
 #' @return A tbl_json object with an added column containing the JSON data
 #' 
+#' @examples
+#' 
+#' tj <- as_tbl_json('{"a": "b"}')
+#' json_get_column(tj, my_json)
+#' 
 #' @export
 json_get_column <- function(.data, column_name = "json") {
-  # TODO: protect against name collisions
-  .data[[column_name]] <- json_get(.data)
+  # TODO: protect against name collisions somehow?
+  qnm <- rlang::enquo(column_name)
+  colnm <- rlang::as_name(qnm)
+  if ("json" %in% names(.data)) {
+    warning(paste0("Column `", colnm, "` already exists. It will be overwritten by `json_get_column()`"))
+  }
+  .data[[colnm]] <- json_get(.data)
+  return(.data)
 }
 
 #' Wrapper for extending dplyr verbs to tbl_json objects
