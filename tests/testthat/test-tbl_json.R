@@ -676,3 +676,22 @@ test_that('json_get handles error cases', {
   expect_identical(json_get(data.frame()), NULL)
   expect_identical(json_get(data.frame(`..JSONA` = 1)), NULL)
 })
+
+context('json_get_column')
+
+test_that('json_get_column works', {
+  tj <- as.tbl_json('{"a": "b", "b": [1,2,3]}')
+  
+  expect_identical(
+    json_get_column(tj)[["json"]],
+    json_get(tj)
+  )
+  expect_identical(
+    json_get_column(tj, "alt")[["alt"]],
+    json_get(tj)
+  )
+  expect_identical(
+    json_get_column(tj, something.special)[["something.special"]],
+    json_get(tj)
+  )
+})
