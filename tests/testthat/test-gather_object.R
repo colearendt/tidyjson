@@ -12,7 +12,7 @@ test_that("works in a simple case", {
           name = c("name1", "name2"),
           stringsAsFactors = FALSE
         ),
-        list(1L, 2L)
+        list(name1 = 1L, name2 = 2L)
       )
     )
 
@@ -36,7 +36,7 @@ test_that("works with compound values", {
           name = c("name1", "name2", "name3", "name4"),
           stringsAsFactors = FALSE
         ),
-        list(1L, list(sub = "a"), list(TRUE, FALSE), NULL)
+        list(name1 = 1L, name2 = list(sub = "a"), name3 = list(TRUE, FALSE), name4 = NULL)
       )
     )
 
@@ -88,7 +88,7 @@ test_that("column.name works and doesn't clobber existing name", {
         name = rep(1L, 2),
         new = c("name1", "name2")
       ),
-      list(1L, 2L)
+      list(name1 = 1L, name2 = 2L)
     )
   )
 
@@ -108,7 +108,7 @@ test_that("preserves a NULL column", {
         col = rep(list(NULL), 2),
         name = c("name1", "name2")
       ),
-      list(1L, 2L)
+      list(name1 = 1L, name2 = 2L)
     )
   )
 
@@ -155,7 +155,7 @@ test_that("can call repeatedly without having to change column.name", {
         name        = "n1",
         name.2      = "n2"
       ),
-      list(1L)
+      list(n2 = 1L)
     )
   )
 
