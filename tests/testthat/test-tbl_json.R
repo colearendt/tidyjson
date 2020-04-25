@@ -1,8 +1,8 @@
-context("tbl_json: as.tbl_json.character")
+context("tbl_json: as_tbl_json.character")
 
 test_that("correctly parses length(json) == 1", {
   expect_identical(
-    as.tbl_json('{"name": "bob", "age": 32}'),
+    as_tbl_json('{"name": "bob", "age": 32}'),
     tbl_json(
       data.frame(document.id = 1L),
       list(list(name = "bob", age = 32L))
@@ -12,7 +12,7 @@ test_that("correctly parses length(json) == 1", {
 
 test_that("correctly parses length(json) > 1", {
   expect_identical(
-    as.tbl_json(
+    as_tbl_json(
       c('{"name": "bob", "age": 32}',
         '{"name": "susan", "age": 25}')
     ),
@@ -28,7 +28,7 @@ test_that("correctly parses length(json) > 1", {
 
 test_that("correctly parses character(0)", {
   expect_identical(
-    as.tbl_json(character(0)),
+    as_tbl_json(character(0)),
     tbl_json(
       data.frame(document.id = integer(0)),
       list()
@@ -42,7 +42,7 @@ test_that("correctly parses empty objects", {
   names(nl) <- character(0)
 
   expect_identical(
-    as.tbl_json(c('[]', '{}')),
+    as_tbl_json(c('[]', '{}')),
     tbl_json(
       data.frame(document.id = 1L:2L),
       list(list(), nl)
@@ -53,7 +53,7 @@ test_that("correctly parses empty objects", {
 
 test_that("correctly structures an array", {
   expect_identical(
-    as.tbl_json('[{"name": "bob"}, {"name": "susan"}]'),
+    as_tbl_json('[{"name": "bob"}, {"name": "susan"}]'),
     tbl_json(
       data.frame(document.id = 1L),
       list(list(list(name = "bob"), list(name = "susan")))
@@ -62,7 +62,7 @@ test_that("correctly structures an array", {
 })
 
 test_that("[ works with various indexing", {
-  obj <- as.tbl_json(c('{"name": "value"}', '{"name": "other"}')) %>%
+  obj <- as_tbl_json(c('{"name": "value"}', '{"name": "other"}')) %>%
     json_types()
   # column indexing
   expect_identical(obj[0], obj[,0])
@@ -81,7 +81,7 @@ test_that("[ works with various indexing", {
 
 test_that("throws error on invalid json", {
 
-    expect_error(as.tbl_json(''))
+    expect_error(as_tbl_json(''))
 
   }
 )
@@ -89,7 +89,7 @@ test_that("throws error on invalid json", {
 context("tbl_json: as.character.tbl_json")
 
 inverts_json_test <- function(json) {
-  expect_identical(json, json %>% as.tbl_json %>% as.character)
+  expect_identical(json, json %>% as_tbl_json %>% as.character)
 }
 
 test_that("works for simple cases", {
@@ -122,7 +122,7 @@ test_that("works for worldbank data", {
 })
 
 test_that("throws informative warning message when attr(.,'JSON') is missing", {
-  j <- '{"a": 1, "b": "test"}' %>% as.tbl_json()
+  j <- '{"a": 1, "b": "test"}' %>% as_tbl_json()
   j[["..JSON"]] <- NULL
   
   expect_warning(j %>% as.character(),'\\.\\.JSON.*remove.*tbl_json')
@@ -130,19 +130,19 @@ test_that("throws informative warning message when attr(.,'JSON') is missing", {
 })
 
 
-context("as.tbl_json.tbl_json")
+context("as_tbl_json.tbl_json")
 
 test_that('functions as the identity on a simple pipeline', {
    x <- commits %>% gather_array() %>% enter_object('commit') %>% spread_all()
    
    expect_identical(
-     x, as.tbl_json(x)
+     x, as_tbl_json(x)
    )
    
    y <- commits %>% gather_array() %>% gather_object()
    
    expect_identical(
-     y, as.tbl_json(y)
+     y, as_tbl_json(y)
    )
 })
 
@@ -160,7 +160,7 @@ test_that('functions as the identity on a more advanced pipeline', {
   )
   
   expect_identical(
-    x, as.tbl_json(x)
+    x, as_tbl_json(x)
   )
 })
 
