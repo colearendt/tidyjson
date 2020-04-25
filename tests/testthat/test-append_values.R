@@ -223,6 +223,7 @@ test_that("recursive works as expected", {
 )
 
 test_that("works for coerced types", {
+  skip("this function had undefined and unexpected behavior")
   coerce_helper <- function(input) {
     as.tbl_json(input) %>% gather_array() %>% append_values() %>% .[["values"]]
   }
