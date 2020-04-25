@@ -16,7 +16,8 @@ Imports:
     magrittr,
     tidyr (>= 1.0.0),
     tibble,
-    vctrs
+    vctrs,
+    rlang
 License: MIT + file LICENSE
 LazyData: true
 Suggests:
@@ -31,8 +32,7 @@ Suggests:
     igraph,
     RColorBrewer,
     covr,
-    lubridate,
-    rlang
+    lubridate
 VignetteBuilder: knitr
 URL: https://github.com/colearendt/tidyjson
 BugReports: https://github.com/colearendt/tidyjson/issues
