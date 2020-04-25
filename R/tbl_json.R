@@ -121,15 +121,21 @@ as.tbl_json.data.frame <- function(.x, json.column, ...) {
   assertthat::assert_that(is.character(json.column))
   assertthat::assert_that(json.column %in% names(.x))
 
-  # Parse the json
-  json <- purrr::map(.x[[json.column]], jsonlite::fromJSON, simplifyVector = FALSE)
+  jcol <- .x[[json.column]]
+  
+  if (is.list(jcol)) {
+    # treat the object as already parsed
+    json <- jcol
+  } else {
+    # Parse the json
+    json <- purrr::map(jcol, jsonlite::fromJSON, simplifyVector = FALSE)
+  }
 
   # Remove json column
   .x <- .x[, setdiff(names(.x), json.column), drop = FALSE]
 
   # Construct tbl_json
   tbl_json(.x, json)
-
 }
 
 #' @export
