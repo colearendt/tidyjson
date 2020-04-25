@@ -15,7 +15,7 @@ test_that("has correct complete structure with simple input", {
           string = c("anne", "bob", "george"),
           stringsAsFactors = FALSE
         ),
-        list("anne", "bob", "george")
+        list(name = "anne", name = "bob", name = "george")
       )
     )
 
@@ -184,7 +184,7 @@ test_that("correctly handles append when trying to append an array", {
 
 test_that("recursive works as expected", {
 
-   data <- '{"item1": {"price" : 30}, "item2" : 40, "item3" : 30}' %>% gather_object()
+   data <- '{"item1": {"price" : {"one": 30}}, "item2" : 40, "item3" : 30}' %>% gather_object()
    expected_na <- c(NA_real_, 40, 30)
    expected_val <- c(30, 40, 30)
 
