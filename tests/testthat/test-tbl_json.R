@@ -293,6 +293,16 @@ test_that("works in a pipeline", {
   }
 )
 
+test_that("handles nested lists as a JSON column", {
+  tj <- as_tbl_json('{"name": "value"}')
+  tj_tib <- tibble::as_tibble(json_get_column(hm, "json"))
+  
+  expect_identical(
+    as_tbl_json(tj_tib, json.column = "json"),
+    tj
+    )
+})
+
 test_that("throws an error without json.column specified", {
     expect_error(as.tbl_json(iris))
   }
