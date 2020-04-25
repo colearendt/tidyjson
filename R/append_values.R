@@ -76,8 +76,10 @@ append_values_factory <- function(type, as.value) {
        # if new_val is a list and recursive = FALSE, then
        # need to identify values with a name and change to NA
        if (is.list(new_val) && !recursive) {
-          loc <- names(new_val) != ""
-          new_val[loc] <- NA
+         classof <- purrr::map_chr(new_val, class)
+         loc <- classof == "list"
+         #loc <- names(new_val) != ""
+         new_val[loc] <- NA
        }
        new_val <- new_val %>% as.value()
        assertthat::assert_that(length(new_val) == nrow(.x))
