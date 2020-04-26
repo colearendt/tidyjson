@@ -23,6 +23,12 @@ an error for confusing reasons that we hope to remedy in the future. Use
 
 * Add a few generics to make behavior generally more consistent: `$<-.tbl_json`, etc.
 
+* Add `as_tbl_json` as a future replacement for `as.tbl_json`
+
+* Add `as_tbl_json.list` so that you can more easily parse the JSON outside of
+`tbl_json` if you like. Further, this allows `tbl_json` to work with any
+arbitrary nested list. (#119)
+
 # tidyjson 0.2.4
 
 ## New functions
