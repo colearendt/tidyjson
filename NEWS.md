@@ -2,13 +2,20 @@
 
 ## Breaking
 
-* Instead of `attr(., "JSON")`, the JSON object is now a hidden column (`..JSON`). To prevent
-  future backwards incompatibilities of this nature, there is now an "extractor" function to
-  pull the raw JSON object off of the `tbl_json`: `json_get()`
+* Instead of `attr(., "JSON")`, the JSON object is now a hidden column
+(`..JSON`). To prevent future backwards incompatibilities of this nature, there
+is now an "extractor" function to pull the raw JSON object off of the
+`tbl_json`: `json_get()`. You can also use `json_get_column()` to add the raw
+json onto your `tbl_json` as a dedicated column
+* Related to this, selecting a `..JSON` column with `dplyr::select()` now throws
+an error for confusing reasons that we hope to remedy in the future. Use
+`json_get_column()` if you want to access the raw `..JSON` data
 
 ## Bug fixes
 
 * Address backwards incompatibilities in `dplyr`
+
+* Address backwards incompatibilities in `vctrs`
 
 * Remove `tidyjson::bind_rows()` in favor of re-exporting `dplyr::bind_rows()`
 
