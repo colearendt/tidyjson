@@ -127,6 +127,16 @@ as.tbl_json.character <- function(.x, ...) {
 
 #' @export
 #' @rdname tbl_json
+as.tbl_json.list <- function(.x, ...) {
+  # Setup document ids
+  ids <- data.frame(document.id = seq_along(.x))
+  
+  # Construct tbl_json
+  tbl_json(ids, .x)
+}
+
+#' @export
+#' @rdname tbl_json
 as.tbl_json.data.frame <- function(.x, json.column, ...) {
 
   assertthat::assert_that(is.character(json.column))
