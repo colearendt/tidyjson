@@ -19,6 +19,10 @@ an error for confusing reasons that we hope to remedy in the future. Use
 
 * Remove `tidyjson::bind_rows()` in favor of re-exporting `dplyr::bind_rows()`
 
+## Additions
+
+* Add a few generics to make behavior generally more consistent: `$<-.tbl_json`, etc.
+
 # tidyjson 0.2.4
 
 ## New functions
