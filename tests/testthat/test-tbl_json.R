@@ -427,12 +427,17 @@ test_that('as_data_frame functions like as_tibble', {
 context("tbl_json: dplyr NSE verbs")
 
 test_that("dplyr::group_by works", {
-  skip("failing today")
   tj <- as_tbl_json('{"a": "b"}')
   
-  tj %>% group_by(document.id) %>% mutate(a = n())
+  g1 <- tj %>% group_by(document.id) %>% mutate(a = n())
   
-  tj %>% group_by(..JSON) %>% mutate(b = n())
+  #group_by drops the class today
+  expect_false(inherits(g1, "tbl_json"))
+  
+  expect_error(
+    {tj %>% group_by(..JSON) %>% mutate(b = n())},
+    class = "vctrs_error_subscript_oob"
+  )
 })
 
 test_that("dplyr::filter works with a simple example", {
