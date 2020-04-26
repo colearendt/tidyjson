@@ -426,6 +426,15 @@ test_that('as_data_frame functions like as_tibble', {
 
 context("tbl_json: dplyr NSE verbs")
 
+test_that("dplyr::group_by works", {
+  skip("failing today")
+  tj <- as_tbl_json('{"a": "b"}')
+  
+  tj %>% group_by(document.id) %>% mutate(a = n())
+  
+  tj %>% group_by(..JSON) %>% mutate(b = n())
+})
+
 test_that("dplyr::filter works with a simple example", {
 
     x <- as.tbl_json(c('{"name": "bob"}', '{"name": "susan"}'))
@@ -547,6 +556,9 @@ test_that('dplyr::select works', {
   expect_equal(names(f), c('ID','object','..JSON'))
   expect_equal(nrow(f),2)
   expect_is(f,'tbl_json')
+  
+  # Spcifically trying to avoid "Adding missing grouping variables: `..JSON`"
+  expect_silent(hm <- as_tbl_json(json) %>% select(document.id))
 })
 
 test_that("dplyr::rename works", {
