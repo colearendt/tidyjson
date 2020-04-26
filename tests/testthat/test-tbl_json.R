@@ -561,8 +561,8 @@ test_that('dplyr::select works', {
   expect_silent(hm <- as_tbl_json(json) %>% select(document.id))
   
   # today behavior:
-  expect_error(select(f, ..JSON), "not supported today")
-  expect_error(select(f, !!!c("..JSON")), "not supported today")
+  expect_error(select(f, ..JSON), class = "vctrs_error_subscript_oob")
+  expect_error(select(f, !!!c("..JSON")), class = "vctrs_error_subscript_oob")
   
   # desired behavior:
   skip("failing: need a way to edit ... and remove ..JSON")
