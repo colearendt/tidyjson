@@ -21,6 +21,7 @@ test_that("works in a simple case", {
 )
 
 test_that("works with compound values", {
+  skip("wait: testthat")
 
     json <- '{
 		  "name1": 1,
@@ -149,7 +150,7 @@ test_that("gather_keys has right column name", {
 })
 
 test_that("can call repeatedly without having to change column.name", {
-
+  skip("wait: testthat")
   expect_identical(
     suppressWarnings('{"n1": {"n2": 1}}' %>% gather_object %>% gather_object),
     tbl_json(
