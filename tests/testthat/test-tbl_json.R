@@ -373,6 +373,36 @@ test_that('handles "drop" like a tbl_df', {
   #expect_warning(is.tbl_json(mydata[,'name',drop=TRUE]),'drop ignored')
 })
 
+test_that("[ keeps column order consistent", {
+  tj <- as_tbl_json('[{"a": "b"}, {"a": "c"}]') %>%
+    gather_array() %>%
+    gather_object()
+  
+  expect_identical(
+    names(tj[1,"document.id"]),
+    c("document.id", "..JSON")
+  )
+  
+  skip("failing test")
+  expect_identical(
+    names(tj[2,c("..JSON", "document.id")]),
+    c("..JSON", "document.id")
+  )
+  
+})
+
+test_that("$ leaves tbl_json idempotent", {
+  tj <- as_tbl_json('{"a": "b"}')
+  
+  tj$alt <- 1
+  
+  skip("failing test")
+  expect_identical(
+    tj,
+    mutate(tj, alt = alt)
+  )
+})
+
 context('as_tibble') 
 
 test_that('as_tibble drops the JSON attribute and tbl_json class', {
