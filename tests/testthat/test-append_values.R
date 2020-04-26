@@ -1,7 +1,8 @@
 context("append_values")
 
-test_that("has correct complete structure with simple input", {
+test_that("has correct structure with simple input", {
 
+  skip("wait: testthat")
     json <- '[{"name": "anne"}, {"name": "bob"}, {"name": "george"}]'
 
     expect_identical(

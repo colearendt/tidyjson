@@ -23,7 +23,7 @@ test_that("simple string works", {
 })
 
 test_that("simple object works", {
-
+  skip("wait: testthat")
   actual <- '{"name": "value"}' %>% json_structure
   expected <- tbl_json(
       dplyr::tibble(
@@ -73,6 +73,7 @@ test_that("simple array works", {
 
 test_that("nested object works", {
 
+  skip("wait: testthat")
   expect_identical(
     '{"k1": {"k2": "value"}}' %>% json_structure,
     tbl_json(

@@ -442,6 +442,7 @@ test_that('as_data_frame functions like as_tibble', {
 context("tbl_json: dplyr NSE verbs")
 
 test_that("dplyr::group_by works", {
+  skip("wait: vctrs")
   tj <- as_tbl_json('{"a": "b"}')
   
   g1 <- tj %>% group_by(document.id) %>% mutate(a = n())
