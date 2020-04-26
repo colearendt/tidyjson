@@ -261,6 +261,7 @@ wrap_dplyr_verb <- function(dplyr.verb, generic) {
     if (generic %in% c("select")) {
       # some generics need a tibble
       .data <- tibble::as_tibble(.data)
+      # TODO: a way to remove ..JSON from select
       y <- NextMethod(generic, .data)
     } else {
       y <- NextMethod(generic, .data)
