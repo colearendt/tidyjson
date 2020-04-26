@@ -6,6 +6,7 @@
 \alias{as_tbl_json}
 \alias{as.tbl_json.tbl_json}
 \alias{as.tbl_json.character}
+\alias{as.tbl_json.list}
 \alias{as.tbl_json.data.frame}
 \alias{is.tbl_json}
 \title{Combines structured JSON (as a data.frame) with remaining JSON}
@@ -19,6 +20,8 @@ as_tbl_json(.x, ...)
 \method{as.tbl_json}{tbl_json}(.x, ...)
 
 \method{as.tbl_json}{character}(.x, ...)
+
+\method{as.tbl_json}{list}(.x, ...)
 
 \method{as.tbl_json}{data.frame}(.x, json.column, ...)
 
