@@ -260,6 +260,9 @@ wrap_dplyr_verb <- function(dplyr.verb, generic) {
     # Apply the transformation
     if (generic %in% c("select")) {
       # some generics need a tibble
+      if (any(as.logical("..JSON" %in% rlang::list2(...))))
+        stop("ERROR: selecting ..JSON is not supported today. Use `json_get_column()`")
+        
       .data <- tibble::as_tibble(.data)
       # TODO: a way to remove ..JSON from select
       y <- NextMethod(generic, .data)
