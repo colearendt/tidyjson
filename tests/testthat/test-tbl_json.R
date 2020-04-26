@@ -383,7 +383,6 @@ test_that("[ keeps column order consistent", {
     c("document.id", "..JSON")
   )
   
-  skip("failing test")
   expect_identical(
     names(tj[2,c("..JSON", "document.id")]),
     c("..JSON", "document.id")
@@ -396,7 +395,6 @@ test_that("$ leaves tbl_json idempotent", {
   
   tj$alt <- 1
   
-  skip("failing test")
   expect_identical(
     tj,
     mutate(tj, alt = alt)
