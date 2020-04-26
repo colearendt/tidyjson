@@ -560,6 +560,10 @@ test_that('dplyr::select works', {
   # Specifically trying to avoid "Adding missing grouping variables: `..JSON`"
   expect_silent(hm <- as_tbl_json(json) %>% select(document.id))
   
+  # today behavior:
+  expect_error(select(f, ..JSON), "\\.\\.JSON")
+  
+  # desired behavior:
   skip("failing: need a way to edit ... and remove ..JSON")
   expect_identical(
     select(f, ..JSON, ID, object),
