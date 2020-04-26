@@ -164,6 +164,21 @@ test_that('functions as the identity on a more advanced pipeline', {
   )
 })
 
+context("as_tbl_json.list")
+
+test_that("list is interpreted as already parsed", {
+  j <- jsonlite::fromJSON('{"a": "b"}')
+  
+  expect_is(as_tbl_json(j), "tbl_json")
+  
+  l <- list(a = "b", c = list("a","b","c"))
+  
+  expect_is(as_tbl_json(l), "tbl_json")
+  expect_identical(as_tbl_json(l)$document.id, c(1L,2L))
+  
+  expect_is(as_tbl_json(list()), "tbl_json")
+})
+
 context("print.tbl_json")
 
 test_that("jsonlite::toJSON works as anticipated", {
