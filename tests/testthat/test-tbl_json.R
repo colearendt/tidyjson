@@ -557,9 +557,14 @@ test_that('dplyr::select works', {
   expect_equal(nrow(f),2)
   expect_is(f,'tbl_json')
   
-  skip("no real way to escape this one today...")
-  # Spcifically trying to avoid "Adding missing grouping variables: `..JSON`"
+  # Specifically trying to avoid "Adding missing grouping variables: `..JSON`"
   expect_silent(hm <- as_tbl_json(json) %>% select(document.id))
+  
+  skip("failing: need a way to edit ... and remove ..JSON")
+  expect_identical(
+    select(f, ..JSON, ID, object),
+    f
+  )
 })
 
 test_that("dplyr::rename works", {
