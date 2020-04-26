@@ -10,7 +10,7 @@
 \alias{is.tbl_json}
 \title{Combines structured JSON (as a data.frame) with remaining JSON}
 \usage{
-tbl_json(df, json.list, drop.null.json = FALSE)
+tbl_json(df, json.list, drop.null.json = FALSE, ..., .column_order = NULL)
 
 as.tbl_json(.x, ...)
 
@@ -33,9 +33,11 @@ is.tbl_json(.x)
 \item{drop.null.json}{drop \code{NULL} json entries from \code{df} and
 \code{json.list}}
 
-\item{.x}{an object to convert into a \code{tbl_json} object}
-
 \item{...}{other arguments}
+
+\item{.column_order}{Experimental argument to preserve column order for the hidden column}
+
+\item{.x}{an object to convert into a \code{tbl_json} object}
 
 \item{json.column}{the name of the json column of data in \code{.x}, if
 \code{.x} is a data frame}
