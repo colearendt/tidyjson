@@ -35,9 +35,9 @@ test_that("simple object works", {
         seq = list(list(), list("name")),
         name = c(NA_character_, "name"),
         type = c("object", "string") %>% factor(levels = allowed_json_types),
-        length = c(1L, 1L)
+        length = c(1L, name = 1L)
       ),
-      list(list("name" = "value"), "value")
+      list(list("name" = "value"), name = "value")
     )
   #attr(expected, 'JSON') <- NULL
   #row.names(actual) <- NULL
@@ -85,11 +85,11 @@ test_that("nested object works", {
         seq = list(list(), list("k1"), list("k1", "k2")),
         name = c(NA_character_, "k1", "k2"),
         type = c("object", "object", "string") %>% factor(levels = allowed_json_types),
-        length = c(1L, 1L, 1L)
+        length = c(1L, k1 = 1L, k2 = 1L)
       ),
       list(list("k1" = list("k2" = "value")),
-           list("k2" = "value"),
-           "value")
+           k1 = list("k2" = "value"),
+           k2 = "value")
     )
   )
 
