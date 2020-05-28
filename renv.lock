@@ -137,10 +137,15 @@
     },
     "crayon": {
       "Package": "crayon",
-      "Version": "1.3.4",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "0d57bc8e27b7ba9e45dba825ebc0de6b"
+      "Version": "1.3.4.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "r-lib",
+      "RemoteRepo": "crayon",
+      "RemoteRef": "master",
+      "RemoteSha": "dcf6d44f6790515a388306d7f2731db85eebf335",
+      "Hash": "373c09b98c91c42e5eeec1a711674dde"
     },
     "crosstalk": {
       "Package": "crosstalk",
@@ -207,15 +212,10 @@
     },
     "farver": {
       "Package": "farver",
-      "Version": "2.0.3.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "farver",
-      "RemoteUsername": "thomasp85",
-      "RemoteRef": "master",
-      "RemoteSha": "f1bcb566bff88f2b58d90e77a8e5d36c1c6bba77",
-      "Hash": "b2f5fb49431937c17cad01278be6329e"
+      "Version": "2.0.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "dad6793a5a1f73c8e91f1a1e3e834b05"
     },
     "fastmap": {
       "Package": "fastmap",
@@ -548,10 +548,15 @@
     },
     "rcmdcheck": {
       "Package": "rcmdcheck",
-      "Version": "1.3.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "ed95895886dab6d2a584da45503555da"
+      "Version": "1.3.3.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteUsername": "r-lib",
+      "RemoteRepo": "rcmdcheck",
+      "RemoteRef": "master",
+      "RemoteSha": "1484bed72cb9f5a457ed2a1271612ad82566997a",
+      "RemoteHost": "api.github.com",
+      "Hash": "7e3c873874ae2656ed2221d83e878d7d"
     },
     "rematch2": {
       "Package": "rematch2",
@@ -578,13 +583,6 @@
       "RemoteRef": "master",
       "RemoteSha": "386b1ba5785bd4d99cef41f40db446874877c054",
       "Hash": "84284424bfcc716315eafed80800f857"
-    },
-    "reprex": {
-      "Package": "reprex",
-      "Version": "0.3.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "b06bfb3504cc8a4579fd5567646f745b"
     },
     "rex": {
       "Package": "rex",
@@ -736,14 +734,9 @@
     "vctrs": {
       "Package": "vctrs",
       "Version": "0.3.0",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteUsername": "r-lib",
-      "RemoteRepo": "vctrs",
-      "RemoteRef": "master",
-      "RemoteSha": "5b71d88b365e7190ffc096e50f58c924464e019a",
-      "Hash": "9013903678bf69e1548eaad0722dbe02"
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "fbf7ee297936697ec8404a22859da129"
     },
     "viridis": {
       "Package": "viridis",
