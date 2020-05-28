@@ -1,4 +1,4 @@
-# development
+# tidyjson 0.3.0
 
 ## Breaking
 
