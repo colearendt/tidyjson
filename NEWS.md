@@ -7,9 +7,11 @@
 is now an "extractor" function to pull the raw JSON object off of the
 `tbl_json`: `json_get()`. You can also use `json_get_column()` to add the raw
 json onto your `tbl_json` as a dedicated column
-* Related to this, selecting a `..JSON` column with `dplyr::select()` now throws
-an error for confusing reasons that we hope to remedy in the future. Use
-`json_get_column()` if you want to access the raw `..JSON` data
+* Related to this, selecting a `..JSON` column with `dplyr::select()` will
+mostly ignore you for complicated reasons. Use `json_get_column()` if you want
+to access the raw `..JSON` data.
+* As always, if you want to remove `tidyjson` "magic", `tibble::as_tibble()`
+will drop the `tbl_json` class and you are back to normal!
 
 ## Bug fixes
 
