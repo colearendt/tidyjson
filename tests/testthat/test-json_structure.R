@@ -186,3 +186,4 @@ test_that("imputed document.id works", {
   expect_identical(as.character(j$type),c('object','object','number','number'))
   expect_identical(j$child.id,c('1','1','1.1','1.2'))
 })
+
