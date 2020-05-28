@@ -170,13 +170,6 @@
       "Repository": "CRAN",
       "Hash": "d55dae3aa077e25128115a81e974f318"
     },
-    "diffobj": {
-      "Package": "diffobj",
-      "Version": "0.3.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "cfb12c2c0abfa12b08b4a84d6fde9792"
-    },
     "digest": {
       "Package": "digest",
       "Version": "0.6.25",
@@ -186,15 +179,10 @@
     },
     "dplyr": {
       "Package": "dplyr",
-      "Version": "0.8.99.9003",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteUsername": "tidyverse",
-      "RemoteRepo": "dplyr",
-      "RemoteRef": "master",
-      "RemoteSha": "f02ccc9655b4390d36e00ad51e3c23eaeafea07b",
-      "Hash": "776e87544c1ac0bed6015544a88269e9"
+      "Version": "0.8.5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "57a42ddf80f429764ff7987128c3fd0a"
     },
     "ellipsis": {
       "Package": "ellipsis",
@@ -280,15 +268,10 @@
     },
     "glue": {
       "Package": "glue",
-      "Version": "1.4.1.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteUsername": "tidyverse",
-      "RemoteRepo": "glue",
-      "RemoteRef": "master",
-      "RemoteSha": "a605000df3847a2461b8bd4bb373dc707650d448",
-      "RemoteHost": "api.github.com",
-      "Hash": "7710f5582c56a518b15a8f0960baecf0"
+      "Version": "1.4.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "f43e0d5e85ccb0a4045670c0607ee504"
     },
     "gridExtra": {
       "Package": "gridExtra",
@@ -383,15 +366,10 @@
     },
     "later": {
       "Package": "later",
-      "Version": "1.0.0.9004",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteUsername": "r-lib",
-      "RemoteRepo": "later",
-      "RemoteRef": "master",
-      "RemoteSha": "c20d9c495bc1bab71a664d0c9c03bfa814297474",
-      "RemoteHost": "api.github.com",
-      "Hash": "bd6f77d064ea26d6e23fb762930f8f87"
+      "Version": "1.0.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "6d927978fc658d24175ce37db635f9e5"
     },
     "lattice": {
       "Package": "lattice",
@@ -519,6 +497,13 @@
       "Repository": "CRAN",
       "Hash": "5e655fb54cceead0f095f22d7be33da3"
     },
+    "plogr": {
+      "Package": "plogr",
+      "Version": "0.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "09eb987710984fc2905c7129c7d85e65"
+    },
     "praise": {
       "Package": "praise",
       "Version": "1.0.0",
@@ -563,15 +548,10 @@
     },
     "rcmdcheck": {
       "Package": "rcmdcheck",
-      "Version": "1.3.3.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteUsername": "r-lib",
-      "RemoteRepo": "rcmdcheck",
-      "RemoteRef": "master",
-      "RemoteSha": "1484bed72cb9f5a457ed2a1271612ad82566997a",
-      "RemoteHost": "api.github.com",
-      "Hash": "7e3c873874ae2656ed2221d83e878d7d"
+      "Version": "1.3.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "ed95895886dab6d2a584da45503555da"
     },
     "rematch2": {
       "Package": "rematch2",
@@ -615,15 +595,10 @@
     },
     "rlang": {
       "Package": "rlang",
-      "Version": "0.4.6.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteUsername": "r-lib",
-      "RemoteRepo": "rlang",
-      "RemoteRef": "master",
-      "RemoteSha": "691b5a8ce838a4c06d125e7be7fa78cd528a58d8",
-      "RemoteHost": "api.github.com",
-      "Hash": "2cd4a031f5d3791f728de02d2aed5ade"
+      "Version": "0.4.6",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "aa263e3ce17b177c49e0daade2ee3cdc"
     },
     "rmarkdown": {
       "Package": "rmarkdown",
@@ -711,15 +686,10 @@
     },
     "testthat": {
       "Package": "testthat",
-      "Version": "2.3.2.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteUsername": "r-lib",
-      "RemoteRepo": "testthat",
-      "RemoteRef": "master",
-      "RemoteSha": "83962412e7508b7e54e0a89a61f9ddb0d326ce20",
-      "RemoteHost": "api.github.com",
-      "Hash": "6d03f335dfbb26ed24e45f80ac5ce3f5"
+      "Version": "2.3.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "0829b987b8961fb07f3b1b64a2fbc495"
     },
     "tibble": {
       "Package": "tibble",
@@ -751,15 +721,10 @@
     },
     "usethis": {
       "Package": "usethis",
-      "Version": "1.6.1.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteUsername": "r-lib",
-      "RemoteRepo": "usethis",
-      "RemoteRef": "master",
-      "RemoteSha": "0b87f68ae79205f85358642b8a5d2c0cde071d70",
-      "RemoteHost": "api.github.com",
-      "Hash": "ddabf8403810455e84420462007bb62a"
+      "Version": "1.6.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "e1985f5a9985fea2e338fa7eb99018ca"
     },
     "utf8": {
       "Package": "utf8",
@@ -770,15 +735,15 @@
     },
     "vctrs": {
       "Package": "vctrs",
-      "Version": "0.3.0.9000",
+      "Version": "0.3.0",
       "Source": "GitHub",
       "RemoteType": "github",
+      "RemoteHost": "api.github.com",
       "RemoteUsername": "r-lib",
       "RemoteRepo": "vctrs",
       "RemoteRef": "master",
-      "RemoteSha": "7ca3ce39b080ec000bf321d260637dccee0b6f2b",
-      "RemoteHost": "api.github.com",
-      "Hash": "44b91e4146357627cd2b0367e06108a1"
+      "RemoteSha": "5b71d88b365e7190ffc096e50f58c924464e019a",
+      "Hash": "9013903678bf69e1548eaad0722dbe02"
     },
     "viridis": {
       "Package": "viridis",
@@ -793,18 +758,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "ce4f6271baa94776db692f1cb2055bee"
-    },
-    "waldo": {
-      "Package": "waldo",
-      "Version": "0.1.0.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteUsername": "r-lib",
-      "RemoteRepo": "waldo",
-      "RemoteRef": "master",
-      "RemoteSha": "8b64a4e11635cce18553931ca17fab6c1ed504c9",
-      "RemoteHost": "api.github.com",
-      "Hash": "a25b726671c0b6e459dd0945d0a26e1e"
     },
     "whisker": {
       "Package": "whisker",
