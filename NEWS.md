@@ -2,15 +2,34 @@
 
 ## Breaking
 
-* Instead of `attr(., "JSON")`, the JSON object is now a hidden column (`..JSON`). To prevent
-  future backwards incompatibilities of this nature, there is now an "extractor" function to
-  pull the raw JSON object off of the `tbl_json`: `json_get()`
+* Instead of `attr(., "JSON")`, the JSON object is now a hidden column
+(`..JSON`). To prevent future backwards incompatibilities of this nature, there
+is now an "extractor" function to pull the raw JSON object off of the
+`tbl_json`: `json_get()`. You can also use `json_get_column()` to add the raw
+json onto your `tbl_json` as a dedicated column
+* Related to this, selecting a `..JSON` column with `dplyr::select()` will
+mostly ignore you for complicated reasons. Use `json_get_column()` if you want
+to access the raw `..JSON` data.
+* As always, if you want to remove `tidyjson` "magic", `tibble::as_tibble()`
+will drop the `tbl_json` class and you are back to normal!
 
 ## Bug fixes
 
 * Address backwards incompatibilities in `dplyr`
 
+* Address backwards incompatibilities in `vctrs`
+
 * Remove `tidyjson::bind_rows()` in favor of re-exporting `dplyr::bind_rows()`
+
+## Additions
+
+* Add a few generics to make behavior generally more consistent: `$<-.tbl_json`, etc.
+
+* Add `as_tbl_json` as a future replacement for `as.tbl_json`
+
+* Add `as_tbl_json.list` so that you can more easily parse the JSON outside of
+`tbl_json` if you like. Further, this allows `tbl_json` to work with any
+arbitrary nested list. (#119)
 
 # tidyjson 0.2.4
 
@@ -98,3 +117,4 @@ the missing `document.id`.  (#86)
 ## Deprecated functions
 
 * `gather_keys()` -> use `gather_object()` instead
+

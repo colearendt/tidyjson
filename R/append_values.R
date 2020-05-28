@@ -15,7 +15,8 @@
 #'
 #' @name append_values
 #' @seealso \code{\link{gather_object}} to gather an object first,
-#'    \code{\link{spread_all}} to spread values into new columns
+#'    \code{\link{spread_all}} to spread values into new columns,
+#'    \code{\link{json_get_column}}
 #' @param .x a json string or \code{\link{tbl_json}} object
 #' @param column.name the name of the column to append values as
 #' @param force should values be coerced to the appropriate type
@@ -75,12 +76,14 @@ append_values_factory <- function(type, as.value) {
        # if new_val is a list and recursive = FALSE, then
        # need to identify values with a name and change to NA
        if (is.list(new_val) && !recursive) {
-          loc <- names(new_val) != ""
-          new_val[loc] <- NA
+         classof <- purrr::map_chr(new_val, class)
+         loc <- classof == "list"
+         #loc <- names(new_val) != ""
+         new_val[loc] <- NA
        }
-       new_val <- new_val %>% as.value
+       new_val <- new_val %>% as.value()
        assertthat::assert_that(length(new_val) == nrow(.x))
-       .x[column.name] <- new_val
+       .x <- dplyr::mutate(.x, !!column.name := new_val)
     }
 
     # return as appropriate class type
@@ -92,6 +95,7 @@ append_values_factory <- function(type, as.value) {
 #' Unlists while preserving NULLs and only unlisting lists with one value
 #' @param l a list that we want to unlist
 #' @param recursive logical indicating whether to unlist nested lists
+#' @keywords internal
 my_unlist <- function(l, recursive = FALSE) {
   nulls <- purrr::map_int(l, length) != 1
   l[nulls] <- NA
@@ -101,6 +105,7 @@ my_unlist <- function(l, recursive = FALSE) {
 #' get list of values from json
 #' @param json extracted using attributes
 #' @param type input type (numeric, string, etc)
+#' @keywords internal
 append_values_type <- function(json, type) {
 
    # Determine type

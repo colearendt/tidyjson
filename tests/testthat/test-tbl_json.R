@@ -1,8 +1,8 @@
-context("tbl_json: as.tbl_json.character")
+context("tbl_json: as_tbl_json.character")
 
 test_that("correctly parses length(json) == 1", {
   expect_identical(
-    as.tbl_json('{"name": "bob", "age": 32}'),
+    as_tbl_json('{"name": "bob", "age": 32}'),
     tbl_json(
       data.frame(document.id = 1L),
       list(list(name = "bob", age = 32L))
@@ -12,7 +12,7 @@ test_that("correctly parses length(json) == 1", {
 
 test_that("correctly parses length(json) > 1", {
   expect_identical(
-    as.tbl_json(
+    as_tbl_json(
       c('{"name": "bob", "age": 32}',
         '{"name": "susan", "age": 25}')
     ),
@@ -28,7 +28,7 @@ test_that("correctly parses length(json) > 1", {
 
 test_that("correctly parses character(0)", {
   expect_identical(
-    as.tbl_json(character(0)),
+    as_tbl_json(character(0)),
     tbl_json(
       data.frame(document.id = integer(0)),
       list()
@@ -42,7 +42,7 @@ test_that("correctly parses empty objects", {
   names(nl) <- character(0)
 
   expect_identical(
-    as.tbl_json(c('[]', '{}')),
+    as_tbl_json(c('[]', '{}')),
     tbl_json(
       data.frame(document.id = 1L:2L),
       list(list(), nl)
@@ -53,7 +53,7 @@ test_that("correctly parses empty objects", {
 
 test_that("correctly structures an array", {
   expect_identical(
-    as.tbl_json('[{"name": "bob"}, {"name": "susan"}]'),
+    as_tbl_json('[{"name": "bob"}, {"name": "susan"}]'),
     tbl_json(
       data.frame(document.id = 1L),
       list(list(list(name = "bob"), list(name = "susan")))
@@ -62,7 +62,7 @@ test_that("correctly structures an array", {
 })
 
 test_that("[ works with various indexing", {
-  obj <- as.tbl_json(c('{"name": "value"}', '{"name": "other"}')) %>%
+  obj <- as_tbl_json(c('{"name": "value"}', '{"name": "other"}')) %>%
     json_types()
   # column indexing
   expect_identical(obj[0], obj[,0])
@@ -81,7 +81,7 @@ test_that("[ works with various indexing", {
 
 test_that("throws error on invalid json", {
 
-    expect_error(as.tbl_json(''))
+    expect_error(as_tbl_json(''))
 
   }
 )
@@ -89,7 +89,7 @@ test_that("throws error on invalid json", {
 context("tbl_json: as.character.tbl_json")
 
 inverts_json_test <- function(json) {
-  expect_identical(json, json %>% as.tbl_json %>% as.character)
+  expect_identical(json, json %>% as_tbl_json %>% as.character)
 }
 
 test_that("works for simple cases", {
@@ -122,7 +122,7 @@ test_that("works for worldbank data", {
 })
 
 test_that("throws informative warning message when attr(.,'JSON') is missing", {
-  j <- '{"a": 1, "b": "test"}' %>% as.tbl_json()
+  j <- '{"a": 1, "b": "test"}' %>% as_tbl_json()
   j[["..JSON"]] <- NULL
   
   expect_warning(j %>% as.character(),'\\.\\.JSON.*remove.*tbl_json')
@@ -130,19 +130,19 @@ test_that("throws informative warning message when attr(.,'JSON') is missing", {
 })
 
 
-context("as.tbl_json.tbl_json")
+context("as_tbl_json.tbl_json")
 
 test_that('functions as the identity on a simple pipeline', {
    x <- commits %>% gather_array() %>% enter_object('commit') %>% spread_all()
    
    expect_identical(
-     x, as.tbl_json(x)
+     x, as_tbl_json(x)
    )
    
    y <- commits %>% gather_array() %>% gather_object()
    
    expect_identical(
-     y, as.tbl_json(y)
+     y, as_tbl_json(y)
    )
 })
 
@@ -160,8 +160,23 @@ test_that('functions as the identity on a more advanced pipeline', {
   )
   
   expect_identical(
-    x, as.tbl_json(x)
+    x, as_tbl_json(x)
   )
+})
+
+context("as_tbl_json.list")
+
+test_that("list is interpreted as already parsed", {
+  j <- jsonlite::fromJSON('{"a": "b"}')
+  
+  expect_is(as_tbl_json(j), "tbl_json")
+  
+  l <- list(a = "b", c = list("a","b","c"))
+  
+  expect_is(as_tbl_json(l), "tbl_json")
+  expect_identical(as_tbl_json(l)$document.id, c(1L,2L))
+  
+  expect_is(as_tbl_json(list()), "tbl_json")
 })
 
 context("print.tbl_json")
@@ -293,6 +308,16 @@ test_that("works in a pipeline", {
   }
 )
 
+test_that("handles nested lists as a JSON column", {
+  tj <- as_tbl_json('{"name": "value"}')
+  tj_tib <- tibble::as_tibble(json_get_column(tj, "json"))
+  
+  expect_identical(
+    as_tbl_json(tj_tib, json.column = "json"),
+    tj
+    )
+})
+
 test_that("throws an error without json.column specified", {
     expect_error(as.tbl_json(iris))
   }
@@ -363,6 +388,34 @@ test_that('handles "drop" like a tbl_df', {
   #expect_warning(is.tbl_json(mydata[,'name',drop=TRUE]),'drop ignored')
 })
 
+test_that("[ keeps column order consistent", {
+  tj <- as_tbl_json('[{"a": "b"}, {"a": "c"}]') %>%
+    gather_array() %>%
+    gather_object()
+  
+  expect_identical(
+    names(tj[1,"document.id"]),
+    c("document.id", "..JSON")
+  )
+  
+  expect_identical(
+    names(tj[2,c("..JSON", "document.id")]),
+    c("..JSON", "document.id")
+  )
+  
+})
+
+test_that("$ leaves tbl_json idempotent", {
+  tj <- as_tbl_json('{"a": "b"}')
+  
+  tj$alt <- 1
+  
+  expect_identical(
+    tj,
+    mutate(tj, alt = alt)
+  )
+})
+
 context('as_tibble') 
 
 test_that('as_tibble drops the JSON attribute and tbl_json class', {
@@ -387,6 +440,21 @@ test_that('as_data_frame functions like as_tibble', {
 })
 
 context("tbl_json: dplyr NSE verbs")
+
+test_that("dplyr::group_by works", {
+  skip("wait: vctrs")
+  tj <- as_tbl_json('{"a": "b"}')
+  
+  g1 <- tj %>% group_by(document.id) %>% mutate(a = n())
+  
+  #group_by drops the class today
+  expect_false(inherits(g1, "tbl_json"))
+  
+  expect_error(
+    {tj %>% group_by(..JSON) %>% mutate(b = n())},
+    class = "vctrs_error_subscript_oob"
+  )
+})
 
 test_that("dplyr::filter works with a simple example", {
 
@@ -509,6 +577,14 @@ test_that('dplyr::select works', {
   expect_equal(names(f), c('ID','object','..JSON'))
   expect_equal(nrow(f),2)
   expect_is(f,'tbl_json')
+  
+  # Specifically trying to avoid "Adding missing grouping variables: `..JSON`"
+  expect_silent(hm <- as_tbl_json(json) %>% select(document.id))
+  
+  expect_identical(
+    select(f, ..JSON, ID, object),
+    f
+  )
 })
 
 test_that("dplyr::rename works", {
@@ -675,4 +751,23 @@ test_that('json_get handles error cases', {
   
   expect_identical(json_get(data.frame()), NULL)
   expect_identical(json_get(data.frame(`..JSONA` = 1)), NULL)
+})
+
+context('json_get_column')
+
+test_that('json_get_column works', {
+  tj <- as.tbl_json('{"a": "b", "b": [1,2,3]}')
+  
+  expect_identical(
+    json_get_column(tj)[["json"]],
+    json_get(tj)
+  )
+  expect_identical(
+    json_get_column(tj, "alt")[["alt"]],
+    json_get(tj)
+  )
+  expect_identical(
+    json_get_column(tj, something.special)[["something.special"]],
+    json_get(tj)
+  )
 })

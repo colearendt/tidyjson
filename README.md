@@ -6,8 +6,7 @@ tidyjson
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tidyjson)](https://cran.r-project.org/package=tidyjson)
 [![Build
 Status](https://travis-ci.org/colearendt/tidyjson.svg?branch=master)](https://travis-ci.org/colearendt/tidyjson)
-[![Coverage
-Status](https://codecov.io/github/colearendt/tidyjson/coverage.svg?branch=master)](https://codecov.io/github/colearendt/tidyjson?branch=master)
+<!--[![Coverage Status](https://codecov.io/github/colearendt/tidyjson/coverage.svg?branch=master)](https://codecov.io/github/colearendt/tidyjson?branch=master) -->
 
 [![CRAN
 Activity](http://cranlogs.r-pkg.org/badges/tidyjson)](https://cran.r-project.org/web/packages/tidyjson/index.html)

@@ -1,6 +1,6 @@
 Package: tidyjson
 Title: Tidy Complex 'JSON'
-Version: 0.2.4.9000
+Version: 0.2.4.9002
 Authors@R: c(
 	person("Jeremy","Stanley",,"jeremy.stanley@gmail.com",c("aut")),
 	person("Cole","Arendt",, "cole@rstudio.com",c("aut", "cre"))
@@ -15,7 +15,9 @@ Imports:
     dplyr (>= 0.8.3),
     magrittr,
     tidyr (>= 1.0.0),
-    tibble
+    tibble,
+    vctrs,
+    rlang
 License: MIT + file LICENSE
 LazyData: true
 Suggests:
@@ -30,8 +32,7 @@ Suggests:
     igraph,
     RColorBrewer,
     covr,
-    lubridate,
-    rlang
+    lubridate
 VignetteBuilder: knitr
 URL: https://github.com/colearendt/tidyjson
 BugReports: https://github.com/colearendt/tidyjson/issues

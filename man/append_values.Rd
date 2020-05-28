@@ -63,5 +63,6 @@ recipes \%>\%
 }
 \seealso{
 \code{\link{gather_object}} to gather an object first,
-   \code{\link{spread_all}} to spread values into new columns
+   \code{\link{spread_all}} to spread values into new columns,
+   \code{\link{json_get_column}}
 }

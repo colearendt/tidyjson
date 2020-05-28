@@ -1,7 +1,8 @@
 context("append_values")
 
-test_that("has correct complete structure with simple input", {
+test_that("has correct structure with simple input", {
 
+  skip("wait: testthat")
     json <- '[{"name": "anne"}, {"name": "bob"}, {"name": "george"}]'
 
     expect_identical(
@@ -15,7 +16,7 @@ test_that("has correct complete structure with simple input", {
           string = c("anne", "bob", "george"),
           stringsAsFactors = FALSE
         ),
-        list("anne", "bob", "george")
+        list(name = "anne", name = "bob", name = "george")
       )
     )
 
@@ -184,7 +185,7 @@ test_that("correctly handles append when trying to append an array", {
 
 test_that("recursive works as expected", {
 
-   data <- '{"item1": {"price" : 30}, "item2" : 40, "item3" : 30}' %>% gather_object()
+   data <- '{"item1": {"price" : {"one": 30}}, "item2" : 40, "item3" : 30}' %>% gather_object()
    expected_na <- c(NA_real_, 40, 30)
    expected_val <- c(30, 40, 30)
 
@@ -222,6 +223,19 @@ test_that("recursive works as expected", {
   }
 )
 
+test_that("works for coerced types", {
+  skip("this function had undefined and unexpected behavior")
+  coerce_helper <- function(input) {
+    as.tbl_json(input) %>% gather_array() %>% append_values() %>% .[["values"]]
+  }
+  
+  expect_identical(coerce_helper('["a", 4]'), c("a", "4"))
+  expect_identical(coerce_helper('[4, true, false]'), c(4L, 1L, 0L))
+  expect_identical(coerce_helper('[4.1, true, false]'), c(4.1, 1, 0))
+  expect_identical(coerce_helper('["a", true]'), c("a", "TRUE"))
+  expect_identical(coerce_helper('["a", {"a": "b"}]'), list("a", "a" = "b"))
+  expect_identical(coerce_helper('["a", {"a": "b", "b": "c"}]'), list("a", "a" = "b"))
+})
 
 
 context("my_unlist")
