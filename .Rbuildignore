@@ -19,6 +19,6 @@
 ^tidyjson.*\.tgz$
 ^doc$
 ^Meta$
-^renv$
+^renv/$
 ^renv\.lock$
 ^\.github$
