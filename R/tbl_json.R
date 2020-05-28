@@ -272,11 +272,11 @@ wrap_dplyr_verb <- function(dplyr.verb, generic) {
       # some generics need a tibble
       .data <- tibble::as_tibble(.data)
       vars <- rlang::enquos(...)
-      vars_chr <- purrr::map_chr(
+      vars_lgl <- purrr::map_lgl(
         vars,
-        ~ as.character(rlang::get_expr(.x))
+        ~ any(as.character(rlang::get_expr(.x)) %in% "..JSON")
         )
-      vars[vars_chr %in% "..JSON"] <- NULL
+      vars[vars_lgl] <- NULL
       y <- dplyr::select(.data, !!!vars)
     } else {
       y <- NextMethod(generic, .data)
