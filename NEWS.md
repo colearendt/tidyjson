@@ -117,3 +117,4 @@ the missing `document.id`.  (#86)
 ## Deprecated functions
 
 * `gather_keys()` -> use `gather_object()` instead
+
