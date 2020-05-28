@@ -10,7 +10,7 @@ Status](https://travis-ci.org/colearendt/tidyjson.svg?branch=master)](https://tr
 Status](https://codecov.io/github/colearendt/tidyjson/coverage.svg?branch=master)](https://codecov.io/github/colearendt/tidyjson?branch=master)
 
 [![CRAN
-Activity](http://cranlogs.r-pkg.org/badges/tidyjson)](https://cran.r-project.org/web/packages/tidyjson/index.html)
+Activity](http://cranlogs.r-pkg.org/badges/tidyjson)](https://cran.r-project.org/package=tidyjson/index.html)
 [![CRAN
 History](http://cranlogs.r-pkg.org/badges/grand-total/tidyjson)](https://cran.r-project.org/web/packages/tidyjson/index.html)
 
@@ -19,7 +19,7 @@ graphs](https://cloud.githubusercontent.com/assets/2284427/18217882/1b3b2db4-711
 
 tidyjson provides tools for turning complex [json](http://www.json.org/)
 into
-[tidy](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
+[tidy](https://cran.r-project.org/package=tidyr/vignettes/tidy-data.html)
 data.
 
 ## Installation
