@@ -344,6 +344,42 @@ slice_.tbl_json <- wrap_dplyr_verb(dplyr::slice_, "slice_")
 #' @method slice tbl_json
 slice.tbl_json <- wrap_dplyr_verb(dplyr::slice, "slice")
 
+#' @export
+#' @method inner_join tbl_json
+inner_join.tbl_json <- function(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), 
+                                ...) {
+  x <- as_tibble(x)
+  y <- as_tibble(y)
+  NextMethod("inner_join", x)
+}
+
+#' @export
+#' @method full_join tbl_json
+full_join.tbl_json <- function(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), 
+                                ..., keep = FALSE) {
+  x <- as_tibble(x)
+  y <- as_tibble(y)
+  NextMethod("full_join", x)
+}
+
+#' @export
+#' @method left_join tbl_json
+left_join.tbl_json <- function(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), 
+                                ..., keep = FALSE) {
+  x <- as_tibble(x)
+  y <- as_tibble(y)
+  NextMethod("left_join", x)
+}
+
+#' @export
+#' @method right_join tbl_json
+right_join.tbl_json <- function(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), 
+                                ..., keep = FALSE) {
+  x <- as_tibble(x)
+  y <- as_tibble(y)
+  NextMethod("right_join", x)
+}
+
 #' @name bind_rows
 #' @rdname bind_rows
 #' @keywords internal
