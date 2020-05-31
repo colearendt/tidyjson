@@ -271,13 +271,19 @@ wrap_dplyr_verb <- function(dplyr.verb, generic) {
     if (generic %in% c("select")) {
       # some generics need a tibble
       .data <- tibble::as_tibble(.data)
+      
+      # remove ..JSON operators
       vars <- rlang::enquos(...)
       vars_lgl <- purrr::map_lgl(
         vars,
         ~ any(as.character(rlang::get_expr(.x)) %in% "..JSON")
         )
       vars[vars_lgl] <- NULL
+      
       y <- dplyr::select(.data, !!!vars)
+    } else if (generic %in% c("transmute")) {
+      .data <- tibble::as_tibble(.data)
+      y <- NextMethod(generic, .data)
     } else {
       y <- NextMethod(generic, .data)
     }
