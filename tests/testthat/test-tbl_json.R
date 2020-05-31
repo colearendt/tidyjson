@@ -771,3 +771,34 @@ test_that('json_get_column works', {
     json_get(tj)
   )
 })
+
+context("join")
+
+test_that("all joins work", {
+  tj <- as_tbl_json(c('{"a": "b", "b": [1,2,3]}','{"a": "c"}'))
+  tj2 <- as_tbl_json('{"a": "b", "c": [4,5,6]}')
+  
+  joined <- inner_join(tj, tj2, by = "document.id")
+  expect_equal(nrow(joined), 1)
+  expect_false(inherits(joined, "tbl_json"))
+  
+  joined <- full_join(tj, tj2, by = "document.id")
+  expect_equal(nrow(joined), 2)
+  expect_false(inherits(joined, "tbl_json"))
+
+  joined <- right_join(tj, tj2, by = "document.id")
+  expect_equal(nrow(joined), 1)
+  expect_false(inherits(joined, "tbl_json"))
+  
+  joined <- left_join(tj, tj2, by = "document.id")
+  expect_equal(nrow(joined), 2)
+  expect_false(inherits(joined, "tbl_json"))
+  
+  joined <- anti_join(tj, tj2, by = "document.id")
+  expect_equal(nrow(joined), 1)
+  expect_is(joined, "tbl_json")
+  
+  joined <- semi_join(tj, tj2, by = "document.id")
+  expect_equal(nrow(joined), 1)
+  expect_is(joined, "tbl_json")
+})
