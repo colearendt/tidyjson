@@ -1,3 +1,15 @@
+# tidyjson 0.3.1
+
+## Bug fixes
+
+* Work around an issue with `dplyr 1.0.0` and `[` not subsetting properly with `transmute`
+
+Please let us know if you run into any errors of the form 
+```
+The `[` method for class <tbl_json/tbl_df/tbl/data.frame> must return a data frame with 1 column
+````
+We will need to do some more work on how we manage the `..JSON` column.
+
 # tidyjson 0.3.0
 
 ## Breaking
