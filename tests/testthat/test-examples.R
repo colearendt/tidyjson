@@ -1,3 +1,3 @@
 context("examples")
 
-test_examples(rprojroot::find_package_root_file())
+test_examples(rprojroot::find_testthat_root_file("../.."))
