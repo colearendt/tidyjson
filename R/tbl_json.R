@@ -385,7 +385,11 @@ right_join.tbl_json <- function(x, y, by = NULL, copy = FALSE, suffix = c(".x", 
 dplyr_reconstruct.tbl_json <- function(data, template) {
   # TODO: improve this handling in ?dplyr_reconstruct
   #   - For now, just drop the tbl_json class
-  as_tibble(data)
+  if ("..JSON" %in% names(data)) {
+    as_tbl_json(data, json.column = "..JSON")
+  } else {
+    tibble::as_tibble(data)
+  }
 }
 
 #' @name bind_rows
