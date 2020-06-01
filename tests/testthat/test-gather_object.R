@@ -2,7 +2,6 @@ context("gather_object")
 
 test_that("works in a simple case", {
 
-  skip("wait: testthat")
     json <- '{"name1": 1, "name2": 2}'
 
     expect_identical(
@@ -21,7 +20,6 @@ test_that("works in a simple case", {
 )
 
 test_that("works with compound values", {
-  skip("wait: testthat")
 
     json <- '{
 		  "name1": 1,
@@ -79,7 +77,6 @@ test_that("correctly handles character(0), {}, []", {
 
 test_that("column.name doesn't clobber existing name", {
 
-  skip("wait: testthat")
   expect_identical(
     '{"name1": 1, "name2": 2}' %>%
       as.tbl_json %>%
@@ -99,7 +96,6 @@ test_that("column.name doesn't clobber existing name", {
 )
 
 test_that("preserves a NULL column", {
-  skip("wait: testthat")
 
   expect_identical(
     '{"name1": 1, "name2": 2}' %>%
@@ -150,7 +146,6 @@ test_that("gather_keys has right column name", {
 })
 
 test_that("can call repeatedly without having to change column.name", {
-  skip("wait: testthat")
   expect_identical(
     suppressWarnings('{"n1": {"n2": 1}}' %>% gather_object %>% gather_object),
     tbl_json(

@@ -15,6 +15,7 @@ From: http://jsonstudio.com/resources/
 }
 \examples{
 
+\dontrun{
 library(dplyr)
 
 # worldbank is a 500 length character vector of JSON
@@ -43,4 +44,5 @@ wb_sectors \%>\%
   count(sector) \%>\%              # Count by sector
   arrange(desc(n)) \%>\%           # Arrange descending
   top_n(10)                      # Take the top 10
+}
 }

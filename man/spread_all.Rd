@@ -55,9 +55,11 @@ json \%>\% spread_all
 # A more complex example
 worldbank \%>\% spread_all
 
-# Resolving duplicate column names
-json <- '{"a": "x", "a": "y"}'
-json \%>\% spread_all
+\dontrun{
+  # Resolving duplicate column names
+  json <- '{"a": "x", "a": "y"}'
+  json \%>\% spread_all
+}
 }
 \seealso{
 \code{\link{spread_values}} to specific which specific values

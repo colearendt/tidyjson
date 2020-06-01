@@ -45,9 +45,11 @@
 #' # A more complex example
 #' worldbank %>% spread_all
 #'
-#' # Resolving duplicate column names
-#' json <- '{"a": "x", "a": "y"}'
-#' json %>% spread_all
+#' \dontrun{
+#'   # Resolving duplicate column names
+#'   json <- '{"a": "x", "a": "y"}'
+#'   json %>% spread_all
+#' }
 spread_all <- function(.x, recursive = TRUE, sep = ".") {
 
   if (!is.tbl_json(.x)) .x <- as.tbl_json(.x)

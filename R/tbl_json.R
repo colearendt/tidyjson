@@ -271,13 +271,19 @@ wrap_dplyr_verb <- function(dplyr.verb, generic) {
     if (generic %in% c("select")) {
       # some generics need a tibble
       .data <- tibble::as_tibble(.data)
+      
+      # remove ..JSON operators
       vars <- rlang::enquos(...)
       vars_lgl <- purrr::map_lgl(
         vars,
         ~ any(as.character(rlang::get_expr(.x)) %in% "..JSON")
         )
       vars[vars_lgl] <- NULL
+      
       y <- dplyr::select(.data, !!!vars)
+    } else if (generic %in% c("transmute")) {
+      .data <- tibble::as_tibble(.data)
+      y <- NextMethod(generic, .data)
     } else {
       y <- NextMethod(generic, .data)
     }
@@ -337,6 +343,54 @@ slice_.tbl_json <- wrap_dplyr_verb(dplyr::slice_, "slice_")
 #' @export
 #' @method slice tbl_json
 slice.tbl_json <- wrap_dplyr_verb(dplyr::slice, "slice")
+
+#' @export
+#' @method inner_join tbl_json
+inner_join.tbl_json <- function(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), 
+                                ...) {
+  x <- as_tibble(x)
+  y <- as_tibble(y)
+  NextMethod("inner_join", x)
+}
+
+#' @export
+#' @method full_join tbl_json
+full_join.tbl_json <- function(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), 
+                                ..., keep = FALSE) {
+  x <- as_tibble(x)
+  y <- as_tibble(y)
+  NextMethod("full_join", x)
+}
+
+#' @export
+#' @method left_join tbl_json
+left_join.tbl_json <- function(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), 
+                                ..., keep = FALSE) {
+  x <- as_tibble(x)
+  y <- as_tibble(y)
+  NextMethod("left_join", x)
+}
+
+#' @export
+#' @method right_join tbl_json
+right_join.tbl_json <- function(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), 
+                                ..., keep = FALSE) {
+  x <- as_tibble(x)
+  y <- as_tibble(y)
+  NextMethod("right_join", x)
+}
+
+#' @export
+#' @method dplyr_reconstruct tbl_json
+dplyr_reconstruct.tbl_json <- function(data, template) {
+  # TODO: improve this handling in ?dplyr_reconstruct
+  #   - For now, just drop the tbl_json class
+  if ("..JSON" %in% names(data)) {
+    as_tbl_json(data, json.column = "..JSON")
+  } else {
+    tibble::as_tibble(data)
+  }
+}
 
 #' @name bind_rows
 #' @rdname bind_rows
