@@ -6,7 +6,6 @@
 #' @keywords internal
 path <- function(...) {
 
-  #dots <- dots(...)
   dot_quos <- rlang::quos(...)
   dots <- purrr::map_chr(dot_quos, ~ rlang::as_name(.x))
 
@@ -24,8 +23,4 @@ path <- function(...) {
   )
   names(out) <- NULL
   out
-}
-
-dots <- function(...) {
-  eval(substitute(alist(...)))
 }

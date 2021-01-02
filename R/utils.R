@@ -46,24 +46,6 @@ rbind_tbl_json <- function(x, y) {
 
 }
 
-
-#' List or Dots
-#' 
-#' Handles dots or a list, coercing into a list
-#' so that the output is easy to handle
-#' 
-#' @param ... Either a list or the `...` of a function call
-#' 
-#' @return The input object coerced into a list for easier use
-#' @keywords internal
-list_or_dots <- function (...) 
-{
-  dots <- list(...)
-  data_lists <- vapply(dots, is_data_list, logical(1))
-  dots[data_lists] <- lapply(dots[data_lists], list)
-  unlist(dots, recursive = FALSE)
-}
-
 #' 
 #' List Check
 #' 
