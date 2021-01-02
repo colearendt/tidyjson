@@ -27,6 +27,37 @@ test_that("works with quoted or unquoted", {
 }
 )
 
+test_that("works with data masking", {
+  json <- '{"name": "bob", "attributes": {"age": 32, "gender": "male"}}'
+  testfunc <- function(obj, enter) {
+    obj %>% enter_object({{enter}})
+  }
+  expect_identical(
+    json %>% enter_object("attributes"),
+    testfunc(json, "attributes")
+  )
+})
+
+test_that("works with quasiquotation", {
+  json <- '{"name": "bob", "attributes": {"age": 32, "gender": "male"}}'
+  testfunc <- function(obj, ...) {
+    obj %>% enter_object(...)
+  }
+  testfunc2 <- function(obj, vector) {
+    obj %>% enter_object(!!!vector)
+  }
+  
+  expect_identical(
+    json %>% enter_object("attributes", "age"),
+    testfunc(json, "attributes", "age")
+  )
+  
+  expect_identical(
+    json %>% enter_object("attributes", "age"),
+    testfunc2(json, c("attributes", "age"))
+  )
+})
+
 test_that("filter works with multiple depth paths", {
 
     json <- '{"name": "bob", "attributes": { "demographics": {"age": 32, "gender": "male"}}}'
