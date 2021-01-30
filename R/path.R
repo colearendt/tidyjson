@@ -6,22 +6,21 @@
 #' @keywords internal
 path <- function(...) {
 
-  dots <- dots(...)
+  dot_quos <- rlang::quos(...)
+  dots <- purrr::map_chr(dot_quos, ~ rlang::as_name(.x))
 
-  all_names <- every(dots, is.name)
-  all_char <- every(dots, is.character)
+  all_names <- purrr::every(dots, is.name)
+  all_char <- purrr::every(dots, is.character)
 
   if (!all_names && !all_char) {
     stop("Path components must be single names or character strings",
          call. = FALSE)
   }
 
-  structure(
+  out <- structure(
     purrr::map_chr(dots, as.character),
     class = "path"
   )
-}
-
-dots <- function(...) {
-  eval(substitute(alist(...)))
+  names(out) <- NULL
+  out
 }
