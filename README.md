@@ -3,7 +3,7 @@ tidyjson
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tidyjson)](https://cran.r-project.org/package=tidyjson)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tidyjson)](https://cran.r-project.org/package=tidyjson)
 [![Build
 Status](https://travis-ci.org/colearendt/tidyjson.svg?branch=master)](https://travis-ci.org/colearendt/tidyjson)
 [![Coverage
@@ -65,7 +65,7 @@ worldbank %>% spread_all
 #>  9 "{\"_…           9 2013-10-29T00:0… 2018-12-31… India            Rajasthan R…
 #> 10 "{\"_…          10 2013-10-29T00:0… 2014-12-31… Morocco          MA Accounta…
 #> # … with 490 more rows, and 3 more variables: regionname <chr>, totalamt <dbl>,
-#> #   `_id.$oid` <chr>
+#> #   _id.$oid <chr>
 ```
 
 Some objects in `worldbank` are arrays, which are not handled by
@@ -74,7 +74,7 @@ structure of a JSON collection
 
 ``` r
 worldbank %>% gather_object %>% json_types %>% count(name, type)
-#> # A tibble: 8 x 3
+#> # A tibble: 8 × 3
 #>   name                type       n
 #>   <chr>               <fct>  <int>
 #> 1 _id                 object   500
@@ -117,76 +117,76 @@ worldbank %>%
 
 ### Spreading objects into columns
 
-  - `spread_all()` for spreading all object values into new columns,
+-   `spread_all()` for spreading all object values into new columns,
     with nested objects having concatenated names
 
-  - `spread_values()` for specifying a subset of object values to spread
-    into new columns using the `json_chr()`, `json_dbl()` and
-    `json_lgl()` functions. It is possible to specify multiple
+-   `spread_values()` for specifying a subset of object values to spread
+    into new columns using the `jstring()`, `jinteger()`, `jdouble()`
+    and `jlogical()` functions. It is possible to specify multiple
     parameters to extract data from nested objects
-    (i.e. `json_chr('a','b')`).
+    (i.e. `jstring('a','b')`).
 
 ### Object navigation
 
-  - `enter_object()` for entering into an object by name, discarding all
+-   `enter_object()` for entering into an object by name, discarding all
     other JSON (and rows without the corresponding object name) and
     allowing further operations on the object value
 
-  - `gather_object()` for stacking all object name-value pairs by name,
+-   `gather_object()` for stacking all object name-value pairs by name,
     expanding the rows of the `tbl_json` object accordingly
 
 ### Array navigation
 
-  - `gather_array()` for stacking all array values by index, expanding
+-   `gather_array()` for stacking all array values by index, expanding
     the rows of the `tbl_json` object accordingly
 
 ### JSON inspection
 
-  - `json_types()` for identifying JSON data types
+-   `json_types()` for identifying JSON data types
 
-  - `json_length()` for computing the length of JSON data (can be larger
+-   `json_length()` for computing the length of JSON data (can be larger
     than `1` for objects and arrays)
 
-  - `json_complexity()` for computing the length of the unnested JSON,
+-   `json_complexity()` for computing the length of the unnested JSON,
     i.e., how many terminal leaves there are in a complex JSON structure
 
-  - `is_json` family of functions for testing the type of JSON data
+-   `is_json` family of functions for testing the type of JSON data
 
 ### JSON summarization
 
-  - `json_structure()` for creating a single fixed column data.frame
+-   `json_structure()` for creating a single fixed column data.frame
     that recursively structures arbitrary JSON data
 
-  - `json_schema()` for representing the schema of complex JSON, unioned
+-   `json_schema()` for representing the schema of complex JSON, unioned
     across disparate JSON documents, and collapsing arrays to their most
     complex type representation
 
-### Creating tbl\_json objects
+### Creating tbl_json objects
 
-  - `as.tbl_json()` for converting a string or character vector into a
+-   `as.tbl_json()` for converting a string or character vector into a
     `tbl_json` object, or for converting a `data.frame` with a JSON
     column using the `json.column` argument
 
-  - `tbl_json()` for combining a `data.frame` and associated `list`
+-   `tbl_json()` for combining a `data.frame` and associated `list`
     derived from JSON data into a `tbl_json` object
 
-  - `read_json()` for reading JSON data from a file
+-   `read_json()` for reading JSON data from a file
 
-### Converting tbl\_json objects
+### Converting tbl_json objects
 
-  - `as.character.tbl_json` for converting the JSON attribute of a
+-   `as.character.tbl_json` for converting the JSON attribute of a
     `tbl_json` object back into a JSON character string
 
 ### Included JSON data
 
-  - `commits`: commit data for the dplyr repo from github API
+-   `commits`: commit data for the dplyr repo from github API
 
-  - `issues`: issue data for the dplyr repo from github API
+-   `issues`: issue data for the dplyr repo from github API
 
-  - `worldbank`: world bank funded projects from
+-   `worldbank`: world bank funded projects from
     [jsonstudio](http://jsonstudio.com/resources/)
 
-  - `companies`: startup company data from
+-   `companies`: startup company data from
     [jsonstudio](http://jsonstudio.com/resources/)
 
 ## Philosophy
@@ -194,40 +194,40 @@ worldbank %>%
 The goal is to turn complex JSON data, which is often represented as
 nested lists, into tidy data frames that can be more easily manipulated.
 
-  - Work on a single JSON document, or on a collection of related
+-   Work on a single JSON document, or on a collection of related
     documents
 
-  - Create pipelines with `%>%`, producing code that can be read from
+-   Create pipelines with `%>%`, producing code that can be read from
     left to right
 
-  - Guarantee the structure of the data produced, even if the input JSON
+-   Guarantee the structure of the data produced, even if the input JSON
     structure changes (with the exception of `spread_all`)
 
-  - Work with arbitrarily nested arrays or objects
+-   Work with arbitrarily nested arrays or objects
 
-  - Handle ‘ragged’ arrays and / or objects (varying lengths by
+-   Handle ‘ragged’ arrays and / or objects (varying lengths by
     document)
 
-  - Allow for extraction of data in values or object names
+-   Allow for extraction of data in values or object names
 
-  - Ensure edge cases are handled correctly (especially empty data)
+-   Ensure edge cases are handled correctly (especially empty data)
 
-  - Integrate seamlessly with `dplyr`, allowing `tbl_json` objects to
+-   Integrate seamlessly with `dplyr`, allowing `tbl_json` objects to
     pipe in and out of `dplyr` verbs where reasonable
 
 ## Related Work
 
 Tidyjson depends upon
 
-  - [magrritr](https://github.com/smbache/magrittr) for the `%>%` pipe
+-   [magrritr](https://github.com/smbache/magrittr) for the `%>%` pipe
     operator
-  - [jsonlite](https://github.com/jeroenooms/jsonlite) for converting
+-   [jsonlite](https://github.com/jeroenooms/jsonlite) for converting
     JSON strings into nested lists
-  - [purrr](https://github.com/hadley/purrr) for list operators
-  - [tidyr](https://github.com/hadley/tidyr) for unnesting and spreading
+-   [purrr](https://github.com/hadley/purrr) for list operators
+-   [tidyr](https://github.com/hadley/tidyr) for unnesting and spreading
 
 Further, there are other R packages that can be used to better
 understand JSON data
 
-  - [listviewer](https://github.com/timelyportfolio/listviewer) for
+-   [listviewer](https://github.com/timelyportfolio/listviewer) for
     viewing JSON data interactively

@@ -45,6 +45,23 @@ test_that("handles missing input properly", {
   }
 )
 
+context("jdouble")
+
+test_that("handles missing input properly", {
+  
+  json <- list(
+    fromJSON('{"age": 32}'),
+    fromJSON('{"age": null}'),
+    fromJSON('{"AGE": 32}'),
+    fromJSON('{}')
+  )
+  
+  expect_identical(jdouble("age")(json),
+                   c(32, NA_real_, NA_real_, NA_real_)
+  )
+}
+)
+
 context("jnumber")
 
 test_that("handles missing input properly", {
@@ -84,6 +101,23 @@ test_that("handles missing input properly", {
   }
 )
 
+context("jinteger")
+
+test_that("handles missing input properly", {
+  
+  json <- list(
+    fromJSON('{"age": 32}'),
+    fromJSON('{"age": null}'),
+    fromJSON('{"AGE": 32}'),
+    fromJSON('{}')
+  )
+  
+  expect_identical(jinteger("age")(json),
+                   c(32L, NA_integer_, NA_integer_, NA_integer_)
+  )
+}
+)
+
 context("spread_values")
 
 test_that("extract various values", {
@@ -94,6 +128,8 @@ test_that("extract various values", {
           document.id = 1L,
           name = "bob",
           age = 32,
+          age_dbl = 32.,
+          age_int = 32L,
           customer = TRUE,
           stringsAsFactors = FALSE
         ), list(fromJSON(json)))
@@ -103,6 +139,8 @@ test_that("extract various values", {
         spread_values(
           name = jstring("name"),
           age = jnumber("age"),
+          age_dbl = jdouble("age"),
+          age_int = jinteger("age"),
           customer = jlogical("customer")
         ),
       expected_value
@@ -175,11 +213,17 @@ test_that("correctly handles []", {
 test_that('correctly handles over-specified path', {
   json <- '{ "a" : 1 , "b" : "text", "c" : true }' 
   
+  expect_equal(json %>% spread_values(a = jdouble("a", "b")) %>% .$a, as.double(NA))
+  expect_equal(json %>% spread_values(a = jdouble("a", "b")) %>% .$a, as.numeric(NA))
+  
+  expect_equal(json %>% spread_values(a = jnumber("a", "b")) %>% .$a, as.double(NA))
   expect_equal(json %>% spread_values(a = jnumber("a", "b")) %>% .$a, as.numeric(NA))
   
   expect_equal(json %>% spread_values(b = jstring('b','c')) %>% .$b, as.character(NA))
   
   expect_equal(json %>% spread_values(c = jlogical('c','d')) %>% .$c, as.logical(NA))
+  
+  expect_equal(json %>% spread_values(c = jinteger('c','d')) %>% .$c, as.integer(NA))
 })
 
 
