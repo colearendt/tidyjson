@@ -21,7 +21,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{dplyr}{\code{\link[dplyr]{as_data_frame}}}
+  \item{dplyr}{\code{\link[dplyr:reexports]{as_data_frame}}}
 
   \item{tibble}{\code{\link[tibble]{as_tibble}}}
 }}

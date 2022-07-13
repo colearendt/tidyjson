@@ -3,16 +3,22 @@
 \name{json_functions}
 \alias{json_functions}
 \alias{jstring}
-\alias{jnumber}
 \alias{jlogical}
+\alias{jinteger}
+\alias{jdouble}
+\alias{jnumber}
 \title{Navigates nested objects to get at names of a specific type, to be used as
 arguments to \code{\link{spread_values}}}
 \usage{
 jstring(..., recursive = FALSE)
 
-jnumber(..., recursive = FALSE)
-
 jlogical(..., recursive = FALSE)
+
+jinteger(..., recursive = FALSE)
+
+jdouble(..., recursive = FALSE)
+
+jnumber(..., recursive = FALSE)
 }
 \arguments{
 \item{...}{a quoted or unquoted sequence of strings designating the object
@@ -26,7 +32,8 @@ the nested json object}
 a function that can operate on parsed JSON data
 }
 \description{
-Note that these functions fail if they encounter the incorrect type.
+Note that these functions fail if they encounter the incorrect type. Note
+that \code{jnumber()} is an alias for \code{jdouble()}.
 }
 \seealso{
 \code{\link{spread_values}} for using these functions to spread

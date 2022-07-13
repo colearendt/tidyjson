@@ -10,6 +10,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{dplyr}{\code{\link[dplyr]{bind_rows}}}
+  \item{dplyr}{\code{\link[dplyr:bind]{bind_rows}}}
 }}
 

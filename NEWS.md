@@ -1,5 +1,10 @@
 # tidyjson (development version)
 
+
+* Add `jdouble()` and `jinteger()`. `junmber()` is aliased to `jdouble()`, and
+can still be used, however `jdouble()` should be preferred as it is less
+ambiguous.
+
 # tidyjson 0.3.1
 
 ## Bug fixes
@@ -110,7 +115,7 @@ the missing `document.id`.  (#86)
 
 ## Bug fixes and minor changes
 
-* `enter_object` and the `jstring`, `jnumber` and `jlogical` functions now accept unqoted strings to specify their path (#26)
+* `enter_object` and the `jstring`, `jnumber` and `jlogical` functions now accept unquoted strings to specify their path (#26)
 
 * `tbl_json` objects now print with a tidy character representation of the JSON attribute (#61)
 

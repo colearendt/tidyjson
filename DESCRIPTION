@@ -1,6 +1,6 @@
 Package: tidyjson
 Title: Tidy Complex 'JSON'
-Version: 0.3.1.9000
+Version: 0.3.1.9001
 Authors@R: c(
 	person("Jeremy","Stanley",,"jeremy.stanley@gmail.com",c("aut")),
 	person("Cole","Arendt",, "cole@rstudio.com",c("aut", "cre"))
@@ -37,4 +37,4 @@ Suggests:
 VignetteBuilder: knitr
 URL: https://github.com/colearendt/tidyjson
 BugReports: https://github.com/colearendt/tidyjson/issues
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.2
