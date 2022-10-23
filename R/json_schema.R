@@ -1,5 +1,6 @@
 #' Create a schema for a JSON document or collection
 #'
+#' @description
 #' Returns a JSON document that captures the 'schema' of the collection of
 #' document(s) passed in, as a JSON string. The schema collapses complex
 #' JSON into a simple form using the following rules:
@@ -24,6 +25,7 @@
 #' chosen, and if arrays vary in schema across documents, the most
 #' complex is chosen.
 #'
+#' @details
 #' Note that \code{json_schema} can be slow for large JSON document collections,
 #' you may want to sample your JSON collection first.
 #'
