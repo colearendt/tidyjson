@@ -16,7 +16,7 @@ test_that("has correct structure with simple input", {
       list(name = "anne", name = "bob", name = "george")
     )
   )
-)
+})
 
 test_that("string works with value array", {
 
