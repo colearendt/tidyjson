@@ -1,5 +1,3 @@
-context("append_values")
-
 test_that("has correct structure with simple input", {
 
   skip("wait: testthat")
@@ -237,8 +235,6 @@ test_that("works for coerced types", {
   expect_identical(coerce_helper('["a", {"a": "b", "b": "c"}]'), list("a", "a" = "b"))
 })
 
-
-context("my_unlist")
 test_that("my_unlist safely handles edge cases", {
 
     expect_identical(my_unlist(list(1, NA)), c(1, NA_integer_))

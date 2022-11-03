@@ -1,5 +1,3 @@
-context("gather_object")
-
 test_that("works in a simple case", {
 
     json <- '{"name1": 1, "name2": 2}'
@@ -129,8 +127,6 @@ test_that('gather_object handles non-object columns gracefully',{
   
   json %>% gather_object() %>% gather_object()
 })
-
-context("gather_keys")
 
 test_that("gather_keys throws a warning", {
 

@@ -1,5 +1,3 @@
-context("json_schema")
-
 test_that("json_schema works for simple examples", {
 
   expect_identical(json_schema('"a"'), '"string"')
@@ -91,8 +89,8 @@ test_that("problem with mixed type arrays", {
 
 test_that("json_schema works for real examples", {
 
-  expect_is(json_schema(worldbank[1]), "character")
-  expect_is(json_schema(companies[1]), "character")
+  expect_type(json_schema(worldbank[1]), "character")
+  expect_type(json_schema(companies[1]), "character")
 
 })
 

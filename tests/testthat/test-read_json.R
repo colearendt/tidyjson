@@ -1,5 +1,3 @@
-context("read_json")
-
 test_that("read_json correctly infers a .json file", {
     json_path <- system.file("extdata", "sample.json", package="tidyjson")
     json <- read_json(json_path)

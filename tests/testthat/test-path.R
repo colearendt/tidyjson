@@ -1,5 +1,3 @@
-context("path")
-
 test_that("works with unquoted input", {
 
   expect_identical(

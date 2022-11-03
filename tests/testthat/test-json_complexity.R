@@ -1,5 +1,3 @@
-context("json_complexity")
-
 test_that("works for arrays", {
 
   json <- c('[]', '[1]', '[1, 2]')

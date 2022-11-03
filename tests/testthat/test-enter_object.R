@@ -1,5 +1,3 @@
-context("enter_object")
-
 test_that("filter works with one path", {
 
     json <- '{"name": "bob", "attributes": {"age": 32, "gender": "male"}}'

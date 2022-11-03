@@ -1,4 +1,4 @@
-context("tbl_json: as_tbl_json.character")
+# tbl_json: as_tbl_json.character -----------------------
 
 test_that("correctly parses length(json) == 1", {
   expect_identical(
@@ -86,7 +86,7 @@ test_that("throws error on invalid json", {
   }
 )
 
-context("tbl_json: as.character.tbl_json")
+# tbl_json: as.character.tbl_json -----------------------------------------
 
 inverts_json_test <- function(json) {
   expect_identical(json, json %>% as_tbl_json %>% as.character)
@@ -130,7 +130,7 @@ test_that("throws informative warning message when attr(.,'JSON') is missing", {
 })
 
 
-context("as_tbl_json.tbl_json")
+# as_tbl_json.tbl_json ----------------------------------------------------
 
 test_that('functions as the identity on a simple pipeline', {
    x <- commits %>% gather_array() %>% enter_object('commit') %>% spread_all()
@@ -164,22 +164,20 @@ test_that('functions as the identity on a more advanced pipeline', {
   )
 })
 
-context("as_tbl_json.list")
+# as_tbl_json.list --------------------------------------------------------
 
 test_that("list is interpreted as already parsed", {
   j <- jsonlite::fromJSON('{"a": "b"}')
-  
-  expect_is(as_tbl_json(j), "tbl_json")
+
+  expect_s3_class(as_tbl_json(j), "tbl_json")
   
   l <- list(a = "b", c = list("a","b","c"))
   
-  expect_is(as_tbl_json(l), "tbl_json")
+  expect_s3_class(as_tbl_json(l), "tbl_json")
   expect_identical(as_tbl_json(l)$document.id, c(1L,2L))
   
-  expect_is(as_tbl_json(list()), "tbl_json")
+  expect_s3_class(as_tbl_json(list()), "tbl_json")
 })
-
-context("print.tbl_json")
 
 test_that("jsonlite::toJSON works as anticipated", {
   expect_identical(jsonlite::toJSON(json_get(as.tbl_json('"a"'))
@@ -187,6 +185,8 @@ test_that("jsonlite::toJSON works as anticipated", {
                                     , auto_unbox = TRUE) %>% as.character
                    , "[\"a\"]")
 })
+
+# print.tbl_json ----------------------------------------------------------
 
 test_that("purrr::map_chr works as expected", {
   a <- json_get(as.tbl_json('"a"','JSON')) %>% purrr::map_chr(jsonlite::toJSON,
@@ -265,7 +265,7 @@ test_that('does not throw an error', {
   expect_output(suppressWarnings(j %>% print), printregex)
 })
 
-context("tbl_json: as.tbl_json.data.frame")
+# tbl_json: as.tbl_json.data.frame ----------------------------------------
 
 test_that("works for a data.frame and tibble created objects", {
 
@@ -328,12 +328,10 @@ test_that("throws an error if json column doesn't exist", {
   }
 )
 
-context("tbl_json")
+# tbl_json ----------------------------------------------------------------
 
 test_that("tbl_json constructor works with no data", {
-
     expect_identical(tbl_json(data.frame(), list()) %>% nrow, 0L)
-
   }
 )
 
@@ -381,10 +379,10 @@ test_that('handles "drop" like a tbl_df', {
     gather_array() %>%
     spread_values(name=jstring('name'), occupation=jstring('occupation'))
    
-  expect_is(mydata[,],'tbl_json')
-  expect_is(mydata[,'name'],'tbl_json')
+  expect_s3_class(mydata[,],'tbl_json')
+  expect_s3_class(mydata[,'name'],'tbl_json')
   #TODO: Figure out how we want to proceed
-  #expect_is(suppressWarnings(mydata[,'occupation',drop=TRUE]),'tbl_json')
+  #expect_s3_class(suppressWarnings(mydata[,'occupation',drop=TRUE]),'tbl_json')
   #expect_warning(is.tbl_json(mydata[,'name',drop=TRUE]),'drop ignored')
 })
 
@@ -416,7 +414,7 @@ test_that("$ leaves tbl_json idempotent", {
   )
 })
 
-context('as_tibble') 
+# as_tibble ---------------------------------------------------------------
 
 test_that('as_tibble drops the JSON attribute and tbl_json class', {
   
@@ -439,7 +437,7 @@ test_that('as_data_frame functions like as_tibble', {
   expect_false('tbl_json' %in% class(dplyr::as_tibble(jtidy)))
 })
 
-context("tbl_json: dplyr NSE verbs")
+# tbl_json: dplyr NSE verbs -----------------------------------------------
 
 test_that("dplyr::group_by works", {
   tj <- as_tbl_json('{"a": "b"}')
@@ -550,7 +548,7 @@ test_that("dplyr::transmute works", {
   
   use_transmute <- prep %>% transmute(string = paste0(string, "_hi"))
   
-  expect_is(use_transmute, "tbl_json")
+  expect_s3_class(use_transmute, "tbl_json")
   expect_identical(nrow(use_transmute), 2L)
   expect_identical(ncol(use_transmute), 2L)
   
@@ -561,7 +559,7 @@ test_that("dplyr::slice works", {
 
   new <- '[1, 2, 3]' %>% gather_array %>% dplyr::slice(1:2)
 
-  expect_is(new, "tbl_json")
+  expect_s3_class(new, "tbl_json")
   expect_identical(nrow(new), 2L)
   expect_identical(length(json_get(new)), 2L)
 
@@ -575,7 +573,7 @@ test_that('dplyr::select works', {
   
   expect_equal(names(f), c('ID','object','..JSON'))
   expect_equal(nrow(f),2)
-  expect_is(f,'tbl_json')
+  expect_s3_class(f,'tbl_json')
   
   # Specifically trying to avoid "Adding missing grouping variables: `..JSON`"
   expect_silent(hm <- as_tbl_json(json) %>% select(document.id))
@@ -590,7 +588,7 @@ test_that("dplyr::rename works", {
 
   new <- '[1, 2, 3]' %>% gather_array %>% dplyr::rename(blah = document.id)
 
-  expect_is(new, "tbl_json")
+  expect_s3_class(new, "tbl_json")
   expect_identical(names(new), c("blah", "array.index","..JSON"))
 
 })
@@ -599,7 +597,7 @@ test_that("dplyr::transmute works", {
 
   new <- '[1, 2, 3]' %>% gather_array %>% dplyr::transmute(blah = document.id)
 
-  expect_is(new, "tbl_json")
+  expect_s3_class(new, "tbl_json")
   expect_identical(names(new), c("blah", "..JSON"))
 
 })
@@ -608,7 +606,7 @@ test_that("dplyr::sample_n works", {
 
   new <- '[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]' %>% gather_array %>% dplyr::sample_n(2)
 
-  expect_is(new, "tbl_json")
+  expect_s3_class(new, "tbl_json")
   expect_identical(new$array.index, json_get(new) %>% purrr::flatten_int())
 
 })
@@ -638,8 +636,8 @@ test_that("bind_rows works with tbl_json", {
   z <- people_df %>% dplyr::bind_rows(people_df)
   
 
-  expect_is(json_get(z),'list')
-  expect_is(z, 'tbl_json')
+  expect_type(json_get(z),'list')
+  expect_s3_class(z, 'tbl_json')
   expect_equal(nrow(z), nrow(people_df) * 2)
   expect_equal(length(json_get(z)), nrow(people_df) * 2)
 })
@@ -651,10 +649,10 @@ test_that("bind_rows falls back to normal behavior if not tbl_json", {
   out <- dplyr::bind_rows(a,c)
   expect_equal(nrow(out), nrow(a) + nrow(c))
   expect_equal(names(out), c('a','b'))
-  expect_is(out,'tbl_df')
+  expect_s3_class(out,'tbl_df')
 })
 
-context('tbl_json: dplyr SE verbs')
+# tbl_json: dplyr SE verbs ------------------------------------------------
 
 test_that('dplyr::filter works with programming', {
   json <- '[{"a": "fun", "b": 2},{"a": "blam", "b": 3}]'
@@ -666,7 +664,7 @@ test_that('dplyr::filter works with programming', {
   expect_identical(f$a,c('fun'))
   expect_identical(f$b,c(2))
   expect_identical(nrow(f),1L)
-  expect_is(f,'tbl_json')
+  expect_s3_class(f,'tbl_json')
 })
 
 test_that('dplyr::mutate works with programming', {
@@ -677,7 +675,7 @@ test_that('dplyr::mutate works with programming', {
   
   expect_identical(f$four,'zip/zap')
   expect_identical(f$five, 'zzz')
-  expect_is(f,'tbl_json')
+  expect_s3_class(f,'tbl_json')
 })
 
 test_that('dplyr::rename works with programming', {
@@ -687,7 +685,7 @@ test_that('dplyr::rename works with programming', {
   f <- json %>% spread_all %>% dplyr::rename(!!!v)
   
   expect_identical(names(f),c('document.id','firstName','lastName','..JSON'))
-  expect_is(f,'tbl_json')
+  expect_s3_class(f,'tbl_json')
 })
 
 test_that('dplyr::select works with programming', {
@@ -697,7 +695,7 @@ test_that('dplyr::select works with programming', {
   f <- json %>% spread_all %>% dplyr::select(!!!v)
   
   expect_identical(names(f),c('Hill','valley','..JSON'))
-  expect_is(f,'tbl_json')
+  expect_s3_class(f,'tbl_json')
 })
 
 test_that('dplyr::arrange works with programming', {
@@ -709,7 +707,7 @@ test_that('dplyr::arrange works with programming', {
   
   expect_identical(f$somewhere,c('else','fun','over'))
   expect_identical(f$array.index, c(3L,2L,1L))
-  expect_is(f,'tbl_json')
+  expect_s3_class(f,'tbl_json')
 })
 
 test_that('dplyr::transmute works with programming', {
@@ -719,7 +717,7 @@ test_that('dplyr::transmute works with programming', {
   f <- json %>% spread_all %>% dplyr::transmute(!!!v)
   
   expect_identical(names(f), c('firstName','..JSON'))
-  expect_is(f,'tbl_json')
+  expect_s3_class(f,'tbl_json')
 })
 
 test_that('dplyr::slice works with programming', {
@@ -732,10 +730,10 @@ test_that('dplyr::slice works with programming', {
   f <- json %>% gather_array %>% spread_all %>% slice(!!v)
   expect_identical(nrow(f),1L)
   expect_identical(f$id,7)
-  expect_is(f,'tbl_json')
+  expect_s3_class(f,'tbl_json')
 })
 
-context('json_get')
+# json_get ----------------------------------------------------------------
 
 test_that('json_get works', {
   tj <- as.tbl_json('{"a": "b"}')
@@ -752,7 +750,7 @@ test_that('json_get handles error cases', {
   expect_identical(json_get(data.frame(`..JSONA` = 1)), NULL)
 })
 
-context('json_get_column')
+# json_get_column ---------------------------------------------------------
 
 test_that('json_get_column works', {
   tj <- as.tbl_json('{"a": "b", "b": [1,2,3]}')
@@ -771,7 +769,8 @@ test_that('json_get_column works', {
   )
 })
 
-context("join")
+
+# join --------------------------------------------------------------------
 
 test_that("all joins work", {
   tj <- as_tbl_json(c('{"a": "b", "b": [1,2,3]}','{"a": "c"}'))
@@ -795,9 +794,9 @@ test_that("all joins work", {
   
   joined <- anti_join(tj, tj2, by = "document.id")
   expect_equal(nrow(joined), 1)
-  expect_is(joined, "tbl_json")
+  expect_s3_class(joined, "tbl_json")
   
   joined <- semi_join(tj, tj2, by = "document.id")
   expect_equal(nrow(joined), 1)
-  expect_is(joined, "tbl_json")
+  expect_s3_class(joined, "tbl_json")
 })

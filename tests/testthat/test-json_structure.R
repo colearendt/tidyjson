@@ -1,5 +1,3 @@
-context("json_structure")
-
 test_that("simple string works", {
 
   expect_identical(

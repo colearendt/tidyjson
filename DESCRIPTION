@@ -21,7 +21,7 @@ License: MIT + file LICENSE
 LazyData: true
 Suggests:
     knitr,
-    testthat,
+    testthat (>= 3.0.0),
     ggplot2,
     rmarkdown,
     forcats,
@@ -38,3 +38,4 @@ VignetteBuilder: knitr
 URL: https://github.com/colearendt/tidyjson
 BugReports: https://github.com/colearendt/tidyjson/issues
 RoxygenNote: 7.1.2
+Config/testthat/edition: 3
