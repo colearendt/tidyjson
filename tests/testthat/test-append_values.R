@@ -1,24 +1,21 @@
 test_that("has correct structure with simple input", {
 
-  skip("wait: testthat")
-    json <- '[{"name": "anne"}, {"name": "bob"}, {"name": "george"}]'
+  json <- '[{"name": "anne"}, {"name": "bob"}, {"name": "george"}]'
 
-    expect_identical(
-      json %>% gather_array %>% gather_object %>%
-        append_values_string,
-      tbl_json(
-        data.frame(
-          document.id = c(1L, 1L, 1L),
-          array.index = 1L:3L,
-          name = rep("name", 3),
-          string = c("anne", "bob", "george"),
-          stringsAsFactors = FALSE
-        ),
-        list(name = "anne", name = "bob", name = "george")
-      )
+  expect_identical(
+    json %>% gather_array %>% gather_object %>%
+      append_values_string,
+    tbl_json(
+      data.frame(
+        document.id = c(1L, 1L, 1L),
+        array.index = 1L:3L,
+        name = rep("name", 3),
+        string = c("anne", "bob", "george"),
+        stringsAsFactors = FALSE
+      ),
+      list(name = "anne", name = "bob", name = "george")
     )
-
-  }
+  )
 )
 
 test_that("string works with value array", {

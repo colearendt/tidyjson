@@ -196,57 +196,16 @@ test_that("purrr::map_chr works as expected", {
   expect_identical(a,'\"a\"')
 })
 
-test_that('print.tbl_df works as expected', {
-
-  skip('tests failing due to upstream print.tbl_df')
-  z <- dplyr::tibble(col='"a"')
-  
-  expect_identical(capture.output(print(z))
-                   , c(
-                     "# A tibble: 1 x 1"
-                     , "    col"
-                     , "  <chr>"
-                     , "1   \"a\""
-                   ))
-})
-
 test_that("print.tbl_json works for a simple case", {
-  skip('tests failing due to upstream print.tbl_df')
-  
-  expect_identical(
-    capture.output(print(as.tbl_json('"a"'))),
-    c('# A tbl_json: 1 x 1 tibble with a \"JSON\" attribute',
-      '  `attr(., "JSON")` document.id',
-      '              <chr>       <int>',
-      '1               "a"           1')
-  )
+  expect_snapshot(as.tbl_json('"a"'))
 })
 
 test_that("print.tbl_json json.width works correctly", {
-  skip('tests failing due to upstream print.tbl_df')
-  
-  expect_identical(
-    capture.output(print(as.tbl_json('"12345"'), json.width = 4)),
-    c('# A tbl_json: 1 x 1 tibble with a \"JSON\" attribute',
-      '  `attr(., "JSON")` document.id',
-      '              <chr>       <int>',
-      '1           "123...           1')
-  )
-
+  expect_snapshot(print(as.tbl_json('"12345"'), json.width = 4))
 })
 
 test_that("print.tbl_json json.n works correctly", {
-  skip('tests failing due to upstream print.tbl_df')
-  
-  expect_identical(
-    capture.output(print(as.tbl_json(c('"a"', '"b"')), json.n = 1)),
-    c('# A tbl_json: 2 x 1 tibble with a \"JSON\" attribute',
-      '  `attr(., "JSON")` document.id',
-      '              <chr>       <int>',
-      '1               "a"           1',
-      '2               ...           2')
-  )
-
+  expect_snapshot(print(as.tbl_json(c('"a"', '"b"')), json.n = 1))
 })
 
 test_that('does not throw an error', {
@@ -334,11 +293,6 @@ test_that("tbl_json constructor works with no data", {
     expect_identical(tbl_json(data.frame(), list()) %>% nrow, 0L)
   }
 )
-
-test_that("tbl_json fails if ..JSON is in the names of the data.frame", {
-  skip("no longer an error")
-  expect_error(tbl_json(data.frame(..JSON = character(0)), list()))
-})
 
 test_that("[ row filtering works with a simple example", {
 
