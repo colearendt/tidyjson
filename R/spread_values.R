@@ -64,7 +64,8 @@ spread_values <- function(.x, ...) {
   json <- json_get(.x)
 
   # Get new values
-  new_values <- invoke_map(lst(...), .x = list(NULL), json)
+  fns <- lst(...)
+  new_values <- map(fns, function(f) f(json))
 
   # Add on new values
   y <- dplyr::bind_cols(.x, new_values)
@@ -79,8 +80,9 @@ spread_values <- function(.x, ...) {
 #' @keywords internal
 json_factory <- function(map.function) {
 
-  replace_nulls_na <- function(x)
-    if (is.null(x)) NA else x
+  replace_nulls_na <- function(x) {
+    if (length(x) == 0) NA else x
+  }
 
   function(..., recursive = FALSE) {
 
@@ -90,7 +92,6 @@ json_factory <- function(map.function) {
 
     # Return a closure to deal with JSON lists
     function(json) {
-
       json %>%
         purrr::map(path %>% as.list) %>%
         purrr::map(replace_nulls_na) %>%

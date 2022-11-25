@@ -68,7 +68,7 @@ json_schema <- function(.x, type = c("string", "value")) {
   .x <- .x %>% json_types
   json <- json_get(.x)
 
-  schema <- list_along(json)
+  schema <- rep_along(list(), json)
 
   is_array <- .x$type == "array"
   is_object <- .x$type == "object"

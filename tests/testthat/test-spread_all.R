@@ -1,5 +1,3 @@
-context("spread_all")
-
 test_that("works for simple example", {
 
   expect_identical(

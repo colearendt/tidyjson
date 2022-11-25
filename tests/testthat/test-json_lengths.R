@@ -1,5 +1,3 @@
-context("json_lengths")
-
 test_that("works for arrays", {
     
     json <- c('[]', '[1]', '[1, 2]')

@@ -1,5 +1,3 @@
-context("is_json")
-
 test_that("works for a simple example", {
 
   json <- '[1, "string", true, [1, 2], {"name": "value"}, null]' %>%

@@ -1,5 +1,3 @@
-context("json_types")
-
 test_that("works with simple input", {
     
     json <- '[{"name":"value"}, [1, 2], "string", 1, true, false, null]'

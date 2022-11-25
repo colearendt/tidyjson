@@ -1,5 +1,3 @@
-context("gather_array")
-
 test_that("works with array of length 1", {
 
     json <- '[{"name": "bob"}]'
