@@ -179,10 +179,10 @@ out of `dplyr` verbs where reasonable
 
 Tidyjson depends upon
 
-* [magrritr](https://github.com/smbache/magrittr) for the `%>%` pipe operator
-* [jsonlite](https://github.com/jeroenooms/jsonlite) for converting JSON strings into nested lists
-* [purrr](https://github.com/hadley/purrr) for list operators
-* [tidyr](https://github.com/hadley/tidyr) for unnesting and spreading
+* [magrritr](https://github.com/tidyverse/magrittr) for the `%>%` pipe operator
+* [jsonlite](https://github.com/jeroen/jsonlite) for converting JSON strings into nested lists
+* [purrr](https://github.com/tidyverse/purrr) for list operators
+* [tidyr](https://github.com/tidyverse/tidyr) for unnesting and spreading
 
 Further, there are other R packages that can be used to better understand
 JSON data
