@@ -3,7 +3,7 @@ Title: Tidy Complex 'JSON'
 Version: 0.3.2
 Authors@R: c(
     person("Jeremy", "Stanley", , "jeremy.stanley@gmail.com", role = "aut"),
-    person("Cole", "Arendt", , "cole@posit.co", role = c("aut", "cre"))
+    person("Cole", "Arendt", , "cole@rstudio.com", role = c("aut", "cre"))
   )
 Description: Turn complex 'JSON' data into tidy data frames.
 License: MIT + file LICENSE
