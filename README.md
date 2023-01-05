@@ -183,11 +183,9 @@ worldbank %>%
 
 - `issues`: issue data for the dplyr repo from github API
 
-- `worldbank`: world bank funded projects from
-  [jsonstudio](http://jsonstudio.com/resources/)
+- `worldbank`: world bank funded projects from jsonstudio
 
-- `companies`: startup company data from
-  [jsonstudio](http://jsonstudio.com/resources/)
+- `companies`: startup company data from jsonstudio
 
 ## Philosophy
 
@@ -218,9 +216,9 @@ nested lists, into tidy data frames that can be more easily manipulated.
 
 Tidyjson depends upon
 
-- [magrritr](https://github.com/smbache/magrittr) for the `%>%` pipe
+- [magrritr](https://github.com/tidyverse/magrittr) for the `%>%` pipe
   operator
-- [jsonlite](https://github.com/jeroenooms/jsonlite) for converting JSON
+- [jsonlite](https://github.com/jeroen/jsonlite) for converting JSON
   strings into nested lists
 - [purrr](https://github.com/tidyverse/purrr) for list operators
 - [tidyr](https://github.com/tidyverse/tidyr) for unnesting and

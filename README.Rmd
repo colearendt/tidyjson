@@ -145,11 +145,9 @@ object back into a JSON character string
 
 * `issues`: issue data for the dplyr repo from github API
 
-* `worldbank`: world bank funded projects from 
-[jsonstudio](http://jsonstudio.com/resources/)
+* `worldbank`: world bank funded projects from jsonstudio
 
-* `companies`: startup company data from 
-[jsonstudio](http://jsonstudio.com/resources/)
+* `companies`: startup company data from jsonstudio
 
 ## Philosophy
 
