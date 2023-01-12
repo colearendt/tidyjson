@@ -135,7 +135,7 @@ the missing `document.id`.  (#86)
 
 ## Other changes
 
-* Migrated development to [colearendt](https://github.com/colearendt/tidyjson) from [jeremystan](https://github.com/jeremystan/tidyjson) and [sailthru](https://github.com/sailthru/tidyjson)
+* Migrated development to [colearendt](https://github.com/colearendt/tidyjson) from [jeremystan](https://github.com/jeremystan) and [sailthru](https://github.com/sailthru/tidyjson)
 
 ## Deprecated functions
 

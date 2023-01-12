@@ -20,13 +20,13 @@ JSON has become a common format used in:
 
 * Public APIs (e.g., [Twitter](https://dev.twitter.com/rest/public))
 
-* NoSQL databases as a document format (e.g., [MongoDB](https://www.mongodb.org/))
+* NoSQL databases as a document format (e.g., [MongoDB](https://www.mongodb.com/))
 
 * Relational databases as a new column type (e.g., [PostgreSQL](http://www.postgresql.org/docs/9.4/static/datatype-json.html))
 
 Tidyjson provides a grammar for turning complex JSON data into tidy
 data frames that are easy to work with in the 
-[tidyverse](https://github.com/hadley/tidyverse).
+[tidyverse](https://github.com/tidyverse/tidyverse).
 
 ## Why use tidyjson?
 
@@ -303,7 +303,7 @@ df %>% as.tbl_json(json.column = "json")
 
 ### File
 
-If your JSON is in a file, like in the [jsonlines](http://jsonlines.org/) 
+If your JSON is in a file, like in the [jsonlines](https://jsonlines.org/) 
 format, then you can use `read_json` to read the file into a `tbl_json` object
 directly.
 
@@ -311,17 +311,17 @@ directly.
 
 The tidyjson package comes with several JSON example datasets:
 
-* `commits`: commit data for the [dplyr](https://github.com/hadley/dplyr) repo 
+* `commits`: commit data for the [dplyr](https://github.com/tidyverse/dplyr) repo 
 from github API
 
-* `issues`: issue data for the [dplyr](https://github.com/hadley/dplyr) repo 
+* `issues`: issue data for the [dplyr](https://github.com/tidyverse/dplyr) repo 
 from github API
 
 * `worldbank`: world bank funded projects from 
-[jsonstudio](http://jsonstudio.com/resources/)
+`jsonstudio`
 
 * `companies`: startup company data from 
-[jsonstudio](http://jsonstudio.com/resources/)
+`jsonstudio`
 
 Each dataset has some example tidyjson queries in `help(commits)`, 
 `help(issues)`, `help(worldbank)` and `help(companies)`.
