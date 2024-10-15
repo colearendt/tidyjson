@@ -100,14 +100,14 @@ the world bank. We can quickly expand all simple columns using `spread_all`
 worldbank %>% spread_all
 ```
 
-And we can limit the coluns produced by calling `dplyr::select` after
+And we can limit the columns produced by calling `dplyr::select` after
 
 ```{r}
 worldbank %>% spread_all %>% select(regionname, totalamt)
 ```
 
 But worldbank also contains arrays, which cannot be naively spread into new
-columns. We can use `gather_object` to gather all name-value paris by name,
+columns. We can use `gather_object` to gather all name-value pairs by name,
 and then `json_types` to identify the type of JSON stored under each value, and
 `dplyr::count` to aggregate across documents:
 
