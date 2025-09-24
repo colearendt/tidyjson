@@ -30,7 +30,7 @@ JSON into a simple form using the following rules:
   \item false   -> "logical",       e.g., false -> "logical"
   \item null    -> "null",          e.g., null -> "null"
   \item array   -> [<type>]         e.g., [1, 2] -> ["number"]
-  \item object  -> {"name": <type>} e.g., {"age": 32} -> {"age": "number"}
+  \item object  -> \{"name": <type>\} e.g., \{"age": 32\} -> \{"age": "number"\}
 }
 
 For more complex JSON objects, ties are broken by taking the most
