@@ -4,7 +4,6 @@
 #' tidy tibbles and data frames.
 #'
 #' @name tidyjson
-#' @docType package
 #' @import assertthat
 #' @import jsonlite
 #' @importFrom purrr map map_lgl map_dbl map_int map_chr map2 %||%
