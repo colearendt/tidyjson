@@ -392,9 +392,6 @@ dplyr_reconstruct.tbl_json <- function(data, template) {
   }
 }
 
-#' @name bind_rows
-#' @rdname bind_rows
-#' @keywords internal
 #' @importFrom dplyr bind_rows
 #' @export
 dplyr::bind_rows

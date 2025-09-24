@@ -1,35 +1,18 @@
-#' @name %>%
-#' @rdname pipe
-#' @keywords internal
-#' @importFrom magrittr %>%
-#' @usage lhs \%>\% rhs
+
 #' @export
 magrittr::`%>%`
 
-#' @details Exported from dplyr package.  Converts an object
-#' to a pure tibble (revert to tbl_df class and drops
-#' tbl_json class/attributes).
-#' 
-#' @name as_tibble
-#' @rdname as_tibble
-#' @aliases as_data_frame
-#' @aliases tbl_df
-#' @seealso as_tibble.tbl_json
-#' @importFrom tibble as_tibble
-#' @keywords internal
 #' @export
 tibble::as_tibble
 
-#' @name filter
-#' @rdname filter
-#' @seealso http://r.789695.n4.nabble.com/R-CMD-check-warning-with-S3-method-td4692255.html
-#' @details This needs to be re-exported, since `dplyr` implements a generic that 
-#' is not a generic in the `stats` package, and `tidyjson` provides a method for that generic
+# See: http://r.789695.n4.nabble.com/R-CMD-check-warning-with-S3-method-td4692255.html
+# This needs to be re-exported, since `dplyr` implements a generic that 
+# is not a generic in the `stats` package, and `tidyjson` provides a method for that generic
+
 #' @export
 dplyr::filter
 
 #' @export
-#' @rdname as_tibble
 dplyr::as_data_frame
 
 #' Bind two tbl_json objects together and preserve JSON attribute
