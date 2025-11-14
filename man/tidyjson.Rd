@@ -2,9 +2,27 @@
 % Please edit documentation in R/tidyjson-package.R
 \docType{package}
 \name{tidyjson}
+\alias{tidyjson-package}
 \alias{tidyjson}
 \title{tidyjson}
 \description{
 The tidyjson package provides tools to turn complex JSON data into 
 tidy tibbles and data frames.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/colearendt/tidyjson}
+  \item Report bugs at \url{https://github.com/colearendt/tidyjson/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Cole Arendt \email{cole@posit.co}
+
+Authors:
+\itemize{
+  \item Jeremy Stanley \email{jeremy.stanley@gmail.com}
+}
+
 }
