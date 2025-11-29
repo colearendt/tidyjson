@@ -4,11 +4,10 @@
 #' tidy tibbles and data frames.
 #'
 #' @name tidyjson
-#' @docType package
 #' @import assertthat
 #' @import jsonlite
 #' @importFrom purrr map map_lgl map_dbl map_int map_chr map2 %||%
-#' @importFrom purrr map_if at_depth flatten_chr flatten_dbl flatten_int
+#' @importFrom purrr map_if flatten_chr flatten_dbl flatten_int
 #' @importFrom purrr compose partial map2_chr rep_along every lift_vl
 #' @import dplyr
 #' @import tidyr
