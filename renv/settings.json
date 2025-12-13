@@ -1,0 +1,21 @@
+{
+  "bioconductor.version": null,
+  "external.libraries": [],
+  "ignored.packages": [
+    "cole"
+  ],
+  "package.dependency.fields": [
+    "Imports",
+    "Depends",
+    "LinkingTo"
+  ],
+  "ppm.enabled": null,
+  "ppm.ignored.urls": [],
+  "r.version": null,
+  "snapshot.type": "packrat",
+  "use.cache": true,
+  "vcs.ignore.cellar": true,
+  "vcs.ignore.library": true,
+  "vcs.ignore.local": true,
+  "vcs.manage.ignores": true
+}
