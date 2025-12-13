@@ -1,7 +1,10 @@
-# tidyjson (development version)
+# tidyjson 0.3.3
 
+* Fix issue with new release of `purrr` to stay on CRAN ([#150](https://github.com/colearendt/tidyjson/pull/150))
 
-* Add `jdouble()` and `jinteger()`. `junmber()` is aliased to `jdouble()`, and
+# tidyjson 0.3.2
+
+* Add `jdouble()` and `jinteger()`. `jnumber()` is aliased to `jdouble()`, and
 can still be used, however `jdouble()` should be preferred as it is less
 ambiguous.
 
