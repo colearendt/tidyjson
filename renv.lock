@@ -4,6 +4,10 @@
     "Repositories": [
       {
         "Name": "CRAN",
+        "URL": "https://cran.rstudio.com"
+      },
+      {
+        "Name": "RSPM",
         "URL": "https://p3m.dev/cran/latest"
       }
     ]
