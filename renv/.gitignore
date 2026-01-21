@@ -1,3 +1,7 @@
+local/
+cellar/
+lock/
+sandbox/
 library/
 python/
 staging/

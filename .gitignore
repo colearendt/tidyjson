@@ -14,3 +14,5 @@ tidyjson*.tar.gz
 tidyjson*.tgz
 doc
 Meta
+.env
+.Renviron

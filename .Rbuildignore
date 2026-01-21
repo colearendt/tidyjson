@@ -22,3 +22,6 @@
 ^renv/$
 ^renv\.lock$
 ^\.github$
+^\.env$
+^\.Renviron$
+^tidyjson_.*\.tar\.gz$

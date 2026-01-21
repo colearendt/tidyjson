@@ -14,8 +14,8 @@ knitr::opts_chunk$set(
 ```
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tidyjson)](https://cran.r-project.org/package=tidyjson)
-[![Build Status](https://travis-ci.org/colearendt/tidyjson.svg?branch=master)](https://travis-ci.org/colearendt/tidyjson)
-[![Coverage Status](https://codecov.io/github/colearendt/tidyjson/coverage.svg?branch=master)](https://codecov.io/github/colearendt/tidyjson?branch=master)
+[![Build Status](https://travis-ci.org/colearendt/tidyjson.svg?branch=master)](https://app.travis-ci.com/colearendt/tidyjson)
+[![Coverage Status](https://codecov.io/github/colearendt/tidyjson/coverage.svg?branch=master)](https://app.codecov.io/github/colearendt/tidyjson?branch=master)
 
 [![CRAN Activity](http://cranlogs.r-pkg.org/badges/tidyjson)](https://cran.r-project.org/package=tidyjson/index.html)
 [![CRAN History](http://cranlogs.r-pkg.org/badges/grand-total/tidyjson)](https://cran.r-project.org/package=tidyjson/index.html)
