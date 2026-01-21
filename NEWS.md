@@ -1,4 +1,4 @@
-# tidyjson 0.3.3
+# tidyjson 0.3.3.1
 
 * Fix issue with new release of `purrr` to stay on CRAN ([#150](https://github.com/colearendt/tidyjson/pull/150))
 
